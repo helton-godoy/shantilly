@@ -1,0 +1,121 @@
+<context>
+# Overview  
+[O projeto Shantilly é uma ferramenta de linha de comando (CLI) construída em Go que permite aos usuários criar Interfaces de Usuário de Terminal (TUIs) **ricas e interativas** a partir de arquivos de configuração **declarativos em YAML/JSON**.
+
+O Shantilly resolve o problema de ferramentas TUI legadas, como `dialog` ou `whiptail`, que são visualmente obsoletas e limitadas em funcionalidade. Ele oferece uma alternativa moderna e elegante para a criação de interfaces de terminal.
+
+O produto é destinado a **Administradores de Sistemas, Engenheiros de DevOps e Desenvolvedores** que buscam modernizar seus *scripts* de *shell* e automação. É valioso porque transforma comandos longos em interfaces guidadas, permite a criação de *dashboards* leves no terminal e retorna dados estruturados (JSON) de forma confiável para uso em fluxos de trabalho.]
+
+# Core Features  
+[| Feature | O que faz | Por que é importante | Como funciona (Alto Nível) |
+| :--- | :--- | :--- | :--- |
+| **Configuração Declarativa** | Permite definir toda a estrutura da TUI (Formulários, Menus, Layouts) usando arquivos YAML/JSON. | Simplifica drasticamente a criação de UIs complexas, tornando-as fáceis de integrar em scripts *shell*. | A CLI (Cobra) lê o arquivo de configuração e usa `gopkg.in/yaml.v3` para decodificá-lo em modelos Bubble Tea (internal/models). |
+| **Biblioteca de Componentes Modulares** | Oferece *widgets* TUI reutilizáveis, incluindo `textinput`, `checkbox`, `filepicker`, `textarea`, `slider` e `radiogroup`. | Acelera o desenvolvimento e garante interfaces robustas e bem testadas, aproveitando ao máximo a biblioteca **Charm Bubbles**. | Os modelos orquestradores (ex: FormModel) instanciam componentes que implementam a interface `Component` e gerenciam seu próprio estado MVU. |
+| **Sistema de Layout e Temas** | Permite organizar componentes em painéis com divisões horizontais (`lipgloss.JoinHorizontal`) e verticais. Centraliza a estilização (cores, bordas, foco) usando **Lip Gloss**. | Essencial para construir *dashboards* complexos e garantir uma estética profissional e customizável. | O `LayoutModel` lida com `tea.WindowSizeMsg` para distribuir as dimensões corretamente aos filhos, utilizando utilitários Lip Gloss para renderização responsiva. |
+| **Modo Servidor SSH (Futuro)** | Estenderá a funcionalidade da TUI para que possa ser servida de forma segura sobre SSH usando a biblioteca **Wish**. | Permite a criação de aplicações e *dashboards* acessíveis remotamente em qualquer terminal, alinhando-se à visão do ecossistema Charm. | Um novo subcomando CLI (`shantilly serve` ou `daemon`) usará o *middleware* `bubbletea` do Wish para iniciar um `tea.Program` por sessão SSH. |]
+
+# User Experience  
+[### User Personas  
+
+1. **Sysadmin/DevOps Engineer:** Precisa de automação rápida e interativa. Utilizaria o Shantilly para criar formulários de inicialização de projetos (`my-app init`) ou *dashboards* de monitoramento exibindo métricas com barras de progresso. Valoriza a saída JSON estruturada e a estabilidade multiplataforma.
+2. **Script Writer:** Profissional que usa *shell scripts* diariamente e deseja substituir ferramentas TUI antigas (`dialog`/`whiptail`) por interfaces mais modernas e amigáveis, especialmente para seleção de arquivos (`filepicker`) ou menus complexos.
+
+### Key User Flows  
+
+1. **Inicialização:** O usuário executa `shantilly form --file config.yaml`. O programa verifica a validação da configuração e a TUI é carregada, ocupando o *Alternate Screen Buffer*.
+2. **Interação:** O usuário navega entre os componentes focáveis usando as teclas Tab e Shift+Tab. As mensagens de entrada (`tea.KeyMsg`) são delegadas do modelo orquestrador (FormModel, LayoutModel) para o componente atualmente focado.
+3. **Saída de Dados:** O usuário preenche e submete o formulário (tecla Enter). Se o formulário for válido (`CanSubmit` retorna true), a TUI encerra e o resultado final é impresso como JSON/YAML no `stdout`.
+
+### UI/UX Considerations  
+
+* **Aparência Coesa (Glamorous CLI):** A TUI deve usar o sistema de temas centralizado (internal/styles) para garantir que estados como foco (`InputFocused`) e erro sejam aplicados de forma consistente em todos os componentes (Textarea, Slider, etc.).
+* **Acessibilidade:** A navegação por teclado (`tea.KeyMsg`) com Tab e Shift+Tab deve ser robusta, alternando o foco apenas entre componentes que retornam `true` para `CanFocus()`.
+* **Tratamento de Erros Visuais:** Mensagens de erro (`GetError()`) devem ser claras, tanto para validações de formulário (ex: `min_length` não atendido) quanto para problemas de configuração na CLI.]
+
+</context>
+<PRD>
+# Technical Architecture  
+[### System Components  
+*   **CLI (cmd/)**: Usa **Cobra** para definir comandos (`root`, `form`, `menu`, `layout`, `tabs`) e gerenciar *flags*.
+*   **TUI Core (internal/models)**: Implementações da **Arquitetura Elm (MVU)** usando **Bubble Tea**. Modelos principais incluem `FormModel`, `LayoutModel`, `TabsModel` e `MenuModel`, que orquestram o estado e a delegação de mensagens.
+*   **UI Components (internal/components)**: Implementam a interface `Component`. Máximo reuso da biblioteca **Bubbles** (`textinput`, `textarea`, `filepicker`) e componentes customizados (`slider`, `radiogroup`).
+*   **Styling (internal/styles)**: Definição de temas e estilos usando **Lip Gloss**. Funções `lipgloss.JoinHorizontal` e `lipgloss.JoinVertical` são cruciais para a lógica de `LayoutModel`.
+*   **Configuração (internal/config)**: Define estruturas de configuração (`ComponentConfig`, `FormConfig`) e lógica de validação. Usa `gopkg.in/yaml.v3` para *parsing* declarativo.
+
+### Data Models  
+
+* **Modelos de Estado (`tea.Model`):** Representam o estado da aplicação em um determinado momento (ex: `FormModel`, contendo a lista de componentes e o `focusIndex`).
+* **Interface Component:** Contrato fundamental que todo *widget* deve implementar (`Init`, `Update`, `View`, `CanFocus`, `IsValid`, `Value`). O método `Value()` deve retornar o dado coletado (string, bool, ou mapa).
+* **Configuração:** Estruturas Go *tagueadas* para mapeamento YAML/JSON (ex: `MenuConfig`, `ComponentConfig`).
+
+### APIs and Integrations  
+
+* **TUI Runtime:** `tea.NewProgram(model).Run()` inicia o *loop* de eventos e `tea.WithAltScreen()` é usado para os comandos CLI locais.
+* **Saída Estruturada:** O resultado final é serializado para JSON usando bibliotecas Go e impresso no `stdout`. A camada CLI lida com opções de saída como `--output` (salvar em arquivo) ou `--template`.
+* **Integração SSH (Futuro):** O **Wish** será integrado ao subcomando `serve` para expor o `tea.Model` via SSH, utilizando o *middleware* `bubbletea`.
+
+### Infrastructure Requirements  
+
+* Linguagem: Go (versão 1.21+ recomendada).
+* Ferramentas de Qualidade: Makefile com suporte para `goimports`, `golangci-lint` (incluindo `errcheck`), `go test`.
+* Meta de Cobertura: **85% de cobertura de testes**.]
+
+# Development Roadmap  
+[### MVP Requirements
+
+O MVP foca em **estabilizar o *core* MVU**, **remover dívidas técnicas** e **completar o conjunto básico de componentes** para que o construtor YAML seja totalmente funcional e testável.
+
+1. **Fundação e Qualidade (Pré-Implementação):**
+    * Concluir a refatoração e limpeza da estrutura de diretórios e dependências (Charm v2).
+    * **Implementar tratamento de erros explícito com contexto** (`fmt.Errorf("...: %w", err)`) em todas as operações de I/O e *parsing* da CLI e modelos.
+    * Resolver todos os avisos de `errcheck` no código existente.
+    * Forçar o perfil de cor (TrueColor) nos testes para resolver problemas de estilo Lip Gloss em ambientes de CI.
+2. **Estabilização dos Modelos de Orquestração:**
+    * Finalizar a lógica de **redimensionamento e propagação de `tea.WindowSizeMsg`** no `LayoutModel`.
+    * Completar a lógica de **propagação de foco (`tea.KeyMsg`) e navegação (Tab/Shift+Tab)** no `LayoutModel`.
+    * Implementar a funcionalidade completa de **Tabs**, garantindo que apenas a aba ativa seja validada (`IsValid`).
+3. **Implementação Final de Componentes:**
+    * Finalizar `textarea.go` e `filepicker.go` (máximo reuso de Bubbles).
+    * Finalizar `slider.go` (lógica customizada com Lip Gloss para a barra).
+    * Finalizar `radiogroup` (completar `View()` e lógica de seleção/foco).
+4. **Teste e Validação:**
+    * Implementar testes abrangentes para `LayoutModel`, `FormModel` e todos os novos componentes.
+    * Investigar e resolver o *timeout* nos testes E2E, injetando dimensões da janela quando o TTY não for detectado.
+    * **Atingir a meta de 85% de cobertura de testes**.
+
+### Future Enhancements  
+
+1. **Modo Servidor SSH (Wish Integration):** Implementar o subcomando `shantilly serve` usando o *middleware* `bubbletea` do **Wish**. Deve incluir o uso de `lipgloss.NewRenderer` para sessões SSH.
+2. **Melhoria em Menus:** Refatorar o `MenuModel` para incorporar recursos do **Bubbles List**, como filtragem *fuzzy* e paginação.
+3. **Visualização de Conteúdo Longo:** Implementar o componente **Viewport** do Bubbles para exibir *logs* ou conteúdo que excede o terminal.
+4. **Keybindings Configuráveis:** Utilizar a biblioteca **Key** do Bubbles para permitir que os usuários definam suas próprias teclas de navegação.]
+
+# Logical Dependency Chain  
+[1. **Fundação e Qualidade (Base)**: Focar na limpeza do projeto, atualização de dependências v2 e, crucialmente, resolver a **dívida técnica de tratamento de erros** (`errcheck` e *error wrapping*). Isso garante uma base estável para o código funcional.
+2. **Layout e Orquestração (Visibilidade/MVU Core)**: A lógica de orquestração precisa ser robusta para que os componentes funcionem. Finalizar `LayoutModel` (redimensionamento e foco) e `TabsModel` (validação e navegação).
+3. **Implementação de Componentes (Recursos Visíveis)**: Construir os componentes, priorizando o reuso da Charm: `textarea` (Bubbles), `filepicker` (Bubbles), `radiogroup` (View finalizada), e `slider` (customizado/Lip Gloss).
+4. **Validação Abrangente (Estabilidade)**: Integrar testes para os novos componentes e modelos orquestradores (`FormModel`, `LayoutModel`) e garantir a meta de cobertura de 85%. Resolver *timeouts* de E2E.
+5. **Expansão (Futuro)**: Implementação do Modo Servidor SSH.]
+
+# Risks and Mitigations  
+[| Risco | Detalhe | Mitigação |
+| :--- | :--- | :--- |
+| **Baixa Cobertura de Testes** | A cobertura inicial em `internal/components` e `cmd` é baixa, e a meta de 85% é alta. | Tornar a **meta de 85% de cobertura um *gating factor*** no CI/CD. Priorizar tarefas de testes para `FormModel` e `LayoutModel` imediatamente após a implementação de features. |
+| **Dívida Técnica Persistente** | Erros de `errcheck` e inconsistências de API (v1 vs v2) consomem tempo de desenvolvimento. | Priorizar a **resolução de erros e *wrapping* explícito** (Tarefas 06 e 07) antes do desenvolvimento de novas *features*. Usar fluxos de trabalho de IA (Task Master) para automatizar refatorações mecânicas. |
+| **Complexidade da Arquitetura MVU** | A composição e a passagem de mensagens entre modelos aninhados podem ser complexas e levar a um "emaranhado de modelos". | Impor um **Contrato de Componente rígido** (Component Interface) para garantir que cada widget gerencie seu próprio estado e apenas o delegue ao modelo pai. O `LayoutModel` e o `FormModel` devem focar estritamente na orquestração de foco e validação. |
+| **Inconsistência de Estilo em SSH** | O modo Servidor SSH pode ter problemas de renderização (cores, fundo escuro) dependendo do terminal cliente. | **Uso obrigatório de *Custom Renderers*** do Lip Gloss (`lipgloss.NewRenderer`) para sessões SSH no `cmd/serve.go` para garantir que o perfil de cor seja detectado corretamente. |]
+
+# Appendix  
+[### Research Findings
+
+* **Arquitetura:** O Shantilly utiliza a arquitetura **ELM (Model-View-Update)** através do framework **Bubble Tea**. O `Model` contém o estado, o `Update` lida com mensagens (`tea.Msg`) e retorna um novo `Model` e comandos assíncronos (`tea.Cmd`), e a `View` desenha a string final. Essa escolha arquitetural promove **alta testabilidade** e um fluxo de dados previsível.
+* **Ecossistema Charm:** A integração coesa com **Lip Gloss** para estilização declarativa (similar a CSS) e **Bubbles** para componentes prontos (como `textarea` e `filepicker`) é a base da usabilidade e do design "Glamourous CLI" do projeto.
+* **Conformidade:** O projeto está em processo de migração para as versões v2 do Bubble Tea e Lip Gloss, o que exige a atualização dos *imports* em massa.
+
+### Technical Specifications  
+
+* **Dependências Principais:** `github.com/charmbracelet/bubbletea/v2`, `github.com/charmbracelet/lipgloss/v2`, `github.com/charmbracelet/bubbles`, `github.com/spf13/cobra`, `gopkg.in/yaml.v3`.
+* **Testes:** Uso da biblioteca `github.com/stretchr/testify` (pacotes `assert` e `require`) para asserções claras e legíveis em todos os testes unitários. Os testes E2E usam scripts *shell* para validar o binário final.
+* **Melhoria de I/O:** O `cmd/run.go` foi corrigido para usar `go-isatty` e o *program option* `tea.WithWindowSize` para garantir que os testes E2E não sofram *timeout* em ambientes não interativos (CI).
+* **Gerenciamento de Erros:** O padrão de *error wrapping* com `%w` é obrigatório para adicionar contexto a erros de baixo nível (I/O, *unmarshal* de YAML).]
+</PRD>
