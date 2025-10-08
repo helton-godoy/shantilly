@@ -1,0 +1,47 @@
+title: "Teste RadioGroup - Validação de Foco"
+description: "Teste específico para validar estabilidade de layout do RadioGroup durante mudanças de foco"
+
+components:
+  - type: textinput
+    name: nome
+    label: "Nome do usuário"
+    placeholder: "Digite seu nome"
+    required: true
+
+  - type: radiogroup
+    name: plano
+    label: "Selecione seu plano"
+    required: true
+    help: "Use setas ↑↓ para navegar, Enter/Espaço para selecionar"
+    options:
+      items:
+        - id: basico
+          label: "Básico - Gratuito"
+        - id: premium
+          label: "Premium - R$ 29,90/mês"
+        - id: enterprise
+          label: "Enterprise - R$ 99,90/mês"
+        - id: custom
+          label: "Personalizado - Sob consulta"
+
+  - type: checkbox
+    name: newsletter
+    label: "Quero receber newsletter"
+    default: false
+
+  - type: slider
+    name: experiencia
+    label: "Anos de experiência"
+    default: 2
+    options:
+      min: 0
+      max: 20
+      step: 1
+
+  - type: textarea
+    name: observacoes
+    label: "Observações adicionais"
+    placeholder: "Comentários opcionais..."
+    options:
+      height: 3
+      width: 60

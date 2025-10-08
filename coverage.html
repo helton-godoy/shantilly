@@ -1,0 +1,2542 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>commands: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">github.com/helton/shantilly/cmd/shantilly/commands/form.go (0.0%)</option>
+				
+				<option value="file1">github.com/helton/shantilly/cmd/shantilly/commands/layout.go (0.0%)</option>
+				
+				<option value="file2">github.com/helton/shantilly/cmd/shantilly/commands/root.go (0.0%)</option>
+				
+				<option value="file3">github.com/helton/shantilly/cmd/shantilly/main.go (0.0%)</option>
+				
+				<option value="file4">github.com/helton/shantilly/internal/components/checkbox.go (100.0%)</option>
+				
+				<option value="file5">github.com/helton/shantilly/internal/components/factory.go (94.1%)</option>
+				
+				<option value="file6">github.com/helton/shantilly/internal/components/radiogroup.go (97.8%)</option>
+				
+				<option value="file7">github.com/helton/shantilly/internal/components/slider.go (91.2%)</option>
+				
+				<option value="file8">github.com/helton/shantilly/internal/components/textarea.go (98.8%)</option>
+				
+				<option value="file9">github.com/helton/shantilly/internal/components/textinput.go (86.2%)</option>
+				
+				<option value="file10">github.com/helton/shantilly/internal/components/textlabel.go (100.0%)</option>
+				
+				<option value="file11">github.com/helton/shantilly/internal/config/types.go (58.8%)</option>
+				
+				<option value="file12">github.com/helton/shantilly/internal/models/form.go (91.8%)</option>
+				
+				<option value="file13">github.com/helton/shantilly/internal/models/layout.go (95.3%)</option>
+				
+				<option value="file14">github.com/helton/shantilly/internal/styles/theme.go (100.0%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">no coverage</span>
+				<span class="cov1">low coverage</span>
+				<span class="cov2">*</span>
+				<span class="cov3">*</span>
+				<span class="cov4">*</span>
+				<span class="cov5">*</span>
+				<span class="cov6">*</span>
+				<span class="cov7">*</span>
+				<span class="cov8">*</span>
+				<span class="cov9">*</span>
+				<span class="cov10">high coverage</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package commands
+
+import (
+        "fmt"
+        "os"
+
+        tea "github.com/charmbracelet/bubbletea/v2"
+        "github.com/helton/shantilly/internal/config"
+        "github.com/helton/shantilly/internal/models"
+        "github.com/helton/shantilly/internal/styles"
+        "github.com/spf13/cobra"
+)
+
+var formCmd = &amp;cobra.Command{
+        Use:   "form [config.yaml]",
+        Short: "Executa uma TUI de formulário interativo",
+        Long: `Carrega um arquivo de configuração YAML e executa uma TUI de formulário
+interativo. O resultado é serializado em JSON.`,
+        Args: cobra.ExactArgs(1),
+        RunE: runForm,
+}
+
+func runForm(cmd *cobra.Command, args []string) error <span class="cov0" title="0">{
+        configPath := args[0]
+
+        // Load configuration with explicit error handling
+        cfg, err := config.LoadFormConfig(configPath)
+        if err != nil </span><span class="cov0" title="0">{
+                return fmt.Errorf("erro ao carregar configuração: %w", err)
+        }</span>
+
+        // Create theme
+        <span class="cov0" title="0">theme := styles.DefaultTheme()
+
+        // Create form model
+        model, err := models.NewFormModel(cfg, theme)
+        if err != nil </span><span class="cov0" title="0">{
+                return fmt.Errorf("erro ao criar modelo do formulário: %w", err)
+        }</span>
+
+        // Create and run tea program
+        <span class="cov0" title="0">p := tea.NewProgram(model, tea.WithAltScreen())
+
+        finalModel, err := p.Run()
+        if err != nil </span><span class="cov0" title="0">{
+                return fmt.Errorf("erro ao executar TUI: %w", err)
+        }</span>
+
+        // Check if form was submitted
+        <span class="cov0" title="0">formModel, ok := finalModel.(*models.FormModel)
+        if !ok </span><span class="cov0" title="0">{
+                return fmt.Errorf("erro interno: tipo de modelo inválido")
+        }</span>
+
+        <span class="cov0" title="0">if formModel.Submitted() </span><span class="cov0" title="0">{
+                // Serialize to JSON
+                jsonData, err := formModel.ToJSON()
+                if err != nil </span><span class="cov0" title="0">{
+                        return fmt.Errorf("erro ao serializar dados: %w", err)
+                }</span>
+
+                // Write to stdout
+                <span class="cov0" title="0">if _, err := fmt.Fprintln(os.Stdout, string(jsonData)); err != nil </span><span class="cov0" title="0">{
+                        return fmt.Errorf("erro ao escrever saída: %w", err)
+                }</span>
+        }
+
+        <span class="cov0" title="0">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package commands
+
+import (
+        "fmt"
+
+        tea "github.com/charmbracelet/bubbletea/v2"
+        "github.com/helton/shantilly/internal/config"
+        "github.com/helton/shantilly/internal/models"
+        "github.com/helton/shantilly/internal/styles"
+        "github.com/spf13/cobra"
+)
+
+var layoutCmd = &amp;cobra.Command{
+        Use:   "layout [config.yaml]",
+        Short: "Executa uma TUI com layout estruturado",
+        Long: `Carrega um arquivo de configuração YAML e executa uma TUI com layout
+horizontal ou vertical.`,
+        Args: cobra.ExactArgs(1),
+        RunE: runLayout,
+}
+
+func runLayout(cmd *cobra.Command, args []string) error <span class="cov0" title="0">{
+        configPath := args[0]
+
+        // Load configuration with explicit error handling
+        cfg, err := config.LoadLayoutConfig(configPath)
+        if err != nil </span><span class="cov0" title="0">{
+                return fmt.Errorf("erro ao carregar configuração: %w", err)
+        }</span>
+
+        // Create theme
+        <span class="cov0" title="0">theme := styles.DefaultTheme()
+
+        // Create layout model
+        model, err := models.NewLayoutModel(cfg, theme)
+        if err != nil </span><span class="cov0" title="0">{
+                return fmt.Errorf("erro ao criar modelo do layout: %w", err)
+        }</span>
+
+        // Create and run tea program
+        <span class="cov0" title="0">p := tea.NewProgram(model, tea.WithAltScreen())
+
+        if _, err := p.Run(); err != nil </span><span class="cov0" title="0">{
+                return fmt.Errorf("erro ao executar TUI: %w", err)
+        }</span>
+
+        <span class="cov0" title="0">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package commands
+
+import (
+        "fmt"
+
+        "github.com/spf13/cobra"
+)
+
+const version = "0.1.0"
+
+var rootCmd = &amp;cobra.Command{
+        Use:   "shantilly",
+        Short: "Construtor de TUI declarativo via YAML",
+        Long: `Shantilly é uma ferramenta CLI moderna em Go que permite criar
+Interfaces de Usuário de Terminal (TUI) ricas e interativas de forma
+declarativa, utilizando arquivos de configuração YAML.
+
+Construído sobre o ecossistema Charm (Bubble Tea, Lip Gloss, Bubbles).`,
+        Version: version,
+}
+
+var versionCmd = &amp;cobra.Command{
+        Use:   "version",
+        Short: "Exibe a versão do Shantilly",
+        Run: func(cmd *cobra.Command, args []string) <span class="cov0" title="0">{
+                fmt.Printf("Shantilly v%s\n", version)
+        }</span>,
+}
+
+func init() <span class="cov0" title="0">{
+        rootCmd.AddCommand(versionCmd)
+        rootCmd.AddCommand(formCmd)
+        rootCmd.AddCommand(layoutCmd)
+        // TODO: Add menu, tabs, serve commands
+}</span>
+
+// Execute runs the root command.
+func Execute() error <span class="cov0" title="0">{
+        return rootCmd.Execute()
+}</span>
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package main
+
+import (
+        "fmt"
+        "os"
+
+        "github.com/helton/shantilly/cmd/shantilly/commands"
+)
+
+func main() <span class="cov0" title="0">{
+        if err := commands.Execute(); err != nil </span><span class="cov0" title="0">{
+                fmt.Fprintf(os.Stderr, "Erro: %v\n", err)
+                os.Exit(1)
+        }</span>
+}
+</pre>
+		
+		<pre class="file" id="file4" style="display: none">package components
+
+import (
+        "fmt"
+        "strings"
+
+        tea "github.com/charmbracelet/bubbletea/v2"
+        "github.com/helton/shantilly/internal/config"
+        "github.com/helton/shantilly/internal/styles"
+)
+
+// Checkbox implements a checkbox component.
+// Note: bubbles/v2 doesn't have a checkbox yet, so we implement it with custom logic.
+type Checkbox struct {
+        name         string
+        label        string
+        required     bool
+        help         string
+        checked      bool
+        theme        *styles.Theme
+        errorMsg     string
+        focused      bool
+        initialValue bool
+}
+
+// NewCheckbox creates a new Checkbox component from configuration.
+func NewCheckbox(cfg config.ComponentConfig, theme *styles.Theme) (*Checkbox, error) <span class="cov10" title="18">{
+        if cfg.Type != config.TypeCheckbox </span><span class="cov1" title="1">{
+                return nil, fmt.Errorf("tipo de componente inválido: esperado checkbox, recebido %s", cfg.Type)
+        }</span>
+
+        <span class="cov9" title="17">c := &amp;Checkbox{
+                name:     cfg.Name,
+                label:    cfg.Label,
+                required: cfg.Required,
+                help:     cfg.Help,
+                theme:    theme,
+        }
+
+        // Set default value if provided
+        if cfg.Default != nil </span><span class="cov4" title="3">{
+                if defaultBool, ok := cfg.Default.(bool); ok </span><span class="cov4" title="3">{
+                        c.checked = defaultBool
+                        c.initialValue = defaultBool
+                }</span>
+        }
+
+        <span class="cov9" title="17">return c, nil</span>
+}
+
+// Init implements tea.Model.
+func (c *Checkbox) Init() tea.Cmd <span class="cov1" title="1">{
+        return nil
+}</span>
+
+// Update implements tea.Model.
+func (c *Checkbox) Update(msg tea.Msg) (tea.Model, tea.Cmd) <span class="cov6" title="5">{
+        if !c.focused </span><span class="cov1" title="1">{
+                return c, nil
+        }</span>
+
+        <span class="cov5" title="4">switch msg := msg.(type) </span>{
+        case tea.KeyMsg:<span class="cov5" title="4">
+                switch msg.String() </span>{
+                case " ", "space", "enter":<span class="cov4" title="3">
+                        c.checked = !c.checked
+                        c.errorMsg = ""</span>
+                }
+        }
+
+        <span class="cov5" title="4">return c, nil</span>
+}
+
+// View implements tea.Model.
+func (c *Checkbox) View() string <span class="cov5" title="4">{
+        var b strings.Builder
+
+        // Determine checkbox symbol
+        var symbol string
+        if c.checked </span><span class="cov1" title="1">{
+                symbol = "[✓]"
+        }</span> else<span class="cov4" title="3"> {
+                symbol = "[ ]"
+        }</span>
+
+        // Build the checkbox line (without border - border is applied by layout)
+        <span class="cov5" title="4">checkboxLine := symbol + " " + c.label
+        b.WriteString(checkboxLine)
+
+        // Render error message if present
+        if c.errorMsg != "" </span><span class="cov1" title="1">{
+                b.WriteString("\n")
+                b.WriteString(c.theme.Error.Render("✗ " + c.errorMsg))
+        }</span>
+
+        // Render help text if present and no error
+        <span class="cov5" title="4">if c.help != "" &amp;&amp; c.errorMsg == "" </span><span class="cov1" title="1">{
+                b.WriteString("\n")
+                b.WriteString(c.theme.Help.Render(c.help))
+        }</span>
+
+        <span class="cov5" title="4">return b.String()</span>
+}
+
+// Name implements Component.
+func (c *Checkbox) Name() string <span class="cov5" title="4">{
+        return c.name
+}</span>
+
+// CanFocus implements Component.
+func (c *Checkbox) CanFocus() bool <span class="cov3" title="2">{
+        return true
+}</span>
+
+// SetFocus implements Component.
+func (c *Checkbox) SetFocus(focused bool) <span class="cov5" title="4">{
+        c.focused = focused
+}</span>
+
+// IsValid implements Component.
+func (c *Checkbox) IsValid() bool <span class="cov6" title="6">{
+        // For checkboxes, required means it must be checked
+        if c.required &amp;&amp; !c.checked </span><span class="cov1" title="1">{
+                c.errorMsg = "Esta opção deve ser marcada"
+                return false
+        }</span>
+
+        <span class="cov6" title="5">c.errorMsg = ""
+        return true</span>
+}
+
+// GetError implements Component.
+func (c *Checkbox) GetError() string <span class="cov7" title="8">{
+        return c.errorMsg
+}</span>
+
+// SetError implements Component.
+func (c *Checkbox) SetError(msg string) <span class="cov4" title="3">{
+        c.errorMsg = msg
+}</span>
+
+// Value implements Component.
+func (c *Checkbox) Value() interface{} <span class="cov4" title="3">{
+        return c.checked
+}</span>
+
+// SetValue implements Component.
+func (c *Checkbox) SetValue(value interface{}) error <span class="cov7" title="7">{
+        boolValue, ok := value.(bool)
+        if !ok </span><span class="cov1" title="1">{
+                return fmt.Errorf("valor inválido: esperado bool, recebido %T", value)
+        }</span>
+
+        <span class="cov6" title="6">c.checked = boolValue
+        return nil</span>
+}
+
+// Reset implements Component.
+func (c *Checkbox) Reset() <span class="cov1" title="1">{
+        c.checked = c.initialValue
+        c.errorMsg = ""
+        c.focused = false
+}</span>
+</pre>
+		
+		<pre class="file" id="file5" style="display: none">package components
+
+import (
+        "fmt"
+
+        "github.com/helton/shantilly/internal/config"
+        "github.com/helton/shantilly/internal/styles"
+)
+
+// NewComponent creates a component from configuration using the factory pattern.
+// This ensures that all components are created consistently and with proper validation.
+func NewComponent(cfg config.ComponentConfig, theme *styles.Theme) (Component, error) <span class="cov10" title="127">{
+        if err := cfg.Validate(); err != nil </span><span class="cov4" title="6">{
+                return nil, fmt.Errorf("erro de validação da configuração: %w", err)
+        }</span>
+
+        <span class="cov9" title="121">switch cfg.Type </span>{
+        case config.TypeTextInput:<span class="cov9" title="105">
+                return NewTextInput(cfg, theme)</span>
+        case config.TypeTextArea:<span class="cov3" title="3">
+                return NewTextArea(cfg, theme)</span>
+        case config.TypeCheckbox:<span class="cov3" title="3">
+                return NewCheckbox(cfg, theme)</span>
+        case config.TypeRadioGroup:<span class="cov3" title="4">
+                return NewRadioGroup(cfg, theme)</span>
+        case config.TypeSlider:<span class="cov3" title="3">
+                return NewSlider(cfg, theme)</span>
+        case config.TypeText:<span class="cov3" title="3">
+                return NewTextLabel(cfg, theme)</span>
+        default:<span class="cov0" title="0">
+                return nil, fmt.Errorf("tipo de componente não suportado: %s", cfg.Type)</span>
+        }
+}
+
+// NewComponents creates multiple components from a slice of configurations.
+// Returns an error if any component fails to create.
+func NewComponents(configs []config.ComponentConfig, theme *styles.Theme) ([]Component, error) <span class="cov4" title="6">{
+        components := make([]Component, 0, len(configs))
+
+        for i, cfg := range configs </span><span class="cov9" title="108">{
+                comp, err := NewComponent(cfg, theme)
+                if err != nil </span><span class="cov2" title="2">{
+                        return nil, fmt.Errorf("erro ao criar componente %d (%s): %w", i, cfg.Name, err)
+                }</span>
+                <span class="cov9" title="106">components = append(components, comp)</span>
+        }
+
+        <span class="cov3" title="4">return components, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file6" style="display: none">package components
+
+import (
+        "fmt"
+        "strings"
+
+        tea "github.com/charmbracelet/bubbletea/v2"
+        "github.com/helton/shantilly/internal/config"
+        "github.com/helton/shantilly/internal/styles"
+)
+
+// RadioItem represents a single radio button option.
+type RadioItem struct {
+        ID    string
+        Label string
+}
+
+// RadioGroup implements a radio button group component with custom Lip Gloss rendering.
+type RadioGroup struct {
+        name         string
+        label        string
+        required     bool
+        help         string
+        items        []RadioItem
+        cursor       int // Current cursor position
+        selected     int // Selected item index (-1 = none)
+        theme        *styles.Theme
+        errorMsg     string
+        focused      bool
+        initialValue int
+}
+
+// NewRadioGroup creates a new RadioGroup component from configuration.
+func NewRadioGroup(cfg config.ComponentConfig, theme *styles.Theme) (*RadioGroup, error) <span class="cov9" title="23">{
+        if cfg.Type != config.TypeRadioGroup </span><span class="cov1" title="1">{
+                return nil, fmt.Errorf("tipo de componente inválido: esperado radiogroup, recebido %s", cfg.Type)
+        }</span>
+
+        // Parse items from options
+        <span class="cov9" title="22">var items []RadioItem
+        if cfg.Options != nil </span><span class="cov8" title="19">{
+                if itemsData, ok := cfg.Options["items"].([]interface{}); ok </span><span class="cov8" title="19">{
+                        for _, item := range itemsData </span><span class="cov10" title="30">{
+                                if itemMap, ok := item.(map[string]interface{}); ok </span><span class="cov9" title="29">{
+                                        id, _ := itemMap["id"].(string)
+                                        label, _ := itemMap["label"].(string)
+                                        if id != "" &amp;&amp; label != "" </span><span class="cov9" title="29">{
+                                                items = append(items, RadioItem{ID: id, Label: label})
+                                        }</span>
+                                }
+                        }
+                }
+        }
+
+        <span class="cov9" title="22">if len(items) == 0 </span><span class="cov5" title="5">{
+                return nil, fmt.Errorf("radiogroup deve conter pelo menos um item")
+        }</span>
+
+        <span class="cov8" title="17">rg := &amp;RadioGroup{
+                name:         cfg.Name,
+                label:        cfg.Label,
+                required:     cfg.Required,
+                help:         cfg.Help,
+                items:        items,
+                cursor:       0,
+                selected:     -1, // None selected by default
+                theme:        theme,
+                initialValue: -1,
+        }
+
+        // Set default value if provided
+        if cfg.Default != nil </span><span class="cov2" title="2">{
+                if defaultID, ok := cfg.Default.(string); ok </span><span class="cov2" title="2">{
+                        for i, item := range items </span><span class="cov3" title="3">{
+                                if item.ID == defaultID </span><span class="cov2" title="2">{
+                                        rg.selected = i
+                                        rg.initialValue = i
+                                        break</span>
+                                }
+                        }
+                }
+        }
+
+        <span class="cov8" title="17">return rg, nil</span>
+}
+
+// Init implements tea.Model.
+func (rg *RadioGroup) Init() tea.Cmd <span class="cov1" title="1">{
+        return nil
+}</span>
+
+// Update implements tea.Model.
+func (rg *RadioGroup) Update(msg tea.Msg) (tea.Model, tea.Cmd) <span class="cov7" title="14">{
+        if !rg.focused </span><span class="cov1" title="1">{
+                return rg, nil
+        }</span>
+
+        <span class="cov7" title="13">switch msg := msg.(type) </span>{
+        case tea.KeyMsg:<span class="cov7" title="13">
+                switch msg.String() </span>{
+                case "up", "k":<span class="cov4" title="4">
+                        if rg.cursor &gt; 0 </span><span class="cov3" title="3">{
+                                rg.cursor--
+                        }</span>
+                case "down", "j":<span class="cov5" title="6">
+                        if rg.cursor &lt; len(rg.items)-1 </span><span class="cov5" title="5">{
+                                rg.cursor++
+                        }</span>
+                case "enter", " ", "space":<span class="cov2" title="2">
+                        rg.selected = rg.cursor
+                        rg.errorMsg = ""</span>
+                }
+        }
+
+        <span class="cov7" title="13">return rg, nil</span>
+}
+
+// View implements tea.Model.
+func (rg *RadioGroup) View() string <span class="cov4" title="4">{
+        var b strings.Builder
+
+        // Render label
+        if rg.label != "" </span><span class="cov1" title="1">{
+                labelStyle := rg.theme.Label
+                if rg.errorMsg != "" </span><span class="cov0" title="0">{
+                        labelStyle = rg.theme.LabelError
+                }</span>
+                <span class="cov1" title="1">b.WriteString(labelStyle.Render(rg.label))
+                b.WriteString("\n")</span>
+        }
+
+        // Render radio items
+        <span class="cov4" title="4">for i, item := range rg.items </span><span class="cov5" title="6">{
+                var symbol string
+                var line string
+
+                // Determine symbol based on selection
+                if i == rg.selected </span><span class="cov1" title="1">{
+                        symbol = "(•)"
+                }</span> else<span class="cov5" title="5"> {
+                        symbol = "( )"
+                }</span>
+
+                <span class="cov5" title="6">line = symbol + " " + item.Label
+
+                // Apply style based on cursor position and focus
+                if rg.focused &amp;&amp; i == rg.cursor </span><span class="cov0" title="0">{
+                        line = rg.theme.RadioSelected.Render(line)
+                }</span> else<span class="cov5" title="6"> if i == rg.selected </span><span class="cov1" title="1">{
+                        line = rg.theme.RadioSelected.Render(line)
+                }</span> else<span class="cov5" title="5"> {
+                        line = rg.theme.RadioUnselected.Render(line)
+                }</span>
+
+                <span class="cov5" title="6">b.WriteString(line)
+                if i &lt; len(rg.items)-1 </span><span class="cov2" title="2">{
+                        b.WriteString("\n")
+                }</span>
+        }
+
+        // Render error message if present
+        <span class="cov4" title="4">if rg.errorMsg != "" </span><span class="cov1" title="1">{
+                b.WriteString("\n")
+                b.WriteString(rg.theme.Error.Render("✗ " + rg.errorMsg))
+        }</span>
+
+        // Render help text if present and no error
+        <span class="cov4" title="4">if rg.help != "" &amp;&amp; rg.errorMsg == "" </span><span class="cov1" title="1">{
+                b.WriteString("\n")
+                b.WriteString(rg.theme.Help.Render(rg.help))
+        }</span>
+
+        <span class="cov4" title="4">return b.String()</span>
+}
+
+// Name implements Component.
+func (rg *RadioGroup) Name() string <span class="cov3" title="3">{
+        return rg.name
+}</span>
+
+// CanFocus implements Component.
+func (rg *RadioGroup) CanFocus() bool <span class="cov2" title="2">{
+        return true
+}</span>
+
+// SetFocus implements Component.
+func (rg *RadioGroup) SetFocus(focused bool) <span class="cov5" title="5">{
+        rg.focused = focused
+}</span>
+
+// IsValid implements Component.
+func (rg *RadioGroup) IsValid() bool <span class="cov5" title="6">{
+        // Required validation: must have a selection
+        if rg.required &amp;&amp; rg.selected == -1 </span><span class="cov1" title="1">{
+                rg.errorMsg = "Selecione uma opção"
+                return false
+        }</span>
+
+        <span class="cov5" title="5">rg.errorMsg = ""
+        return true</span>
+}
+
+// GetError implements Component.
+func (rg *RadioGroup) GetError() string <span class="cov6" title="9">{
+        return rg.errorMsg
+}</span>
+
+// SetError implements Component.
+func (rg *RadioGroup) SetError(msg string) <span class="cov4" title="4">{
+        rg.errorMsg = msg
+}</span>
+
+// Value implements Component.
+// Returns the ID of the selected item, not the index.
+func (rg *RadioGroup) Value() interface{} <span class="cov3" title="3">{
+        if rg.selected == -1 </span><span class="cov2" title="2">{
+                return ""
+        }</span>
+        <span class="cov1" title="1">return rg.items[rg.selected].ID</span>
+}
+
+// SetValue implements Component.
+func (rg *RadioGroup) SetValue(value interface{}) error <span class="cov3" title="3">{
+        idValue, ok := value.(string)
+        if !ok </span><span class="cov1" title="1">{
+                return fmt.Errorf("valor inválido: esperado string (ID), recebido %T", value)
+        }</span>
+
+        // Find item by ID
+        <span class="cov2" title="2">for i, item := range rg.items </span><span class="cov3" title="3">{
+                if item.ID == idValue </span><span class="cov1" title="1">{
+                        rg.selected = i
+                        rg.cursor = i
+                        return nil
+                }</span>
+        }
+
+        <span class="cov1" title="1">return fmt.Errorf("ID não encontrado: %s", idValue)</span>
+}
+
+// Reset implements Component.
+func (rg *RadioGroup) Reset() <span class="cov2" title="2">{
+        rg.selected = rg.initialValue
+        rg.cursor = 0
+        if rg.initialValue != -1 </span><span class="cov1" title="1">{
+                rg.cursor = rg.initialValue
+        }</span>
+        <span class="cov2" title="2">rg.errorMsg = ""
+        rg.focused = false</span>
+}
+</pre>
+		
+		<pre class="file" id="file7" style="display: none">package components
+
+import (
+        "fmt"
+        "strings"
+
+        tea "github.com/charmbracelet/bubbletea/v2"
+        "github.com/charmbracelet/lipgloss/v2"
+        "github.com/helton/shantilly/internal/config"
+        "github.com/helton/shantilly/internal/styles"
+)
+
+// Slider implements a slider component with custom Lip Gloss rendering.
+type Slider struct {
+        name         string
+        label        string
+        required     bool
+        help         string
+        value        float64
+        min          float64
+        max          float64
+        step         float64
+        width        int
+        theme        *styles.Theme
+        errorMsg     string
+        focused      bool
+        initialValue float64
+}
+
+// NewSlider creates a new Slider component from configuration.
+func NewSlider(cfg config.ComponentConfig, theme *styles.Theme) (*Slider, error) <span class="cov10" title="24">{
+        if cfg.Type != config.TypeSlider </span><span class="cov1" title="1">{
+                return nil, fmt.Errorf("tipo de componente inválido: esperado slider, recebido %s", cfg.Type)
+        }</span>
+
+        <span class="cov9" title="23">s := &amp;Slider{
+                name:     cfg.Name,
+                label:    cfg.Label,
+                required: cfg.Required,
+                help:     cfg.Help,
+                min:      0.0,
+                max:      100.0,
+                step:     1.0,
+                width:    30,
+                theme:    theme,
+        }
+
+        // Parse options
+        if cfg.Options != nil </span><span class="cov8" title="13">{
+                if min, ok := cfg.Options["min"].(float64); ok </span><span class="cov8" title="12">{
+                        s.min = min
+                }</span> else<span class="cov1" title="1"> if minInt, ok := cfg.Options["min"].(int); ok </span><span class="cov1" title="1">{
+                        s.min = float64(minInt)
+                }</span>
+
+                <span class="cov8" title="13">if max, ok := cfg.Options["max"].(float64); ok </span><span class="cov8" title="12">{
+                        s.max = max
+                }</span> else<span class="cov1" title="1"> if maxInt, ok := cfg.Options["max"].(int); ok </span><span class="cov1" title="1">{
+                        s.max = float64(maxInt)
+                }</span>
+
+                <span class="cov8" title="13">if step, ok := cfg.Options["step"].(float64); ok </span><span class="cov6" title="6">{
+                        s.step = step
+                }</span> else<span class="cov6" title="7"> if stepInt, ok := cfg.Options["step"].(int); ok </span><span class="cov1" title="1">{
+                        s.step = float64(stepInt)
+                }</span>
+
+                <span class="cov8" title="13">if width, ok := cfg.Options["width"].(int); ok </span><span class="cov2" title="2">{
+                        s.width = width
+                }</span>
+        }
+
+        // Validate min/max
+        <span class="cov9" title="23">if s.min &gt;= s.max </span><span class="cov2" title="2">{
+                return nil, fmt.Errorf("min deve ser menor que max")
+        }</span>
+
+        // Set default value
+        <span class="cov9" title="21">s.value = s.min
+        s.initialValue = s.min
+
+        if cfg.Default != nil </span><span class="cov8" title="12">{
+                if defaultFloat, ok := cfg.Default.(float64); ok </span><span class="cov7" title="11">{
+                        if defaultFloat &gt;= s.min &amp;&amp; defaultFloat &lt;= s.max </span><span class="cov7" title="9">{
+                                s.value = defaultFloat
+                                s.initialValue = defaultFloat
+                        }</span>
+                } else<span class="cov1" title="1"> if defaultInt, ok := cfg.Default.(int); ok </span><span class="cov1" title="1">{
+                        defaultFloat := float64(defaultInt)
+                        if defaultFloat &gt;= s.min &amp;&amp; defaultFloat &lt;= s.max </span><span class="cov1" title="1">{
+                                s.value = defaultFloat
+                                s.initialValue = defaultFloat
+                        }</span>
+                }
+        }
+
+        <span class="cov9" title="21">return s, nil</span>
+}
+
+// Init implements tea.Model.
+func (s *Slider) Init() tea.Cmd <span class="cov2" title="2">{
+        return nil
+}</span>
+
+// Update implements tea.Model.
+func (s *Slider) Update(msg tea.Msg) (tea.Model, tea.Cmd) <span class="cov7" title="11">{
+        if !s.focused </span><span class="cov1" title="1">{
+                return s, nil
+        }</span>
+
+        <span class="cov7" title="10">switch msg := msg.(type) </span>{
+        case tea.KeyMsg:<span class="cov7" title="10">
+                switch msg.String() </span>{
+                case "left", "h":<span class="cov5" title="5">
+                        s.value -= s.step
+                        if s.value &lt; s.min </span><span class="cov1" title="1">{
+                                s.value = s.min
+                        }</span>
+                        <span class="cov5" title="5">s.errorMsg = ""</span>
+                case "right", "l":<span class="cov4" title="4">
+                        s.value += s.step
+                        if s.value &gt; s.max </span><span class="cov1" title="1">{
+                                s.value = s.max
+                        }</span>
+                        <span class="cov4" title="4">s.errorMsg = ""</span>
+                case "home":<span class="cov0" title="0">
+                        s.value = s.min
+                        s.errorMsg = ""</span>
+                case "end":<span class="cov0" title="0">
+                        s.value = s.max
+                        s.errorMsg = ""</span>
+                }
+        }
+
+        <span class="cov7" title="10">return s, nil</span>
+}
+
+// View implements tea.Model.
+func (s *Slider) View() string <span class="cov4" title="3">{
+        var b strings.Builder
+
+        // Render label
+        if s.label != "" </span><span class="cov1" title="1">{
+                labelStyle := s.theme.Label
+                if s.errorMsg != "" </span><span class="cov0" title="0">{
+                        labelStyle = s.theme.LabelError
+                }</span>
+                <span class="cov1" title="1">b.WriteString(labelStyle.Render(s.label))
+                b.WriteString("\n")</span>
+        }
+
+        // Calculate position
+        <span class="cov4" title="3">percentage := (s.value - s.min) / (s.max - s.min)
+        filledWidth := int(float64(s.width) * percentage)
+        if filledWidth &lt; 0 </span><span class="cov0" title="0">{
+                filledWidth = 0
+        }</span>
+        <span class="cov4" title="3">if filledWidth &gt; s.width </span><span class="cov0" title="0">{
+                filledWidth = s.width
+        }</span>
+
+        // Build slider bar
+        <span class="cov4" title="3">filled := strings.Repeat("━", filledWidth)
+        empty := strings.Repeat("━", s.width-filledWidth)
+
+        // Apply styles to bar segments
+        filledBar := s.theme.SliderFilled.Render(filled)
+        emptyBar := s.theme.SliderBar.Render(empty)
+
+        // Build slider line (without container border - border is applied by layout)
+        sliderLine := filledBar + emptyBar + fmt.Sprintf(" %.1f", s.value)
+        b.WriteString(sliderLine)
+        b.WriteString("\n")
+
+        // Render min/max labels
+        rangeLabel := s.theme.Help.Render(fmt.Sprintf("Min: %.1f | Max: %.1f", s.min, s.max))
+        b.WriteString(rangeLabel)
+
+        // Render error message if present
+        if s.errorMsg != "" </span><span class="cov1" title="1">{
+                b.WriteString("\n")
+                b.WriteString(s.theme.Error.Render("✗ " + s.errorMsg))
+        }</span>
+
+        // Render help text if present and no error
+        <span class="cov4" title="3">if s.help != "" &amp;&amp; s.errorMsg == "" </span><span class="cov1" title="1">{
+                b.WriteString("\n")
+                b.WriteString(s.theme.Help.Render(s.help))
+        }</span>
+
+        <span class="cov4" title="3">return b.String()</span>
+}
+
+// Name implements Component.
+func (s *Slider) Name() string <span class="cov4" title="3">{
+        return s.name
+}</span>
+
+// CanFocus implements Component.
+func (s *Slider) CanFocus() bool <span class="cov2" title="2">{
+        return true
+}</span>
+
+// SetFocus implements Component.
+func (s *Slider) SetFocus(focused bool) <span class="cov5" title="5">{
+        s.focused = focused
+}</span>
+
+// IsValid implements Component.
+func (s *Slider) IsValid() bool <span class="cov5" title="5">{
+        // Slider is always valid since value is constrained by min/max
+        s.errorMsg = ""
+        return true
+}</span>
+
+// GetError implements Component.
+func (s *Slider) GetError() string <span class="cov6" title="7">{
+        return s.errorMsg
+}</span>
+
+// SetError implements Component.
+func (s *Slider) SetError(msg string) <span class="cov4" title="3">{
+        s.errorMsg = msg
+}</span>
+
+// Value implements Component.
+func (s *Slider) Value() interface{} <span class="cov4" title="3">{
+        return s.value
+}</span>
+
+// SetValue implements Component.
+func (s *Slider) SetValue(value interface{}) error <span class="cov6" title="8">{
+        var floatValue float64
+
+        switch v := value.(type) </span>{
+        case float64:<span class="cov6" title="7">
+                floatValue = v</span>
+        case int:<span class="cov0" title="0">
+                floatValue = float64(v)</span>
+        case int64:<span class="cov0" title="0">
+                floatValue = float64(v)</span>
+        default:<span class="cov1" title="1">
+                return fmt.Errorf("valor inválido: esperado número, recebido %T", value)</span>
+        }
+
+        <span class="cov6" title="7">if floatValue &lt; s.min || floatValue &gt; s.max </span><span class="cov2" title="2">{
+                return fmt.Errorf("valor fora do intervalo [%.1f, %.1f]", s.min, s.max)
+        }</span>
+
+        <span class="cov5" title="5">s.value = floatValue
+        return nil</span>
+}
+
+// Reset implements Component.
+func (s *Slider) Reset() <span class="cov1" title="1">{
+        s.value = s.initialValue
+        s.errorMsg = ""
+        s.focused = false
+}</span>
+
+// JoinHorizontal is a helper for lipgloss compatibility.
+func joinHorizontal(parts ...string) string <span class="cov1" title="1">{
+        return lipgloss.JoinHorizontal(lipgloss.Left, parts...)
+}</span>
+</pre>
+		
+		<pre class="file" id="file8" style="display: none">package components
+
+import (
+        "fmt"
+        "strings"
+
+        "github.com/charmbracelet/bubbles/v2/textarea"
+        tea "github.com/charmbracelet/bubbletea/v2"
+        "github.com/helton/shantilly/internal/config"
+        "github.com/helton/shantilly/internal/styles"
+)
+
+// TextArea wraps bubbles/textarea and implements the Component interface.
+// It provides a multi-line text input with validation support.
+type TextArea struct {
+        name         string
+        label        string
+        required     bool
+        help         string
+        model        textarea.Model
+        theme        *styles.Theme
+        errorMsg     string
+        focused      bool
+        initialValue string
+
+        // Validation options
+        minLength int
+        maxLength int
+}
+
+// NewTextArea creates a new TextArea component from configuration.
+func NewTextArea(cfg config.ComponentConfig, theme *styles.Theme) (*TextArea, error) <span class="cov10" title="20">{
+        if cfg.Type != config.TypeTextArea </span><span class="cov1" title="1">{
+                return nil, fmt.Errorf("tipo de componente inválido: esperado textarea, recebido %s", cfg.Type)
+        }</span>
+
+        // Initialize bubbles textarea model
+        <span class="cov9" title="19">ta := textarea.New()
+        ta.Placeholder = cfg.Placeholder
+        ta.ShowLineNumbers = false
+        ta.CharLimit = 0 // No default limit
+
+        // Set default value if provided
+        if cfg.Default != nil </span><span class="cov3" title="2">{
+                if defaultStr, ok := cfg.Default.(string); ok </span><span class="cov3" title="2">{
+                        ta.SetValue(defaultStr)
+                }</span>
+        }
+
+        <span class="cov9" title="19">t := &amp;TextArea{
+                name:         cfg.Name,
+                label:        cfg.Label,
+                required:     cfg.Required,
+                help:         cfg.Help,
+                model:        ta,
+                theme:        theme,
+                initialValue: ta.Value(),
+        }
+
+        // Parse validation options
+        if cfg.Options != nil </span><span class="cov5" title="5">{
+                if minLen, ok := cfg.Options["min_length"].(int); ok </span><span class="cov4" title="3">{
+                        t.minLength = minLen
+                }</span>
+                <span class="cov5" title="5">if maxLen, ok := cfg.Options["max_length"].(int); ok </span><span class="cov4" title="3">{
+                        t.maxLength = maxLen
+                        ta.CharLimit = maxLen
+                }</span>
+                <span class="cov5" title="5">if height, ok := cfg.Options["height"].(int); ok </span><span class="cov1" title="1">{
+                        ta.SetHeight(height)
+                }</span> else<span class="cov5" title="4"> {
+                        ta.SetHeight(5) // Default height
+                }</span>
+                <span class="cov5" title="5">if width, ok := cfg.Options["width"].(int); ok </span><span class="cov1" title="1">{
+                        ta.SetWidth(width)
+                }</span> else<span class="cov5" title="4"> {
+                        ta.SetWidth(50) // Default width
+                }</span>
+        }
+
+        <span class="cov9" title="19">return t, nil</span>
+}
+
+// Init implements tea.Model.
+func (t *TextArea) Init() tea.Cmd <span class="cov1" title="1">{
+        return nil
+}</span>
+
+// Update implements tea.Model.
+func (t *TextArea) Update(msg tea.Msg) (tea.Model, tea.Cmd) <span class="cov4" title="3">{
+        var cmd tea.Cmd
+
+        // Handle window size messages for responsive layout
+        if wsMsg, ok := msg.(tea.WindowSizeMsg); ok </span><span class="cov1" title="1">{
+                // Adjust width but preserve minimum
+                newWidth := wsMsg.Width - 10
+                if newWidth &lt; 30 </span><span class="cov0" title="0">{
+                        newWidth = 30
+                }</span>
+                <span class="cov1" title="1">t.model.SetWidth(newWidth)</span>
+        }
+
+        // Only process input messages if focused
+        <span class="cov4" title="3">if t.focused </span><span class="cov1" title="1">{
+                t.model, cmd = t.model.Update(msg)
+                // Clear error when user types
+                if _, ok := msg.(tea.KeyMsg); ok </span><span class="cov1" title="1">{
+                        t.errorMsg = ""
+                }</span>
+        }
+
+        <span class="cov4" title="3">return t, cmd</span>
+}
+
+// View implements tea.Model.
+func (t *TextArea) View() string <span class="cov3" title="2">{
+        var b strings.Builder
+
+        // Render label
+        if t.label != "" </span><span class="cov3" title="2">{
+                labelStyle := t.theme.Label
+                if t.errorMsg != "" </span><span class="cov1" title="1">{
+                        labelStyle = t.theme.LabelError
+                }</span>
+                <span class="cov3" title="2">b.WriteString(labelStyle.Render(t.label))
+                b.WriteString("\n")</span>
+        }
+
+        // Render textarea (without border - border is applied by layout)
+        <span class="cov3" title="2">b.WriteString(t.model.View())
+
+        // Render error message if present
+        if t.errorMsg != "" </span><span class="cov1" title="1">{
+                b.WriteString("\n")
+                b.WriteString(t.theme.Error.Render("✗ " + t.errorMsg))
+        }</span>
+
+        // Render help text if present and no error
+        <span class="cov3" title="2">if t.help != "" &amp;&amp; t.errorMsg == "" </span><span class="cov1" title="1">{
+                b.WriteString("\n")
+                b.WriteString(t.theme.Help.Render(t.help))
+        }</span>
+
+        <span class="cov3" title="2">return b.String()</span>
+}
+
+// Name implements Component.
+func (t *TextArea) Name() string <span class="cov5" title="4">{
+        return t.name
+}</span>
+
+// CanFocus implements Component.
+func (t *TextArea) CanFocus() bool <span class="cov3" title="2">{
+        return true
+}</span>
+
+// SetFocus implements Component.
+func (t *TextArea) SetFocus(focused bool) <span class="cov5" title="5">{
+        t.focused = focused
+        if focused </span><span class="cov4" title="3">{
+                t.model.Focus()
+        }</span> else<span class="cov3" title="2"> {
+                t.model.Blur()
+        }</span>
+}
+
+// IsValid implements Component.
+func (t *TextArea) IsValid() bool <span class="cov7" title="10">{
+        value := t.model.Value()
+
+        // Required validation
+        if t.required &amp;&amp; strings.TrimSpace(value) == "" </span><span class="cov3" title="2">{
+                t.errorMsg = "Este campo é obrigatório"
+                return false
+        }</span>
+
+        // Skip other validations if empty and not required
+        <span class="cov7" title="8">if value == "" </span><span class="cov4" title="3">{
+                t.errorMsg = ""
+                return true
+        }</span>
+
+        // Min length validation
+        <span class="cov5" title="5">if t.minLength &gt; 0 &amp;&amp; len(value) &lt; t.minLength </span><span class="cov1" title="1">{
+                t.errorMsg = fmt.Sprintf("Mínimo de %d caracteres", t.minLength)
+                return false
+        }</span>
+
+        // Max length validation
+        <span class="cov5" title="4">if t.maxLength &gt; 0 &amp;&amp; len(value) &gt; t.maxLength </span><span class="cov1" title="1">{
+                t.errorMsg = fmt.Sprintf("Máximo de %d caracteres", t.maxLength)
+                return false
+        }</span>
+
+        <span class="cov4" title="3">t.errorMsg = ""
+        return true</span>
+}
+
+// GetError implements Component.
+func (t *TextArea) GetError() string <span class="cov8" title="12">{
+        return t.errorMsg
+}</span>
+
+// SetError implements Component.
+func (t *TextArea) SetError(msg string) <span class="cov5" title="4">{
+        t.errorMsg = msg
+}</span>
+
+// Value implements Component.
+func (t *TextArea) Value() interface{} <span class="cov5" title="4">{
+        return t.model.Value()
+}</span>
+
+// SetValue implements Component.
+func (t *TextArea) SetValue(value interface{}) error <span class="cov8" title="11">{
+        strValue, ok := value.(string)
+        if !ok </span><span class="cov1" title="1">{
+                return fmt.Errorf("valor inválido: esperado string, recebido %T", value)
+        }</span>
+
+        <span class="cov7" title="10">t.model.SetValue(strValue)
+        return nil</span>
+}
+
+// Reset implements Component.
+func (t *TextArea) Reset() <span class="cov1" title="1">{
+        t.model.SetValue(t.initialValue)
+        t.errorMsg = ""
+        t.model.Blur()
+        t.focused = false
+}</span>
+</pre>
+		
+		<pre class="file" id="file9" style="display: none">package components
+
+import (
+        "fmt"
+        "regexp"
+        "strings"
+
+        "github.com/charmbracelet/bubbles/v2/textinput"
+        tea "github.com/charmbracelet/bubbletea/v2"
+        "github.com/charmbracelet/lipgloss/v2"
+        "github.com/helton/shantilly/internal/config"
+        "github.com/helton/shantilly/internal/styles"
+)
+
+// TextInput wraps bubbles/textinput and implements the Component interface.
+// It provides a single-line text input with validation support.
+type TextInput struct {
+        name         string
+        label        string
+        required     bool
+        help         string
+        model        textinput.Model
+        theme        *styles.Theme
+        errorMsg     string
+        focused      bool
+        initialValue string
+
+        // Validation options
+        minLength int
+        maxLength int
+        pattern   *regexp.Regexp
+}
+
+// NewTextInput creates a new TextInput component from configuration.
+func NewTextInput(cfg config.ComponentConfig, theme *styles.Theme) (*TextInput, error) <span class="cov10" title="119">{
+        if cfg.Type != config.TypeTextInput </span><span class="cov1" title="1">{
+                return nil, fmt.Errorf("tipo de componente inválido: esperado textinput, recebido %s", cfg.Type)
+        }</span>
+
+        // Initialize bubbles textinput model
+        <span class="cov9" title="118">ti := textinput.New()
+        ti.Placeholder = cfg.Placeholder
+        ti.CharLimit = 0 // No default limit
+
+        // Set default value if provided
+        if cfg.Default != nil </span><span class="cov1" title="1">{
+                if defaultStr, ok := cfg.Default.(string); ok </span><span class="cov1" title="1">{
+                        ti.SetValue(defaultStr)
+                }</span>
+        }
+
+        <span class="cov9" title="118">t := &amp;TextInput{
+                name:         cfg.Name,
+                label:        cfg.Label,
+                required:     cfg.Required,
+                help:         cfg.Help,
+                model:        ti,
+                theme:        theme,
+                initialValue: ti.Value(),
+        }
+
+        // Parse validation options
+        if cfg.Options != nil </span><span class="cov2" title="2">{
+                if minLen, ok := cfg.Options["min_length"].(int); ok </span><span class="cov1" title="1">{
+                        t.minLength = minLen
+                }</span>
+                <span class="cov2" title="2">if maxLen, ok := cfg.Options["max_length"].(int); ok </span><span class="cov1" title="1">{
+                        t.maxLength = maxLen
+                        ti.CharLimit = maxLen
+                }</span>
+                <span class="cov2" title="2">if patternStr, ok := cfg.Options["pattern"].(string); ok </span><span class="cov0" title="0">{
+                        pattern, err := regexp.Compile(patternStr)
+                        if err != nil </span><span class="cov0" title="0">{
+                                return nil, fmt.Errorf("erro ao compilar regex pattern: %w", err)
+                        }</span>
+                        <span class="cov0" title="0">t.pattern = pattern</span>
+                }
+        }
+
+        <span class="cov9" title="118">return t, nil</span>
+}
+
+// Init implements tea.Model.
+func (t *TextInput) Init() tea.Cmd <span class="cov1" title="1">{
+        return nil
+}</span>
+
+// Update implements tea.Model.
+func (t *TextInput) Update(msg tea.Msg) (tea.Model, tea.Cmd) <span class="cov3" title="3">{
+        var cmd tea.Cmd
+
+        // Only process messages if focused
+        if t.focused </span><span class="cov1" title="1">{
+                t.model, cmd = t.model.Update(msg)
+                // Clear error when user types
+                if _, ok := msg.(tea.KeyMsg); ok </span><span class="cov1" title="1">{
+                        t.errorMsg = ""
+                }</span>
+        }
+
+        <span class="cov3" title="3">return t, cmd</span>
+}
+
+// View implements tea.Model.
+func (t *TextInput) View() string <span class="cov2" title="2">{
+        var b strings.Builder
+
+        // Render label
+        if t.label != "" </span><span class="cov1" title="1">{
+                labelStyle := t.theme.Label
+                if t.errorMsg != "" </span><span class="cov0" title="0">{
+                        labelStyle = t.theme.LabelError
+                }</span>
+                <span class="cov1" title="1">b.WriteString(labelStyle.Render(t.label))
+                b.WriteString("\n")</span>
+        }
+
+        // Render input (without border - border is applied by layout)
+        <span class="cov2" title="2">b.WriteString(t.model.View())
+
+        // Render error message if present
+        if t.errorMsg != "" </span><span class="cov0" title="0">{
+                b.WriteString("\n")
+                b.WriteString(t.theme.Error.Render("✗ " + t.errorMsg))
+        }</span>
+
+        // Render help text if present and no error
+        <span class="cov2" title="2">if t.help != "" &amp;&amp; t.errorMsg == "" </span><span class="cov0" title="0">{
+                b.WriteString("\n")
+                b.WriteString(t.theme.Help.Render(t.help))
+        }</span>
+
+        <span class="cov2" title="2">return b.String()</span>
+}
+
+// Name implements Component.
+func (t *TextInput) Name() string <span class="cov4" title="6">{
+        return t.name
+}</span>
+
+// CanFocus implements Component.
+func (t *TextInput) CanFocus() bool <span class="cov2" title="2">{
+        return true
+}</span>
+
+// SetFocus implements Component.
+func (t *TextInput) SetFocus(focused bool) <span class="cov3" title="4">{
+        t.focused = focused
+        if focused </span><span class="cov2" title="2">{
+                t.model.Focus()
+        }</span> else<span class="cov2" title="2"> {
+                t.model.Blur()
+        }</span>
+}
+
+// IsValid implements Component.
+func (t *TextInput) IsValid() bool <span class="cov4" title="6">{
+        value := t.model.Value()
+
+        // Required validation
+        if t.required &amp;&amp; strings.TrimSpace(value) == "" </span><span class="cov1" title="1">{
+                t.errorMsg = "Este campo é obrigatório"
+                return false
+        }</span>
+
+        // Skip other validations if empty and not required
+        <span class="cov4" title="5">if value == "" </span><span class="cov2" title="2">{
+                t.errorMsg = ""
+                return true
+        }</span>
+
+        // Min length validation
+        <span class="cov3" title="3">if t.minLength &gt; 0 &amp;&amp; len(value) &lt; t.minLength </span><span class="cov1" title="1">{
+                t.errorMsg = fmt.Sprintf("Mínimo de %d caracteres", t.minLength)
+                return false
+        }</span>
+
+        // Max length validation (already enforced by CharLimit, but check anyway)
+        <span class="cov2" title="2">if t.maxLength &gt; 0 &amp;&amp; len(value) &gt; t.maxLength </span><span class="cov1" title="1">{
+                t.errorMsg = fmt.Sprintf("Máximo de %d caracteres", t.maxLength)
+                return false
+        }</span>
+
+        // Pattern validation
+        <span class="cov1" title="1">if t.pattern != nil &amp;&amp; !t.pattern.MatchString(value) </span><span class="cov0" title="0">{
+                t.errorMsg = "Formato inválido"
+                return false
+        }</span>
+
+        <span class="cov1" title="1">t.errorMsg = ""
+        return true</span>
+}
+
+// GetError implements Component.
+func (t *TextInput) GetError() string <span class="cov4" title="8">{
+        return t.errorMsg
+}</span>
+
+// SetError implements Component.
+func (t *TextInput) SetError(msg string) <span class="cov2" title="2">{
+        t.errorMsg = msg
+}</span>
+
+// Value implements Component.
+func (t *TextInput) Value() interface{} <span class="cov3" title="4">{
+        return t.model.Value()
+}</span>
+
+// SetValue implements Component.
+func (t *TextInput) SetValue(value interface{}) error <span class="cov4" title="7">{
+        strValue, ok := value.(string)
+        if !ok </span><span class="cov1" title="1">{
+                return fmt.Errorf("valor inválido: esperado string, recebido %T", value)
+        }</span>
+
+        <span class="cov4" title="6">t.model.SetValue(strValue)
+        return nil</span>
+}
+
+// Reset implements Component.
+func (t *TextInput) Reset() <span class="cov1" title="1">{
+        t.model.SetValue(t.initialValue)
+        t.errorMsg = ""
+        t.model.Blur()
+        t.focused = false
+}</span>
+
+// JoinVertical is a helper for lipgloss compatibility.
+func joinVertical(parts ...string) string <span class="cov1" title="1">{
+        return lipgloss.JoinVertical(lipgloss.Left, parts...)
+}</span>
+</pre>
+		
+		<pre class="file" id="file10" style="display: none">package components
+
+import (
+        "fmt"
+
+        tea "github.com/charmbracelet/bubbletea/v2"
+        "github.com/helton/shantilly/internal/config"
+        "github.com/helton/shantilly/internal/styles"
+)
+
+// TextLabel implements a static text label component.
+// This is used for displaying text that doesn't require user interaction.
+type TextLabel struct {
+        name  string
+        text  string
+        theme *styles.Theme
+}
+
+// NewTextLabel creates a new TextLabel component from configuration.
+func NewTextLabel(cfg config.ComponentConfig, theme *styles.Theme) (*TextLabel, error) <span class="cov10" title="18">{
+        if cfg.Type != config.TypeText </span><span class="cov1" title="1">{
+                return nil, fmt.Errorf("tipo de componente inválido: esperado text, recebido %s", cfg.Type)
+        }</span>
+
+        <span class="cov9" title="17">text := cfg.Label
+        if text == "" &amp;&amp; cfg.Default != nil </span><span class="cov3" title="2">{
+                if defaultStr, ok := cfg.Default.(string); ok </span><span class="cov1" title="1">{
+                        text = defaultStr
+                }</span>
+        }
+
+        <span class="cov9" title="17">return &amp;TextLabel{
+                name:  cfg.Name,
+                text:  text,
+                theme: theme,
+        }, nil</span>
+}
+
+// Init implements tea.Model.
+func (t *TextLabel) Init() tea.Cmd <span class="cov1" title="1">{
+        return nil
+}</span>
+
+// Update implements tea.Model.
+func (t *TextLabel) Update(msg tea.Msg) (tea.Model, tea.Cmd) <span class="cov5" title="4">{
+        // Static component, no updates needed
+        return t, nil
+}</span>
+
+// View implements tea.Model.
+func (t *TextLabel) View() string <span class="cov5" title="4">{
+        return t.theme.Label.Render(t.text) + "\n"
+}</span>
+
+// Name implements Component.
+func (t *TextLabel) Name() string <span class="cov5" title="4">{
+        return t.name
+}</span>
+
+// CanFocus implements Component.
+func (t *TextLabel) CanFocus() bool <span class="cov4" title="3">{
+        return false // Static component cannot receive focus
+}</span>
+
+// SetFocus implements Component.
+func (t *TextLabel) SetFocus(focused bool) {<span class="cov6" title="5">
+        // No-op for static component
+}</span>
+
+// IsValid implements Component.
+func (t *TextLabel) IsValid() bool <span class="cov5" title="4">{
+        return true // Static component is always valid
+}</span>
+
+// GetError implements Component.
+func (t *TextLabel) GetError() string <span class="cov6" title="5">{
+        return "" // Static component never has errors
+}</span>
+
+// SetError implements Component.
+func (t *TextLabel) SetError(msg string) {<span class="cov4" title="3">
+        // No-op for static component
+}</span>
+
+// Value implements Component.
+func (t *TextLabel) Value() interface{} <span class="cov5" title="4">{
+        return t.text
+}</span>
+
+// SetValue implements Component.
+func (t *TextLabel) SetValue(value interface{}) error <span class="cov3" title="2">{
+        strValue, ok := value.(string)
+        if !ok </span><span class="cov1" title="1">{
+                return fmt.Errorf("valor inválido: esperado string, recebido %T", value)
+        }</span>
+
+        <span class="cov1" title="1">t.text = strValue
+        return nil</span>
+}
+
+// Reset implements Component.
+func (t *TextLabel) Reset() {<span class="cov4" title="3">
+        // No-op for static component
+}</span>
+</pre>
+		
+		<pre class="file" id="file11" style="display: none">package config
+
+import (
+        "fmt"
+        "os"
+
+        "gopkg.in/yaml.v3"
+)
+
+// ComponentType defines the type of UI component.
+type ComponentType string
+
+const (
+        TypeTextInput  ComponentType = "textinput"
+        TypeTextArea   ComponentType = "textarea"
+        TypeCheckbox   ComponentType = "checkbox"
+        TypeRadioGroup ComponentType = "radiogroup"
+        TypeSlider     ComponentType = "slider"
+        TypeFilePicker ComponentType = "filepicker"
+        TypeText       ComponentType = "text" // Static label
+)
+
+// ComponentConfig represents the declarative configuration for a single component.
+// This structure is parsed from YAML and used to initialize components.
+type ComponentConfig struct {
+        Type        ComponentType          `yaml:"type"`
+        Name        string                 `yaml:"name"`
+        Label       string                 `yaml:"label,omitempty"`
+        Placeholder string                 `yaml:"placeholder,omitempty"`
+        Default     interface{}            `yaml:"default,omitempty"`
+        Required    bool                   `yaml:"required,omitempty"`
+        Help        string                 `yaml:"help,omitempty"`
+        Options     map[string]interface{} `yaml:"options,omitempty"`
+}
+
+// Validate performs validation on the ComponentConfig.
+// Returns an error if the configuration is invalid.
+func (c *ComponentConfig) Validate() error <span class="cov8" title="10">{
+        if c.Name == "" </span><span class="cov1" title="1">{
+                return fmt.Errorf("nome do componente é obrigatório")
+        }</span>
+
+        <span class="cov8" title="9">validTypes := []ComponentType{
+                TypeTextInput, TypeTextArea, TypeCheckbox,
+                TypeRadioGroup, TypeSlider, TypeFilePicker, TypeText,
+        }
+
+        valid := false
+        for _, t := range validTypes </span><span class="cov10" title="15">{
+                if c.Type == t </span><span class="cov7" title="8">{
+                        valid = true
+                        break</span>
+                }
+        }
+
+        <span class="cov8" title="9">if !valid </span><span class="cov1" title="1">{
+                return fmt.Errorf("tipo de componente inválido: %s", c.Type)
+        }</span>
+
+        <span class="cov7" title="8">return nil</span>
+}
+
+// FormConfig represents the complete form configuration with multiple components.
+type FormConfig struct {
+        Title       string            `yaml:"title,omitempty"`
+        Description string            `yaml:"description,omitempty"`
+        Components  []ComponentConfig `yaml:"components"`
+}
+
+// Validate performs validation on the FormConfig.
+func (f *FormConfig) Validate() error <span class="cov5" title="4">{
+        if len(f.Components) == 0 </span><span class="cov1" title="1">{
+                return fmt.Errorf("a configuração deve conter pelo menos um componente")
+        }</span>
+
+        // Validate each component
+        <span class="cov4" title="3">for i, comp := range f.Components </span><span class="cov5" title="4">{
+                if err := comp.Validate(); err != nil </span><span class="cov0" title="0">{
+                        return fmt.Errorf("erro no componente %d: %w", i, err)
+                }</span>
+        }
+
+        // Check for duplicate component names
+        <span class="cov4" title="3">names := make(map[string]bool)
+        for _, comp := range f.Components </span><span class="cov5" title="4">{
+                if names[comp.Name] </span><span class="cov1" title="1">{
+                        return fmt.Errorf("nome de componente duplicado: %s", comp.Name)
+                }</span>
+                <span class="cov4" title="3">names[comp.Name] = true</span>
+        }
+
+        <span class="cov3" title="2">return nil</span>
+}
+
+// LayoutConfig represents a layout configuration with positioned components.
+type LayoutConfig struct {
+        Title       string            `yaml:"title,omitempty"`
+        Description string            `yaml:"description,omitempty"`
+        Layout      string            `yaml:"layout"` // "horizontal" or "vertical"
+        Components  []ComponentConfig `yaml:"components"`
+}
+
+// Validate performs validation on the LayoutConfig.
+func (l *LayoutConfig) Validate() error <span class="cov5" title="4">{
+        if l.Layout != "horizontal" &amp;&amp; l.Layout != "vertical" </span><span class="cov1" title="1">{
+                return fmt.Errorf("layout deve ser 'horizontal' ou 'vertical', recebido: %s", l.Layout)
+        }</span>
+
+        <span class="cov4" title="3">if len(l.Components) == 0 </span><span class="cov1" title="1">{
+                return fmt.Errorf("a configuração deve conter pelo menos um componente")
+        }</span>
+
+        <span class="cov3" title="2">for i, comp := range l.Components </span><span class="cov3" title="2">{
+                if err := comp.Validate(); err != nil </span><span class="cov0" title="0">{
+                        return fmt.Errorf("erro no componente %d: %w", i, err)
+                }</span>
+        }
+
+        <span class="cov3" title="2">return nil</span>
+}
+
+// MenuConfig represents a menu/list selection configuration.
+type MenuConfig struct {
+        Title       string   `yaml:"title,omitempty"`
+        Description string   `yaml:"description,omitempty"`
+        Items       []string `yaml:"items"`
+        MultiSelect bool     `yaml:"multi_select,omitempty"`
+}
+
+// Validate performs validation on the MenuConfig.
+func (m *MenuConfig) Validate() error <span class="cov3" title="2">{
+        if len(m.Items) == 0 </span><span class="cov1" title="1">{
+                return fmt.Errorf("o menu deve conter pelo menos um item")
+        }</span>
+        <span class="cov1" title="1">return nil</span>
+}
+
+// TabConfig represents a single tab configuration.
+type TabConfig struct {
+        Name       string            `yaml:"name"`
+        Label      string            `yaml:"label"`
+        Components []ComponentConfig `yaml:"components"`
+}
+
+// TabsConfig represents a tabs configuration with multiple tabs.
+type TabsConfig struct {
+        Title string      `yaml:"title,omitempty"`
+        Tabs  []TabConfig `yaml:"tabs"`
+}
+
+// Validate performs validation on the TabsConfig.
+func (t *TabsConfig) Validate() error <span class="cov4" title="3">{
+        if len(t.Tabs) == 0 </span><span class="cov1" title="1">{
+                return fmt.Errorf("a configuração deve conter pelo menos uma aba")
+        }</span>
+
+        <span class="cov3" title="2">for i, tab := range t.Tabs </span><span class="cov3" title="2">{
+                if tab.Name == "" </span><span class="cov1" title="1">{
+                        return fmt.Errorf("aba %d: nome é obrigatório", i)
+                }</span>
+                <span class="cov1" title="1">if tab.Label == "" </span><span class="cov0" title="0">{
+                        return fmt.Errorf("aba %d: label é obrigatório", i)
+                }</span>
+
+                <span class="cov1" title="1">for j, comp := range tab.Components </span><span class="cov1" title="1">{
+                        if err := comp.Validate(); err != nil </span><span class="cov0" title="0">{
+                                return fmt.Errorf("aba %d, componente %d: %w", i, j, err)
+                        }</span>
+                }
+        }
+
+        <span class="cov1" title="1">return nil</span>
+}
+
+// LoadFormConfig loads and validates a FormConfig from a YAML file.
+// Returns an error with context if loading or validation fails.
+func LoadFormConfig(filePath string) (*FormConfig, error) <span class="cov3" title="2">{
+        data, err := os.ReadFile(filePath)
+        if err != nil </span><span class="cov1" title="1">{
+                return nil, fmt.Errorf("erro ao ler o arquivo de configuração: %w", err)
+        }</span>
+
+        <span class="cov1" title="1">var config FormConfig
+        if err := yaml.Unmarshal(data, &amp;config); err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("erro ao analisar o YAML de configuração: %w", err)
+        }</span>
+
+        <span class="cov1" title="1">if err := config.Validate(); err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("erro de validação da configuração: %w", err)
+        }</span>
+
+        <span class="cov1" title="1">return &amp;config, nil</span>
+}
+
+// LoadLayoutConfig loads and validates a LayoutConfig from a YAML file.
+func LoadLayoutConfig(filePath string) (*LayoutConfig, error) <span class="cov0" title="0">{
+        data, err := os.ReadFile(filePath)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("erro ao ler o arquivo de configuração: %w", err)
+        }</span>
+
+        <span class="cov0" title="0">var config LayoutConfig
+        if err := yaml.Unmarshal(data, &amp;config); err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("erro ao analisar o YAML de configuração: %w", err)
+        }</span>
+
+        <span class="cov0" title="0">if err := config.Validate(); err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("erro de validação da configuração: %w", err)
+        }</span>
+
+        <span class="cov0" title="0">return &amp;config, nil</span>
+}
+
+// LoadMenuConfig loads and validates a MenuConfig from a YAML file.
+func LoadMenuConfig(filePath string) (*MenuConfig, error) <span class="cov0" title="0">{
+        data, err := os.ReadFile(filePath)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("erro ao ler o arquivo de configuração: %w", err)
+        }</span>
+
+        <span class="cov0" title="0">var config MenuConfig
+        if err := yaml.Unmarshal(data, &amp;config); err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("erro ao analisar o YAML de configuração: %w", err)
+        }</span>
+
+        <span class="cov0" title="0">if err := config.Validate(); err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("erro de validação da configuração: %w", err)
+        }</span>
+
+        <span class="cov0" title="0">return &amp;config, nil</span>
+}
+
+// LoadTabsConfig loads and validates a TabsConfig from a YAML file.
+func LoadTabsConfig(filePath string) (*TabsConfig, error) <span class="cov0" title="0">{
+        data, err := os.ReadFile(filePath)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("erro ao ler o arquivo de configuração: %w", err)
+        }</span>
+
+        <span class="cov0" title="0">var config TabsConfig
+        if err := yaml.Unmarshal(data, &amp;config); err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("erro ao analisar o YAML de configuração: %w", err)
+        }</span>
+
+        <span class="cov0" title="0">if err := config.Validate(); err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("erro de validação da configuração: %w", err)
+        }</span>
+
+        <span class="cov0" title="0">return &amp;config, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file12" style="display: none">package models
+
+import (
+        "encoding/json"
+        "fmt"
+
+        tea "github.com/charmbracelet/bubbletea/v2"
+        "github.com/charmbracelet/lipgloss/v2"
+        "github.com/helton/shantilly/internal/components"
+        "github.com/helton/shantilly/internal/config"
+        "github.com/helton/shantilly/internal/styles"
+)
+
+// FormModel orchestrates multiple components in a form layout.
+// It manages focus navigation, validation aggregation, and JSON serialization.
+type FormModel struct {
+        title       string
+        description string
+        components  []components.Component
+        focusIndex  int
+        theme       *styles.Theme
+        width       int
+        height      int
+        submitted   bool
+        quitting    bool
+}
+
+// NewFormModel creates a new FormModel from configuration.
+func NewFormModel(cfg *config.FormConfig, theme *styles.Theme) (*FormModel, error) <span class="cov7" title="17">{
+        if err := cfg.Validate(); err != nil </span><span class="cov2" title="2">{
+                return nil, fmt.Errorf("erro de validação da configuração do formulário: %w", err)
+        }</span>
+
+        // Create components using factory
+        <span class="cov6" title="15">comps, err := components.NewComponents(cfg.Components, theme)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("erro ao criar componentes: %w", err)
+        }</span>
+
+        // Find first focusable component
+        <span class="cov6" title="15">focusIndex := -1
+        for i, comp := range comps </span><span class="cov6" title="16">{
+                if comp.CanFocus() </span><span class="cov6" title="11">{
+                        focusIndex = i
+                        break</span>
+                }
+        }
+
+        <span class="cov6" title="15">m := &amp;FormModel{
+                title:       cfg.Title,
+                description: cfg.Description,
+                components:  comps,
+                focusIndex:  focusIndex,
+                theme:       theme,
+                width:       80,
+                height:      24,
+        }
+
+        // Set initial focus
+        if focusIndex &gt;= 0 </span><span class="cov6" title="11">{
+                m.components[focusIndex].SetFocus(true)
+        }</span>
+
+        <span class="cov6" title="15">return m, nil</span>
+}
+
+// Init implements tea.Model.
+func (m *FormModel) Init() tea.Cmd <span class="cov1" title="1">{
+        return nil
+}</span>
+
+// Update implements tea.Model.
+func (m *FormModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) <span class="cov10" title="65">{
+        switch msg := msg.(type) </span>{
+        case tea.WindowSizeMsg:<span class="cov1" title="1">
+                // Propagate window size to all components
+                m.width = msg.Width
+                m.height = msg.Height
+                for i := range m.components </span><span class="cov3" title="3">{
+                        m.components[i].Update(msg)
+                }</span>
+                <span class="cov1" title="1">return m, nil</span>
+
+        case tea.KeyMsg:<span class="cov9" title="63">
+                switch msg.String() </span>{
+                case "ctrl+c", "esc":<span class="cov0" title="0">
+                        m.quitting = true
+                        return m, tea.Quit</span>
+
+                case "tab":<span class="cov9" title="55">
+                        m.focusNext()
+                        return m, nil</span>
+
+                case "shift+tab":<span class="cov3" title="3">
+                        m.focusPrev()
+                        return m, nil</span>
+
+                case "enter":<span class="cov3" title="4">
+                        // Check if form can be submitted
+                        if m.CanSubmit() </span><span class="cov3" title="3">{
+                                m.submitted = true
+                                return m, tea.Quit
+                        }</span>
+                        // If not valid, validate all to show errors
+                        <span class="cov1" title="1">m.validateAll()
+                        return m, nil</span>
+                }
+        }
+
+        // Propagate message to focused component
+        <span class="cov2" title="2">if m.focusIndex &gt;= 0 &amp;&amp; m.focusIndex &lt; len(m.components) </span><span class="cov2" title="2">{
+                var cmd tea.Cmd
+                updated, cmd := m.components[m.focusIndex].Update(msg)
+                m.components[m.focusIndex] = updated.(components.Component)
+                return m, cmd
+        }</span>
+
+        <span class="cov0" title="0">return m, nil</span>
+}
+
+// View implements tea.Model.
+func (m *FormModel) View() string <span class="cov1" title="1">{
+        if m.quitting </span><span class="cov0" title="0">{
+                return ""
+        }</span>
+
+        <span class="cov1" title="1">var sections []string
+
+        // Title
+        if m.title != "" </span><span class="cov1" title="1">{
+                sections = append(sections, m.theme.Title.Render(m.title))
+        }</span>
+
+        // Description
+        <span class="cov1" title="1">if m.description != "" </span><span class="cov1" title="1">{
+                sections = append(sections, m.theme.Description.Render(m.description))
+        }</span>
+
+        // Components (without individual borders - only the form container has a border)
+        <span class="cov1" title="1">for i, comp := range m.components </span><span class="cov2" title="2">{
+                view := comp.View()
+
+                // Apply consistent border-based focus indicator (same as LayoutModel)
+                if i == m.focusIndex &amp;&amp; comp.CanFocus() </span><span class="cov1" title="1">{
+                        view = m.theme.BorderActive.Render(view)
+                }</span> else<span class="cov1" title="1"> {
+                        view = m.theme.Border.Render(view)
+                }</span>
+
+                <span class="cov2" title="2">sections = append(sections, view)</span>
+        }
+
+        // Submit help
+        <span class="cov1" title="1">if m.CanSubmit() </span><span class="cov1" title="1">{
+                sections = append(sections, m.theme.Help.Render("Pressione Enter para submeter"))
+        }</span> else<span class="cov0" title="0"> {
+                sections = append(sections, m.theme.Error.Render("Complete todos os campos obrigatórios"))
+        }</span>
+
+        // Navigation help
+        <span class="cov1" title="1">sections = append(sections, m.theme.Help.Render("Tab/Shift+Tab: Navegar | Esc: Sair"))
+
+        // Don't apply border to container since individual components now have borders
+        return lipgloss.JoinVertical(lipgloss.Left, sections...)</span>
+}
+
+// focusNext moves focus to the next focusable component.
+func (m *FormModel) focusNext() <span class="cov9" title="55">{
+        if m.focusIndex &gt;= 0 </span><span class="cov9" title="54">{
+                m.components[m.focusIndex].SetFocus(false)
+        }</span>
+
+        // Find next focusable component
+        <span class="cov9" title="55">start := m.focusIndex + 1
+        for i := 0; i &lt; len(m.components); i++ </span><span class="cov9" title="56">{
+                idx := (start + i) % len(m.components)
+                if m.components[idx].CanFocus() </span><span class="cov9" title="54">{
+                        m.focusIndex = idx
+                        m.components[idx].SetFocus(true)
+                        return
+                }</span>
+        }
+}
+
+// focusPrev moves focus to the previous focusable component.
+func (m *FormModel) focusPrev() <span class="cov3" title="3">{
+        if m.focusIndex &gt;= 0 </span><span class="cov3" title="3">{
+                m.components[m.focusIndex].SetFocus(false)
+        }</span>
+
+        // Find previous focusable component
+        <span class="cov3" title="3">start := m.focusIndex - 1
+        if start &lt; 0 </span><span class="cov1" title="1">{
+                start = len(m.components) - 1
+        }</span>
+
+        <span class="cov3" title="3">for i := 0; i &lt; len(m.components); i++ </span><span class="cov3" title="3">{
+                idx := start - i
+                if idx &lt; 0 </span><span class="cov0" title="0">{
+                        idx += len(m.components)
+                }</span>
+                <span class="cov3" title="3">if m.components[idx].CanFocus() </span><span class="cov3" title="3">{
+                        m.focusIndex = idx
+                        m.components[idx].SetFocus(true)
+                        return
+                }</span>
+        }
+}
+
+// CanSubmit returns true if all components are valid.
+func (m *FormModel) CanSubmit() bool <span class="cov6" title="12">{
+        for _, comp := range m.components </span><span class="cov7" title="20">{
+                if !comp.IsValid() </span><span class="cov3" title="4">{
+                        return false
+                }</span>
+        }
+        <span class="cov5" title="8">return true</span>
+}
+
+// validateAll validates all components to trigger error display.
+func (m *FormModel) validateAll() <span class="cov1" title="1">{
+        for _, comp := range m.components </span><span class="cov1" title="1">{
+                comp.IsValid()
+        }</span>
+}
+
+// Submitted returns true if the form was successfully submitted.
+func (m *FormModel) Submitted() bool <span class="cov2" title="2">{
+        return m.submitted
+}</span>
+
+// ToJSON serializes the form data to JSON.
+// Returns a JSON byte array with component names as keys and values.
+func (m *FormModel) ToJSON() ([]byte, error) <span class="cov1" title="1">{
+        data := make(map[string]interface{})
+
+        for _, comp := range m.components </span><span class="cov3" title="3">{
+                data[comp.Name()] = comp.Value()
+        }</span>
+
+        <span class="cov1" title="1">jsonData, err := json.MarshalIndent(data, "", "  ")
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("erro ao serializar dados: %w", err)
+        }</span>
+
+        <span class="cov1" title="1">return jsonData, nil</span>
+}
+
+// ToMap returns the form data as a map for programmatic access.
+func (m *FormModel) ToMap() map[string]interface{} <span class="cov1" title="1">{
+        data := make(map[string]interface{})
+
+        for _, comp := range m.components </span><span class="cov2" title="2">{
+                data[comp.Name()] = comp.Value()
+        }</span>
+
+        <span class="cov1" title="1">return data</span>
+}
+</pre>
+		
+		<pre class="file" id="file13" style="display: none">package models
+
+import (
+        "fmt"
+
+        tea "github.com/charmbracelet/bubbletea/v2"
+        "github.com/charmbracelet/lipgloss/v2"
+        "github.com/helton/shantilly/internal/components"
+        "github.com/helton/shantilly/internal/config"
+        "github.com/helton/shantilly/internal/styles"
+)
+
+// LayoutModel orchestrates components in a horizontal or vertical layout.
+// It manages focus navigation and responsive resizing.
+type LayoutModel struct {
+        title       string
+        description string
+        layout      string // "horizontal" or "vertical"
+        components  []components.Component
+        focusIndex  int
+        theme       *styles.Theme
+        width       int
+        height      int
+        quitting    bool
+}
+
+// NewLayoutModel creates a new LayoutModel from configuration.
+func NewLayoutModel(cfg *config.LayoutConfig, theme *styles.Theme) (*LayoutModel, error) <span class="cov8" title="22">{
+        if err := cfg.Validate(); err != nil </span><span class="cov2" title="2">{
+                return nil, fmt.Errorf("erro de validação da configuração do layout: %w", err)
+        }</span>
+
+        // Create components using factory
+        <span class="cov8" title="20">comps, err := components.NewComponents(cfg.Components, theme)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, fmt.Errorf("erro ao criar componentes: %w", err)
+        }</span>
+
+        // Find first focusable component
+        <span class="cov8" title="20">focusIndex := -1
+        for i, comp := range comps </span><span class="cov8" title="22">{
+                if comp.CanFocus() </span><span class="cov7" title="16">{
+                        focusIndex = i
+                        break</span>
+                }
+        }
+
+        <span class="cov8" title="20">m := &amp;LayoutModel{
+                title:       cfg.Title,
+                description: cfg.Description,
+                layout:      cfg.Layout,
+                components:  comps,
+                focusIndex:  focusIndex,
+                theme:       theme,
+                width:       80,
+                height:      24,
+        }
+
+        // Set initial focus
+        if focusIndex &gt;= 0 </span><span class="cov7" title="16">{
+                m.components[focusIndex].SetFocus(true)
+        }</span>
+
+        <span class="cov8" title="20">return m, nil</span>
+}
+
+// Init implements tea.Model.
+func (m *LayoutModel) Init() tea.Cmd <span class="cov1" title="1">{
+        return nil
+}</span>
+
+// Update implements tea.Model.
+func (m *LayoutModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) <span class="cov10" title="37">{
+        switch msg := msg.(type) </span>{
+        case tea.WindowSizeMsg:<span class="cov5" title="5">
+                // Propagate window size to all components for responsive layout
+                m.width = msg.Width
+                m.height = msg.Height
+                for i := range m.components </span><span class="cov6" title="11">{
+                        m.components[i].Update(msg)
+                }</span>
+                <span class="cov5" title="5">return m, nil</span>
+
+        case tea.KeyMsg:<span class="cov9" title="31">
+                switch msg.String() </span>{
+                case "ctrl+c", "esc":<span class="cov1" title="1">
+                        m.quitting = true
+                        return m, tea.Quit</span>
+
+                case "tab":<span class="cov9" title="25">
+                        m.focusNext()
+                        return m, nil</span>
+
+                case "shift+tab":<span class="cov3" title="3">
+                        m.focusPrev()
+                        return m, nil</span>
+                }
+        }
+
+        // Propagate message to focused component
+        <span class="cov3" title="3">if m.focusIndex &gt;= 0 &amp;&amp; m.focusIndex &lt; len(m.components) </span><span class="cov3" title="3">{
+                var cmd tea.Cmd
+                updated, cmd := m.components[m.focusIndex].Update(msg)
+                m.components[m.focusIndex] = updated.(components.Component)
+                return m, cmd
+        }</span>
+
+        <span class="cov0" title="0">return m, nil</span>
+}
+
+// View implements tea.Model.
+func (m *LayoutModel) View() string <span class="cov6" title="10">{
+        if m.quitting </span><span class="cov0" title="0">{
+                return ""
+        }</span>
+
+        <span class="cov6" title="10">var sections []string
+
+        // Title
+        if m.title != "" </span><span class="cov6" title="10">{
+                sections = append(sections, m.theme.Title.Render(m.title))
+        }</span>
+
+        // Description
+        <span class="cov6" title="10">if m.description != "" </span><span class="cov1" title="1">{
+                sections = append(sections, m.theme.Description.Render(m.description))
+        }</span>
+
+        // Render components according to layout
+        <span class="cov6" title="10">var componentsView string
+        if m.layout == "horizontal" </span><span class="cov5" title="6">{
+                componentsView = m.renderHorizontal()
+        }</span> else<span class="cov4" title="4"> {
+                componentsView = m.renderVertical()
+        }</span>
+        <span class="cov6" title="10">sections = append(sections, componentsView)
+
+        // Navigation help
+        sections = append(sections, m.theme.Help.Render("Tab/Shift+Tab: Navegar | Esc: Sair"))
+
+        return m.theme.Border.Render(lipgloss.JoinVertical(lipgloss.Left, sections...))</span>
+}
+
+// renderHorizontal renders components in horizontal layout.
+// This is the ONLY place where borders are applied to components.
+func (m *LayoutModel) renderHorizontal() string <span class="cov5" title="6">{
+        var views []string
+        for i, comp := range m.components </span><span class="cov7" title="12">{
+                view := comp.View()
+
+                // Apply border based on focus state
+                if i == m.focusIndex &amp;&amp; comp.CanFocus() </span><span class="cov5" title="6">{
+                        view = m.theme.BorderActive.Render(view)
+                }</span> else<span class="cov5" title="6"> {
+                        view = m.theme.Border.Render(view)
+                }</span>
+                <span class="cov7" title="12">views = append(views, view)</span>
+        }
+        <span class="cov5" title="6">return lipgloss.JoinHorizontal(lipgloss.Top, views...)</span>
+}
+
+// renderVertical renders components in vertical layout.
+// This is the ONLY place where borders are applied to components.
+func (m *LayoutModel) renderVertical() string <span class="cov4" title="4">{
+        var views []string
+        for i, comp := range m.components </span><span class="cov9" title="25">{
+                view := comp.View()
+
+                // Apply border based on focus state
+                if i == m.focusIndex &amp;&amp; comp.CanFocus() </span><span class="cov3" title="3">{
+                        view = m.theme.BorderActive.Render(view)
+                }</span> else<span class="cov8" title="22"> {
+                        view = m.theme.Border.Render(view)
+                }</span>
+                <span class="cov9" title="25">views = append(views, view)</span>
+        }
+        <span class="cov4" title="4">return lipgloss.JoinVertical(lipgloss.Left, views...)</span>
+}
+
+// focusNext moves focus to the next focusable component.
+func (m *LayoutModel) focusNext() <span class="cov9" title="25">{
+        if m.focusIndex &gt;= 0 </span><span class="cov8" title="24">{
+                m.components[m.focusIndex].SetFocus(false)
+        }</span>
+
+        // Find next focusable component
+        <span class="cov9" title="25">start := m.focusIndex + 1
+        for i := 0; i &lt; len(m.components); i++ </span><span class="cov9" title="27">{
+                idx := (start + i) % len(m.components)
+                if m.components[idx].CanFocus() </span><span class="cov8" title="24">{
+                        m.focusIndex = idx
+                        m.components[idx].SetFocus(true)
+                        return
+                }</span>
+        }
+}
+
+// focusPrev moves focus to the previous focusable component.
+func (m *LayoutModel) focusPrev() <span class="cov3" title="3">{
+        if m.focusIndex &gt;= 0 </span><span class="cov3" title="3">{
+                m.components[m.focusIndex].SetFocus(false)
+        }</span>
+
+        // Find previous focusable component
+        <span class="cov3" title="3">start := m.focusIndex - 1
+        if start &lt; 0 </span><span class="cov1" title="1">{
+                start = len(m.components) - 1
+        }</span>
+
+        <span class="cov3" title="3">for i := 0; i &lt; len(m.components); i++ </span><span class="cov3" title="3">{
+                idx := start - i
+                if idx &lt; 0 </span><span class="cov0" title="0">{
+                        idx += len(m.components)
+                }</span>
+                <span class="cov3" title="3">if m.components[idx].CanFocus() </span><span class="cov3" title="3">{
+                        m.focusIndex = idx
+                        m.components[idx].SetFocus(true)
+                        return
+                }</span>
+        }
+}
+</pre>
+		
+		<pre class="file" id="file14" style="display: none">package styles
+
+import (
+        "github.com/charmbracelet/lipgloss/v2"
+)
+
+// Theme contains all Lipgloss styles for the Shantilly TUI.
+// It uses simple colors that work well in most terminals.
+type Theme struct {
+        // Input styles
+        Input        lipgloss.Style
+        InputFocused lipgloss.Style
+        InputError   lipgloss.Style
+
+        // Label styles
+        Label      lipgloss.Style
+        LabelError lipgloss.Style
+
+        // Button/Action styles
+        Button        lipgloss.Style
+        ButtonFocused lipgloss.Style
+
+        // Container styles
+        Title       lipgloss.Style
+        Description lipgloss.Style
+        Help        lipgloss.Style
+        Error       lipgloss.Style
+
+        // Layout styles
+        Border       lipgloss.Style
+        BorderActive lipgloss.Style
+
+        // Component-specific styles
+        CheckboxChecked   lipgloss.Style
+        CheckboxUnchecked lipgloss.Style
+        RadioSelected     lipgloss.Style
+        RadioUnselected   lipgloss.Style
+        SliderBar         lipgloss.Style
+        SliderFilled      lipgloss.Style
+
+        // Tab styles
+        TabActive   lipgloss.Style
+        TabInactive lipgloss.Style
+}
+
+// Color palette
+var (
+        // Primary colors - Charm purple
+        primaryColor = lipgloss.Color("#7D56F4")
+        primaryDark  = lipgloss.Color("#5A3FBF")
+
+        // Accent colors
+        accentGreen = lipgloss.Color("#04B575")
+        accentRed   = lipgloss.Color("#FF0000")
+        accentBlue  = lipgloss.Color("#0087D7")
+
+        // Neutral colors
+        textPrimary   = lipgloss.Color("#E0E0E0")
+        textSecondary = lipgloss.Color("#888888")
+        textMuted     = lipgloss.Color("#666666")
+
+        // Background colors
+        bgNormal  = lipgloss.Color("#1A1A1A")
+        bgFocused = lipgloss.Color("#2D2640")
+        bgError   = lipgloss.Color("#3D2020")
+
+        // Border colors
+        borderNormal = lipgloss.Color("#404040")
+        borderFocus  = lipgloss.Color("#7D56F4")
+        borderError  = lipgloss.Color("#FF0000")
+)
+
+// DefaultTheme creates a theme using default Lipgloss styles.
+func DefaultTheme() *Theme <span class="cov10" title="13">{
+        t := &amp;Theme{}
+
+        // Input styles (without borders - borders are applied by layout/form models)
+        t.Input = lipgloss.NewStyle().
+                Foreground(textPrimary).
+                Background(bgNormal).
+                Padding(0, 1)
+
+        t.InputFocused = t.Input.
+                Background(bgFocused)
+
+        t.InputError = t.Input.
+                Background(bgError)
+
+        // Label styles
+        t.Label = lipgloss.NewStyle().
+                Foreground(textPrimary).
+                Bold(true).
+                MarginBottom(1)
+
+        t.LabelError = t.Label.
+                Foreground(accentRed)
+
+        // Button styles
+        t.Button = lipgloss.NewStyle().
+                Foreground(textPrimary).
+                Background(bgNormal).
+                BorderStyle(lipgloss.NormalBorder()).
+                BorderForeground(borderNormal).
+                Padding(0, 2).
+                MarginRight(2)
+
+        t.ButtonFocused = t.Button.
+                Foreground(lipgloss.Color("#FFFFFF")).
+                Background(primaryColor).
+                BorderForeground(primaryColor).
+                Bold(true)
+
+        // Container styles
+        t.Title = lipgloss.NewStyle().
+                Foreground(primaryColor).
+                Bold(true).
+                Underline(true).
+                MarginBottom(1)
+
+        t.Description = lipgloss.NewStyle().
+                Foreground(textSecondary).
+                Italic(true).
+                MarginBottom(2)
+
+        t.Help = lipgloss.NewStyle().
+                Foreground(textMuted).
+                Italic(true).
+                MarginTop(1)
+
+        t.Error = lipgloss.NewStyle().
+                Foreground(accentRed).
+                Bold(true).
+                MarginTop(1)
+
+        // Layout styles
+        t.Border = lipgloss.NewStyle().
+                BorderStyle(lipgloss.NormalBorder()).
+                BorderForeground(borderNormal).
+                Padding(1, 2)
+
+        t.BorderActive = t.Border.
+                BorderForeground(borderFocus)
+
+        // Checkbox styles
+        t.CheckboxChecked = lipgloss.NewStyle().
+                Foreground(accentGreen).
+                Bold(true)
+
+        t.CheckboxUnchecked = lipgloss.NewStyle().
+                Foreground(textMuted)
+
+        // Radio styles
+        t.RadioSelected = lipgloss.NewStyle().
+                Foreground(primaryColor).
+                Bold(true)
+
+        t.RadioUnselected = lipgloss.NewStyle().
+                Foreground(textPrimary)
+
+        // Slider styles
+        t.SliderBar = lipgloss.NewStyle().
+                Foreground(borderNormal)
+
+        t.SliderFilled = lipgloss.NewStyle().
+                Foreground(primaryColor).
+                Bold(true)
+
+        // Tab styles
+        t.TabActive = lipgloss.NewStyle().
+                Foreground(lipgloss.Color("#FFFFFF")).
+                Background(primaryColor).
+                Padding(0, 2).
+                Bold(true)
+
+        t.TabInactive = lipgloss.NewStyle().
+                Foreground(textSecondary).
+                Background(bgNormal).
+                Padding(0, 2)
+
+        return t
+}</span>
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>

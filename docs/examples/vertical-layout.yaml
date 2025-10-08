@@ -1,0 +1,38 @@
+title: "Questionário de Feedback"
+description: "Layout vertical simples"
+layout: vertical
+
+components:
+  - type: text
+    name: intro
+    label: "Por favor, avalie sua experiência:"
+
+  - type: radiogroup
+    name: satisfaction
+    label: "Nível de satisfação"
+    required: true
+    options:
+      items:
+        - id: very_satisfied
+          label: "Muito satisfeito"
+        - id: satisfied
+          label: "Satisfeito"
+        - id: neutral
+          label: "Neutro"
+        - id: unsatisfied
+          label: "Insatisfeito"
+        - id: very_unsatisfied
+          label: "Muito insatisfeito"
+
+  - type: textarea
+    name: comments
+    label: "Comentários adicionais"
+    placeholder: "O que podemos melhorar?"
+    required: false
+    options:
+      height: 6
+      width: 60
+
+  - type: checkbox
+    name: contact
+    label: "Pode entrar em contato comigo sobre este feedback"

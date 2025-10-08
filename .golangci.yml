@@ -1,0 +1,93 @@
+# golangci-lint configuration for Shantilly
+# Enforces Go-Native quality standards with errcheck as fatal
+
+run:
+  timeout: 5m
+  tests: true
+  build-tags: []
+  skip-dirs:
+    - vendor
+    - .git
+    - .taskmaster
+
+linters:
+  enable:
+    - errcheck       # Fatal: Must check all error returns
+    - gofmt          # Standard Go formatting
+    - goimports      # Import organization
+    - govet          # Go vet checks
+    - ineffassign    # Detect ineffectual assignments
+    - staticcheck    # Static analysis
+    - unused         # Detect unused code
+    - gosimple       # Simplify code suggestions
+    - typecheck      # Type checking
+    - misspell       # Spelling mistakes
+    - unconvert      # Unnecessary type conversions
+    - unparam        # Unused function parameters
+    - revive         # Go linting framework
+    - gosec          # Security checks
+    - bodyclose      # HTTP response body closure
+    - noctx          # Context usage checks
+
+  disable:
+    - deadcode       # Deprecated
+    - structcheck    # Deprecated
+    - varcheck       # Deprecated
+
+linters-settings:
+  errcheck:
+    # Treat all unchecked errors as fatal
+    check-type-assertions: true
+    check-blank: true
+    exclude-functions: []
+
+  gofmt:
+    simplify: true
+
+  goimports:
+    local-prefixes: github.com/helton/shantilly
+
+  govet:
+    enable-all: true
+
+  revive:
+    rules:
+      - name: exported
+        severity: warning
+      - name: error-return
+        severity: error
+      - name: error-strings
+        severity: error
+      - name: error-naming
+        severity: error
+
+  gosec:
+    excludes:
+      - G204  # Subprocess with variable (needed for exec)
+      - G304  # File path from input (expected in CLI tool)
+
+issues:
+  exclude-use-default: false
+  max-issues-per-linter: 0
+  max-same-issues: 0
+
+  # Exclude test files from certain checks
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - errcheck
+        - gosec
+
+output:
+  format: colored-line-number
+  print-issued-lines: true
+  print-linter-name: true
+  uniq-by-line: false
+  sort-results: true
+
+severity:
+  default-severity: error
+  rules:
+    - linters:
+        - errcheck
+      severity: error

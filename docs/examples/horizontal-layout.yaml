@@ -1,0 +1,28 @@
+title: "Dashboard de Configuração"
+description: "Layout horizontal com múltiplos componentes"
+layout: horizontal
+
+components:
+  - type: text
+    name: label1
+    label: "Painel Esquerdo"
+
+  - type: textinput
+    name: server_name
+    label: "Nome do Servidor"
+    placeholder: "server-01"
+    required: true
+
+  - type: slider
+    name: port
+    label: "Porta"
+    default: 8080
+    options:
+      min: 1024
+      max: 65535
+      step: 1
+
+  - type: checkbox
+    name: ssl_enabled
+    label: "SSL/TLS Habilitado"
+    default: true

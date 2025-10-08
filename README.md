@@ -1,4 +1,4 @@
-# 🧁 Shantilly
+# Shantilly
 
 **Construtor de TUI Declarativo via YAML**
 
@@ -22,13 +22,13 @@ Shantilly é uma ferramenta CLI moderna em Go que permite criar Interfaces de Us
 
 ## 🚀 Instalação
 
-```shell
+```
 go install [github.com/helton/shantilly/cmd/shantilly@latest](https://github.com/helton/shantilly/cmd/shantilly@latest)
 ```
 
 Ou clone e compile:
 
-```shell
+```
 git clone [https://github.com/helton/shantilly.git](https://github.com/helton/shantilly.git)
 cd shantilly
 make build
@@ -40,7 +40,7 @@ make build
 
 Crie um arquivo `form.yaml`:
 
-```yaml
+```
 title: "Cadastro de Usuário"
 description: "Formulário simples de cadastro"
 
@@ -65,13 +65,13 @@ components:
 
 Execute:
 
-```shell
+```
 shantilly form form.yaml
 ```
 
 A saída será JSON:
 
-```json
+```
 {
   "username": "johndoe",
   "email": "john@example.com",
@@ -81,7 +81,7 @@ A saída será JSON:
 
 ### Layout Horizontal
 
-```yaml
+```
 layout: horizontal
 components:
   - type: textinput
@@ -97,7 +97,7 @@ components:
 
 Execute:
 
-```shell
+```
 shantilly layout layout.yaml
 ```
 
@@ -105,7 +105,7 @@ Este comando renderiza um layout TUI sem a lógica de um formulário, ideal para
 
 Saída esperada:
 
-```shell
+```
 +-----------------+ +-------------------------+
 | Host            | | Porta                   |
 |                 | |                         |
@@ -117,7 +117,7 @@ Saída esperada:
 
 ### TextInput
 
-```yaml
+```
 - type: textinput
   name: username
   label: "Nome de usuário"
@@ -131,7 +131,7 @@ Saída esperada:
 
 ### TextArea
 
-```yaml
+```
 - type: textarea
   name: description
   label: "Descrição"
@@ -144,7 +144,7 @@ Saída esperada:
 
 ### Checkbox
 
-```yaml
+```
 - type: checkbox
   name: agree
   label: "Concordo com os termos"
@@ -154,7 +154,7 @@ Saída esperada:
 
 ### RadioGroup
 
-```yaml
+```
 - type: radiogroup
   name: plan
   label: "Escolha um plano"
@@ -169,7 +169,7 @@ Saída esperada:
 
 ### Slider
 
-```yaml
+```
 - type: slider
   name: volume
   label: "Volume"
@@ -193,13 +193,13 @@ Para ver esses componentes em ação, confira os exemplos completos na seção "
 
 ### Compilação
 
-```shell
+```
 make build
 ```
 
 ### Testes
 
-```shell
+```
 make test          # Testes básicos
 make test-race     # Com race detector
 make coverage      # Cobertura (mínimo 85%)
@@ -207,7 +207,7 @@ make coverage      # Cobertura (mínimo 85%)
 
 ### Qualidade
 
-```shell
+```
 make fmt           # Formatação
 make lint          # Linting (errcheck fatal)
 make ci            # Pipeline completo
@@ -217,7 +217,7 @@ make ci            # Pipeline completo
 
 Shantilly segue o padrão Charm:
 
-```shell
+```
 cmd/
 ├── shantilly/
 │   ├── main.go

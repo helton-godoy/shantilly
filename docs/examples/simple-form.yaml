@@ -1,0 +1,61 @@
+title: "Cadastro de Usuário"
+description: "Formulário simples de cadastro"
+
+components:
+  - type: textinput
+    name: username
+    label: "Nome de usuário"
+    placeholder: "Digite seu nome de usuário"
+    required: true
+    help: "Mínimo de 3 caracteres"
+    options:
+      min_length: 3
+      max_length: 20
+
+  - type: textinput
+    name: email
+    label: "E-mail"
+    placeholder: "seu@email.com"
+    required: true
+    options:
+      pattern: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+
+  - type: textarea
+    name: bio
+    label: "Biografia"
+    placeholder: "Conte-nos sobre você..."
+    required: false
+    options:
+      min_length: 10
+      max_length: 500
+      height: 5
+      width: 50
+
+  - type: checkbox
+    name: terms
+    label: "Aceito os termos e condições"
+    required: true
+
+  - type: radiogroup
+    name: plan
+    label: "Plano de assinatura"
+    required: true
+    options:
+      items:
+        - id: free
+          label: "Gratuito"
+        - id: pro
+          label: "Profissional ($9.99/mês)"
+        - id: enterprise
+          label: "Enterprise (sob consulta)"
+
+  - type: slider
+    name: experience
+    label: "Anos de experiência"
+    required: false
+    default: 1
+    options:
+      min: 0
+      max: 30
+      step: 1
+      width: 40
