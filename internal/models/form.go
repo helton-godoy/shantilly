@@ -219,27 +219,18 @@ func (m *FormModel) View() string {
 		sections = append(sections, m.theme.Description.Render(m.description))
 	}
 
-	// Define a container width to stabilize rendering across terminals
-	// We subtract a small amount for padding to ensure borders fit.
-	containerWidth := m.width - 4
-
-	// Components
+	// Components (without individual borders - only the form container has a border)
 	for i, comp := range m.components {
 		view := comp.View()
 
-		// Create a container with a fixed width for each component
-		// This prevents rendering glitches in terminals like Konsole
-		container := lipgloss.NewStyle().Width(containerWidth)
-
-		// Apply border to the container, not the raw view
+		// Apply consistent border-based focus indicator (same as LayoutModel)
 		if i == m.focusIndex && comp.CanFocus() {
-			container = container.Border(m.theme.BorderActive.GetBorder())
+			view = m.theme.BorderActive.Render(view)
 		} else {
-			container = container.Border(m.theme.Border.GetBorder())
+			view = m.theme.Border.Render(view)
 		}
 
-		// Render the component's view inside the stable-width container
-		sections = append(sections, container.Render(view))
+		sections = append(sections, view)
 	}
 
 	// Submit help
@@ -252,7 +243,7 @@ func (m *FormModel) View() string {
 	// Navigation help
 	sections = append(sections, m.theme.Help.Render("Tab/Shift+Tab: Navegar | Esc: Sair"))
 
-	// Join all sections vertically
+	// Don't apply border to container since individual components now have borders
 	return lipgloss.JoinVertical(lipgloss.Left, sections...)
 }
 

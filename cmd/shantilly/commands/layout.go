@@ -23,6 +23,15 @@ horizontal ou vertical.`,
 }
 
 func runLayout(cmd *cobra.Command, args []string) error {
+	if len(os.Getenv("DEBUG")) > 0 {
+		f, err := tea.LogToFile("debug.log", "debug")
+		if err != nil {
+			fmt.Println("fatal:", err)
+			os.Exit(1)
+		}
+		defer f.Close()
+	}
+
 	start := time.Now()
 	log.Printf("[DEBUG] Iniciando execução do comando layout - arquivo: %s", args[0])
 
