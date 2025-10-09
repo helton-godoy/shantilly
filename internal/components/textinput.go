@@ -1,7 +1,9 @@
 package components
 
 import (
+	"encoding/json"
 	"fmt"
+	"log"
 	"regexp"
 	"strings"
 
@@ -9,6 +11,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea/v2"
 	"github.com/charmbracelet/lipgloss/v2"
 	"github.com/helton/shantilly/internal/config"
+	"github.com/helton/shantilly/internal/errors"
 	"github.com/helton/shantilly/internal/styles"
 )
 
@@ -29,6 +32,9 @@ type TextInput struct {
 	minLength int
 	maxLength int
 	pattern   *regexp.Regexp
+
+	// Error management integration
+	errorManager *errors.ErrorManager
 }
 
 // NewTextInput creates a new TextInput component from configuration.
@@ -78,6 +84,11 @@ func NewTextInput(cfg config.ComponentConfig, theme *styles.Theme) (*TextInput, 
 	}
 
 	return t, nil
+}
+
+// SetErrorManager configura o ErrorManager para o componente
+func (t *TextInput) SetErrorManager(em *errors.ErrorManager) {
+	t.errorManager = em
 }
 
 // Init implements tea.Model.
@@ -160,6 +171,11 @@ func (t *TextInput) IsValid() bool {
 	// Required validation
 	if t.required && strings.TrimSpace(value) == "" {
 		t.errorMsg = "Este campo é obrigatório"
+
+		if t.errorManager != nil {
+			// Log validation error for debugging
+			log.Printf("TextInput validation error: Campo obrigatório não preenchido - %s", t.name)
+		}
 		return false
 	}
 
@@ -172,21 +188,34 @@ func (t *TextInput) IsValid() bool {
 	// Min length validation
 	if t.minLength > 0 && len(value) < t.minLength {
 		t.errorMsg = fmt.Sprintf("Mínimo de %d caracteres", t.minLength)
+
+		if t.errorManager != nil {
+			log.Printf("TextInput min length validation error in %s: valor abaixo do mínimo", t.name)
+		}
 		return false
 	}
 
 	// Max length validation (already enforced by CharLimit, but check anyway)
 	if t.maxLength > 0 && len(value) > t.maxLength {
 		t.errorMsg = fmt.Sprintf("Máximo de %d caracteres", t.maxLength)
+
+		if t.errorManager != nil {
+			log.Printf("TextInput max length validation error in %s: valor excede o máximo", t.name)
+		}
 		return false
 	}
 
 	// Pattern validation
 	if t.pattern != nil && !t.pattern.MatchString(value) {
 		t.errorMsg = "Formato inválido"
+
+		if t.errorManager != nil {
+			log.Printf("TextInput pattern validation error in %s: formato inválido", t.name)
+		}
 		return false
 	}
 
+	// Clear error if validation passes
 	t.errorMsg = ""
 	return true
 }
@@ -210,10 +239,20 @@ func (t *TextInput) Value() interface{} {
 func (t *TextInput) SetValue(value interface{}) error {
 	strValue, ok := value.(string)
 	if !ok {
-		return fmt.Errorf("valor inválido: esperado string, recebido %T", value)
+		err := fmt.Errorf("valor inválido: esperado string, recebido %T", value)
+
+		if t.errorManager != nil {
+			log.Printf("TextInput type validation error in %s: tipo inválido", t.name)
+		}
+
+		return err
 	}
 
 	t.model.SetValue(strValue)
+
+	// Clear any previous error when setting a valid value
+	t.errorMsg = ""
+
 	return nil
 }
 
@@ -223,6 +262,138 @@ func (t *TextInput) Reset() {
 	t.errorMsg = ""
 	t.model.Blur()
 	t.focused = false
+}
+
+// GetMetadata implements Component.
+func (t *TextInput) GetMetadata() ComponentMetadata {
+	return ComponentMetadata{
+		Version:      "1.0.0",
+		Author:       "Shantilly Team",
+		Description:  "Single-line text input component with validation support",
+		Dependencies: []string{},
+		Examples: []ComponentExample{
+			{
+				Name:        "Simple Text Input",
+				Description: "Basic text input for user names",
+				Config: map[string]interface{}{
+					"type":        "textinput",
+					"name":        "username",
+					"label":       "Username",
+					"placeholder": "Enter your username",
+					"required":    true,
+				},
+			},
+		},
+		Schema: map[string]interface{}{
+			"type": "object",
+			"properties": map[string]interface{}{
+				"value": map[string]interface{}{
+					"type":        "string",
+					"description": "The text value",
+				},
+			},
+		},
+	}
+}
+
+// ValidateWithContext implements Component.
+func (t *TextInput) ValidateWithContext(context ValidationContext) []ValidationError {
+	var errors []ValidationError
+
+	// Basic validation with ErrorManager integration
+	if !t.IsValid() {
+		validationErr := ValidationError{
+			Code:     "VALIDATION_FAILED",
+			Message:  t.GetError(),
+			Field:    t.name,
+			Severity: "error",
+			Context: map[string]interface{}{
+				"component":          "TextInput",
+				"value":              t.Value(),
+				"validation_context": context,
+			},
+		}
+		errors = append(errors, validationErr)
+
+		// Log to ErrorManager if available (simplified for compilation)
+		if t.errorManager != nil {
+			log.Printf("TextInput validation error in %s: %s", t.name, t.GetError())
+		}
+	}
+
+	// Cross-field validation examples with ErrorManager
+	if componentValues, ok := context.ComponentValues["password"]; ok {
+		if password, ok := componentValues.(string); ok && t.name == "confirm_password" {
+			if currentValue := t.Value().(string); currentValue != password {
+				validationErr := ValidationError{
+					Code:     "PASSWORD_MISMATCH",
+					Message:  "Senhas não coincidem",
+					Field:    t.name,
+					Severity: "error",
+					Context: map[string]interface{}{
+						"component":       "TextInput",
+						"related_field":   "password",
+						"password_length": len(password),
+						"current_length":  len(currentValue),
+					},
+				}
+				errors = append(errors, validationErr)
+
+				// Log cross-field validation error (simplified for compilation)
+				if t.errorManager != nil {
+					log.Printf("TextInput cross-field validation error in %s: senhas não coincidem", t.name)
+				}
+			}
+		}
+	}
+
+	return errors
+}
+
+// ExportToFormat implements Component.
+func (t *TextInput) ExportToFormat(format ExportFormat) ([]byte, error) {
+	data := map[string]interface{}{
+		"name":     t.Name(),
+		"value":    t.Value(),
+		"metadata": t.GetMetadata(),
+	}
+
+	switch format {
+	case FormatJSON:
+		return json.MarshalIndent(data, "", "  ")
+	default:
+		return nil, fmt.Errorf("formato não suportado: %s", format)
+	}
+}
+
+// ImportFromFormat implements Component.
+func (t *TextInput) ImportFromFormat(format ExportFormat, data []byte) error {
+	var imported map[string]interface{}
+
+	switch format {
+	case FormatJSON:
+		if err := json.Unmarshal(data, &imported); err != nil {
+			return fmt.Errorf("erro ao fazer parse do JSON: %w", err)
+		}
+	default:
+		return fmt.Errorf("formato não suportado: %s", format)
+	}
+
+	if value, ok := imported["value"].(string); ok {
+		return t.SetValue(value)
+	}
+
+	return nil
+}
+
+// GetDependencies implements Component.
+func (t *TextInput) GetDependencies() []string {
+	return []string{} // TextInput has no dependencies
+}
+
+// SetTheme implements Component.
+func (t *TextInput) SetTheme(theme *styles.Theme) {
+	t.theme = theme
 }
 
 // JoinVertical is a helper for lipgloss compatibility.

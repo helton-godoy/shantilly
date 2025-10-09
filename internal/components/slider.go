@@ -1,12 +1,15 @@
 package components
 
 import (
+	"encoding/json"
 	"fmt"
+	"log"
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea/v2"
 	"github.com/charmbracelet/lipgloss/v2"
 	"github.com/helton/shantilly/internal/config"
+	"github.com/helton/shantilly/internal/errors"
 	"github.com/helton/shantilly/internal/styles"
 )
 
@@ -25,6 +28,9 @@ type Slider struct {
 	errorMsg     string
 	focused      bool
 	initialValue float64
+
+	// Error management integration
+	errorManager *errors.ErrorManager
 }
 
 // NewSlider creates a new Slider component from configuration.
@@ -95,6 +101,11 @@ func NewSlider(cfg config.ComponentConfig, theme *styles.Theme) (*Slider, error)
 	}
 
 	return s, nil
+}
+
+// SetErrorManager configura o ErrorManager para o componente
+func (s *Slider) SetErrorManager(em *errors.ErrorManager) {
+	s.errorManager = em
 }
 
 // Init implements tea.Model.
@@ -240,14 +251,30 @@ func (s *Slider) SetValue(value interface{}) error {
 	case int64:
 		floatValue = float64(v)
 	default:
-		return fmt.Errorf("valor inválido: esperado número, recebido %T", value)
+		err := fmt.Errorf("valor inválido: esperado número, recebido %T", value)
+
+		if s.errorManager != nil {
+			log.Printf("Slider type validation error in %s: tipo inválido", s.name)
+		}
+
+		return err
 	}
 
 	if floatValue < s.min || floatValue > s.max {
-		return fmt.Errorf("valor fora do intervalo [%.1f, %.1f]", s.min, s.max)
+		err := fmt.Errorf("valor fora do intervalo [%.1f, %.1f]", s.min, s.max)
+
+		if s.errorManager != nil {
+			log.Printf("Slider range validation error in %s: valor fora do intervalo", s.name)
+		}
+
+		return err
 	}
 
 	s.value = floatValue
+
+	// Clear any previous error when setting a valid value
+	s.errorMsg = ""
+
 	return nil
 }
 
@@ -256,6 +283,117 @@ func (s *Slider) Reset() {
 	s.value = s.initialValue
 	s.errorMsg = ""
 	s.focused = false
+}
+
+// GetMetadata implements Component.
+func (s *Slider) GetMetadata() ComponentMetadata {
+	return ComponentMetadata{
+		Version:      "1.0.0",
+		Author:       "Shantilly Team",
+		Description:  "Slider component for numeric selections",
+		Dependencies: []string{},
+		Examples: []ComponentExample{
+			{
+				Name:        "Volume Control",
+				Description: "Slider for volume control",
+				Config: map[string]interface{}{
+					"type":  "slider",
+					"name":  "volume",
+					"label": "Volume",
+					"options": map[string]interface{}{
+						"min": 0,
+						"max": 100,
+					},
+				},
+			},
+		},
+		Schema: map[string]interface{}{
+			"type": "object",
+			"properties": map[string]interface{}{
+				"value": map[string]interface{}{
+					"type":        "number",
+					"description": "The slider value",
+				},
+			},
+		},
+	}
+}
+
+// ValidateWithContext implements Component.
+func (s *Slider) ValidateWithContext(context ValidationContext) []ValidationError {
+	var errors []ValidationError
+
+	if !s.IsValid() {
+		validationErr := ValidationError{
+			Code:     "VALIDATION_FAILED",
+			Message:  s.GetError(),
+			Field:    s.name,
+			Severity: "error",
+			Context: map[string]interface{}{
+				"component":          "Slider",
+				"value":              s.Value(),
+				"validation_context": context,
+				"required":           s.required,
+				"min":                s.min,
+				"max":                s.max,
+				"step":               s.step,
+			},
+		}
+		errors = append(errors, validationErr)
+
+		// Log to ErrorManager if available
+		if s.errorManager != nil {
+			log.Printf("Slider validation failed in %s: %s", s.name, s.GetError())
+		}
+	}
+
+	return errors
+}
+
+// ExportToFormat implements Component.
+func (s *Slider) ExportToFormat(format ExportFormat) ([]byte, error) {
+	data := map[string]interface{}{
+		"name":     s.Name(),
+		"value":    s.Value(),
+		"metadata": s.GetMetadata(),
+	}
+
+	switch format {
+	case FormatJSON:
+		return json.MarshalIndent(data, "", "  ")
+	default:
+		return nil, fmt.Errorf("formato não suportado: %s", format)
+	}
+}
+
+// ImportFromFormat implements Component.
+func (s *Slider) ImportFromFormat(format ExportFormat, data []byte) error {
+	var imported map[string]interface{}
+
+	switch format {
+	case FormatJSON:
+		if err := json.Unmarshal(data, &imported); err != nil {
+			return fmt.Errorf("erro ao fazer parse do JSON: %w", err)
+		}
+	default:
+		return fmt.Errorf("formato não suportado: %s", format)
+	}
+
+	if value, ok := imported["value"].(float64); ok {
+		return s.SetValue(value)
+	}
+
+	return nil
+}
+
+// GetDependencies implements Component.
+func (s *Slider) GetDependencies() []string {
+	return []string{}
+}
+
+// SetTheme implements Component.
+func (s *Slider) SetTheme(theme *styles.Theme) {
+	s.theme = theme
 }
 
 // JoinHorizontal is a helper for lipgloss compatibility.

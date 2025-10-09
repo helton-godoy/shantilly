@@ -203,7 +203,8 @@ func TestTextArea_View(t *testing.T) {
 				Type: config.TypeTextArea,
 			},
 			setup: func(ta *TextArea) {
-				ta.SetValue("Just the input")
+				err := ta.SetValue("Just the input")
+				require.NoError(t, err)
 			},
 			contains:    []string{"Just the input"},
 			notContains: []string{"Test Label", "Helpful text", "✗"},
@@ -411,7 +412,8 @@ func TestTextArea_Reset(t *testing.T) {
 		require.NoError(t, err)
 
 		ta.SetFocus(true)
-		ta.SetValue("Changed value")
+		err = ta.SetValue("Changed value")
+		require.NoError(t, err)
 		ta.SetError("Test error")
 
 		ta.Reset()
@@ -431,7 +433,8 @@ func TestTextArea_Reset(t *testing.T) {
 		require.NoError(t, err)
 
 		ta.SetFocus(true)
-		ta.SetValue("Changed value")
+		err = ta.SetValue("Changed value")
+		require.NoError(t, err)
 		ta.SetError("Test error")
 
 		ta.Reset()

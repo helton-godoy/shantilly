@@ -145,14 +145,16 @@ func TestSlider_Update(t *testing.T) {
 	lMsg := tea.KeyPressMsg{Code: 'l'}
 
 	t.Run("should not update when not focused", func(t *testing.T) {
-		s.SetValue(5)
+		err := s.SetValue(5)
+		require.NoError(t, err)
 		s.SetFocus(false)
 		s.Update(rightMsg)
 		assert.Equal(t, 5.0, s.value)
 	})
 
 	t.Run("should update when focused", func(t *testing.T) {
-		s.SetValue(5)
+		err := s.SetValue(5)
+		require.NoError(t, err)
 		s.SetFocus(true)
 		s.SetError("an error")
 
@@ -166,18 +168,21 @@ func TestSlider_Update(t *testing.T) {
 
 	t.Run("should respect boundaries", func(t *testing.T) {
 		s.SetFocus(true)
-		s.SetValue(0)
+		err := s.SetValue(0)
+		require.NoError(t, err)
 		s.Update(leftMsg)
 		assert.Equal(t, 0.0, s.value, "Should not go below min")
 
-		s.SetValue(10)
+		err = s.SetValue(10)
+		require.NoError(t, err)
 		s.Update(rightMsg)
 		assert.Equal(t, 10.0, s.value, "Should not go above max")
 	})
 
 	t.Run("should handle vim keys h and l", func(t *testing.T) {
 		s.SetFocus(true)
-		s.SetValue(5)
+		err := s.SetValue(5)
+		require.NoError(t, err)
 		s.Update(hMsg)
 		assert.Equal(t, 4.0, s.value)
 
@@ -187,7 +192,8 @@ func TestSlider_Update(t *testing.T) {
 
 	t.Run("should handle home and end keys", func(t *testing.T) {
 		s.SetFocus(true)
-		s.SetValue(5)
+		err := s.SetValue(5)
+		require.NoError(t, err)
 		s.Update(homeMsg)
 		assert.Equal(t, 0.0, s.value, "Home key should go to min")
 
@@ -208,7 +214,8 @@ func TestSlider_View(t *testing.T) {
 	require.NoError(t, err)
 
 	t.Run("default view", func(t *testing.T) {
-		s.SetValue(50)
+		err := s.SetValue(50)
+		require.NoError(t, err)
 		view := s.View()
 		assert.Contains(t, view, "Test Slider")
 		assert.Contains(t, view, "50.0")
@@ -257,7 +264,8 @@ func TestSlider_Reset(t *testing.T) {
 		s, err := NewSlider(cfg, styles.DefaultTheme())
 		require.NoError(t, err)
 
-		s.SetValue(25)
+		err = s.SetValue(25)
+		require.NoError(t, err)
 		s.SetFocus(true)
 		s.Reset()
 
@@ -270,7 +278,8 @@ func TestSlider_Reset(t *testing.T) {
 		s, err := NewSlider(cfg, styles.DefaultTheme())
 		require.NoError(t, err)
 
-		s.SetValue(50)
+		err = s.SetValue(50)
+		require.NoError(t, err)
 		s.SetFocus(true)
 		s.Reset()
 

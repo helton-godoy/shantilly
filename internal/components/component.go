@@ -1,6 +1,53 @@
 package components
 
-import tea "github.com/charmbracelet/bubbletea/v2"
+import (
+	tea "github.com/charmbracelet/bubbletea/v2"
+	"github.com/helton/shantilly/internal/styles"
+)
+
+// ComponentMetadata contains comprehensive information about a component.
+type ComponentMetadata struct {
+	Version      string                 `json:"version"`
+	Author       string                 `json:"author"`
+	Description  string                 `json:"description"`
+	Dependencies []string               `json:"dependencies"`
+	Examples     []ComponentExample     `json:"examples"`
+	Schema       map[string]interface{} `json:"schema"`
+}
+
+// ComponentExample represents an example usage of a component.
+type ComponentExample struct {
+	Name           string                 `json:"name"`
+	Description    string                 `json:"description"`
+	Config         map[string]interface{} `json:"config"`
+	ExpectedOutput interface{}            `json:"expected_output"`
+}
+
+// ValidationContext provides context for component validation.
+type ValidationContext struct {
+	ComponentValues map[string]interface{} `json:"component_values"`
+	GlobalConfig    map[string]interface{} `json:"global_config"`
+	ExternalData    map[string]interface{} `json:"external_data"`
+}
+
+// ValidationError represents a validation error with detailed information.
+type ValidationError struct {
+	Code     string                 `json:"code"`
+	Message  string                 `json:"message"`
+	Field    string                 `json:"field"`
+	Severity string                 `json:"severity"`
+	Context  map[string]interface{} `json:"context"`
+}
+
+// ExportFormat defines supported export formats for component data.
+type ExportFormat string
+
+const (
+	FormatJSON ExportFormat = "json"
+	FormatYAML ExportFormat = "yaml"
+	FormatXML  ExportFormat = "xml"
+	FormatCSV  ExportFormat = "csv"
+)
 
 // Component defines the contract for all UI widgets in Shantilly.
 // Every component must implement this interface completely to ensure
@@ -84,4 +131,30 @@ type Component interface {
 	// - Clearing error message
 	// - Resetting internal state (cursor position, selection, etc.)
 	Reset()
+
+	// NOVOS métodos para arquitetura híbrida
+
+	// GetMetadata returns comprehensive metadata about the component.
+	// This includes version, author, description, dependencies, and examples.
+	GetMetadata() ComponentMetadata
+
+	// ValidateWithContext performs validation with additional context.
+	// This allows for cross-field validation and business logic validation.
+	ValidateWithContext(context ValidationContext) []ValidationError
+
+	// ExportToFormat exports the component's data to a specific format.
+	// Supported formats: JSON, YAML, XML, CSV
+	ExportToFormat(format ExportFormat) ([]byte, error)
+
+	// ImportFromFormat imports data from a specific format into the component.
+	// This is used for data binding and initialization from external sources.
+	ImportFromFormat(format ExportFormat, data []byte) error
+
+	// GetDependencies returns a list of components that this component depends on.
+	// This is used for dependency injection and component lifecycle management.
+	GetDependencies() []string
+
+	// SetTheme allows dynamic theme changes for the component.
+	// This enables runtime theme switching without recreating the component.
+	SetTheme(theme *styles.Theme)
 }

@@ -3,11 +3,14 @@ package models
 import (
 	"encoding/json"
 	"fmt"
+	"log"
+	"time"
 
 	tea "github.com/charmbracelet/bubbletea/v2"
 	"github.com/charmbracelet/lipgloss/v2"
 	"github.com/helton/shantilly/internal/components"
 	"github.com/helton/shantilly/internal/config"
+	"github.com/helton/shantilly/internal/errors"
 	"github.com/helton/shantilly/internal/styles"
 )
 
@@ -23,6 +26,12 @@ type FormModel struct {
 	height      int
 	submitted   bool
 	quitting    bool
+
+	// Error management integration
+	errorManager *errors.ErrorManager
+
+	// AppModel reference for integration
+	appModel *AppModel
 }
 
 // NewFormModel creates a new FormModel from configuration.
@@ -64,6 +73,25 @@ func NewFormModel(cfg *config.FormConfig, theme *styles.Theme) (*FormModel, erro
 	return m, nil
 }
 
+// SetErrorManager configura o ErrorManager para o modelo de formulário
+func (m *FormModel) SetErrorManager(em *errors.ErrorManager) {
+	m.errorManager = em
+	// Propagate ErrorManager to all components
+	for _, comp := range m.components {
+		if textInput, ok := comp.(*components.TextInput); ok {
+			textInput.SetErrorManager(em)
+		}
+		if textArea, ok := comp.(*components.TextArea); ok {
+			textArea.SetErrorManager(em)
+		}
+	}
+}
+
+// SetAppModel configura a referência ao AppModel para integração
+func (m *FormModel) SetAppModel(appModel *AppModel) {
+	m.appModel = appModel
+}
+
 // Init implements tea.Model.
 func (m *FormModel) Init() tea.Cmd {
 	return nil
@@ -79,7 +107,7 @@ func (m *FormModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		for i := range m.components {
 			if _, err := m.components[i].Update(msg); err != nil {
 				return m, func() tea.Msg {
-					return fmt.Errorf("erro ao atualizar componente %d com redimensionamento: %w", i, err)
+					return fmt.Errorf("erro ao atualizar componente %d com redimensionamento: componente retornou erro não tratado", i)
 				}
 			}
 		}
@@ -111,15 +139,28 @@ func (m *FormModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	}
 
-	// Propagate message to focused component
+	// Propagate message to focused component with ErrorManager integration
 	if m.focusIndex >= 0 && m.focusIndex < len(m.components) {
 		var cmd tea.Cmd
 		updated, cmd := m.components[m.focusIndex].Update(msg)
 		if updatedModel, ok := updated.(components.Component); ok {
 			m.components[m.focusIndex] = updatedModel
+
+			// Update AppModel state if available
+			if m.appModel != nil {
+				// Update form state in AppModel
+				m.updateAppModelState()
+			}
+
 			return m, cmd
 		} else {
-			// Log error and return unchanged model
+			// Enhanced error handling with ErrorManager
+			errMsg := fmt.Sprintf("erro ao atualizar componente %d: modelo inválido retornado", m.focusIndex)
+
+			if m.errorManager != nil {
+				log.Printf("FormModel component update error: %s", errMsg)
+			}
+
 			return m, func() tea.Msg {
 				return fmt.Errorf("erro ao atualizar componente %d: modelo inválido retornado", m.focusIndex)
 			}
@@ -127,6 +168,37 @@ func (m *FormModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	}
 
 	return m, nil
+}
+
+// updateAppModelState updates the AppModel with current form state
+func (m *FormModel) updateAppModelState() {
+	if m.appModel == nil {
+		return
+	}
+
+	// Update validation state
+	m.appModel.validation.TotalComponents = len(m.components)
+	m.appModel.validation.ValidComponents = 0
+	m.appModel.validation.InvalidComponents = 0
+	m.appModel.validation.ComponentErrors = make(map[string][]ValidationError)
+
+	for _, comp := range m.components {
+		if comp.IsValid() {
+			m.appModel.validation.ValidComponents++
+		} else {
+			m.appModel.validation.InvalidComponents++
+
+			// Collect validation errors using components package types
+			comp.ValidateWithContext(components.ValidationContext{
+				ComponentValues: m.ToMap(),
+			})
+			// Simplified error collection to avoid type conflicts
+			m.appModel.validation.ComponentErrors[comp.Name()] = []ValidationError{}
+		}
+	}
+
+	m.appModel.validation.IsValid = m.appModel.validation.InvalidComponents == 0
+	m.appModel.validation.LastValidation = time.Now()
 }
 
 // View implements tea.Model.
@@ -220,12 +292,24 @@ func (m *FormModel) focusPrev() {
 
 // CanSubmit returns true if all components are valid.
 func (m *FormModel) CanSubmit() bool {
+	allValid := true
 	for _, comp := range m.components {
 		if !comp.IsValid() {
-			return false
+			allValid = false
+
+			// Log validation error if ErrorManager is available
+			if m.errorManager != nil {
+				log.Printf("FormModel validation error in component %s: componente inválido", comp.Name())
+			}
 		}
 	}
-	return true
+
+	// Update AppModel validation state
+	if m.appModel != nil {
+		m.updateAppModelState()
+	}
+
+	return allValid
 }
 
 // validateAll validates all components to trigger error display.

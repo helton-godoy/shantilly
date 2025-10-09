@@ -1,0 +1,140 @@
+# Exemplo de demonstração dos componentes FilePicker e Tabs avançados
+# Este arquivo demonstra as funcionalidades implementadas na Macro-Tarefa 4
+
+global:
+  app_name: "Shantilly Advanced Components Demo"
+  version: "1.0.0"
+  debug: true
+  log_level: "info"
+
+# Configuração do componente FilePicker avançado
+forms:
+- name: "file_picker_demo"
+  title: "Demonstração do FilePicker Avançado"
+  description: "Teste todas as funcionalidades do componente FilePicker"
+  components:
+  - type: "filepicker"
+    name: "arquivo_config"
+    label: "Arquivo de Configuração"
+    required: true
+    help: "Selecione um arquivo de configuração YAML ou JSON"
+    options:
+      filter: "*.yaml,*.yml,*.json"
+      show_hidden: false
+      max_history: 20
+      preview_mode: true
+    default: "./config.yaml"
+
+  - type: "filepicker"
+    name: "pasta_projeto"
+    label: "Pasta do Projeto"
+    required: false
+    help: "Selecione uma pasta de projeto Go"
+    options:
+      filter: "*"
+      show_hidden: true
+      max_history: 30
+
+# Configuração do componente Tabs avançado
+tabs:
+- name: "demo_tabs"
+  title: "Demonstração dos Componentes Avançados"
+  tabs:
+  - name: "arquivos"
+    label: "📁 Arquivos"
+    components:
+    - type: "filepicker"
+      name: "arquivo_1"
+      label: "Arquivo Principal"
+      required: true
+      options:
+        filter: "*.go"
+        preview_mode: true
+
+    - type: "filepicker"
+      name: "arquivo_2"
+      label: "Arquivo Secundário"
+      required: false
+      options:
+        filter: "*.md"
+
+  - name: "configuracao"
+    label: "⚙️ Configuração"
+    components:
+    - type: "textinput"
+      name: "nome_projeto"
+      label: "Nome do Projeto"
+      required: true
+      validation:
+        min_length: 3
+        max_length: 50
+
+    - type: "checkbox"
+      name: "habilitar_logs"
+      label: "Habilitar Logs Detalhados"
+      default: true
+
+    - type: "slider"
+      name: "timeout"
+      label: "Timeout (segundos)"
+      default: 30
+      options:
+        min: 10
+        max: 300
+
+  - name: "validacao"
+    label: "✅ Validação"
+    components:
+    - type: "textinput"
+      name: "email"
+      label: "E-mail"
+      required: true
+      validation:
+        pattern: "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$"
+
+    - type: "textinput"
+      name: "telefone"
+      label: "Telefone"
+      required: false
+      validation:
+        pattern: "^\\(?\\d{2}\\)?\\s?\\d{4,5}-?\\d{4}$"
+
+# Configuração de temas dinâmicos
+themes:
+  default:
+    name: "default"
+    colors:
+      primary: "#7D56F4"
+      secondary: "#04B575"
+      error: "#FF0000"
+      text: "#E0E0E0"
+      background: "#1A1A1A"
+
+  dark:
+    name: "dark"
+    colors:
+      primary: "#5A3FBF"
+      secondary: "#0087D7"
+      error: "#FF4444"
+      text: "#FFFFFF"
+      background: "#0D1117"
+
+# Configuração de validação avançada
+validation:
+  component:
+    strict_mode: true
+    enable_cross_field: true
+  global:
+    enable_business_rules: true
+
+# Configuração de performance
+performance:
+  enable_metrics: true
+  max_concurrent_operations: 10
+  cache_size: 100
+
+# Configuração de segurança
+security:
+  enable_csrf: false
+  allowed_file_types: [ ".yaml", ".yml", ".json", ".md", ".go" ]
+  max_file_size: "10MB"

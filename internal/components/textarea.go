@@ -1,12 +1,15 @@
 package components
 
 import (
+	"encoding/json"
 	"fmt"
+	"log"
 	"strings"
 
 	"github.com/charmbracelet/bubbles/v2/textarea"
 	tea "github.com/charmbracelet/bubbletea/v2"
 	"github.com/helton/shantilly/internal/config"
+	"github.com/helton/shantilly/internal/errors"
 	"github.com/helton/shantilly/internal/styles"
 )
 
@@ -26,6 +29,9 @@ type TextArea struct {
 	// Validation options
 	minLength int
 	maxLength int
+
+	// Error management integration
+	errorManager *errors.ErrorManager
 }
 
 // NewTextArea creates a new TextArea component from configuration.
@@ -79,6 +85,11 @@ func NewTextArea(cfg config.ComponentConfig, theme *styles.Theme) (*TextArea, er
 	}
 
 	return t, nil
+}
+
+// SetErrorManager configura o ErrorManager para o componente
+func (t *TextArea) SetErrorManager(em *errors.ErrorManager) {
+	t.errorManager = em
 }
 
 // Init implements tea.Model.
@@ -168,9 +179,13 @@ func (t *TextArea) SetFocus(focused bool) {
 func (t *TextArea) IsValid() bool {
 	value := t.model.Value()
 
-	// Required validation
+	// Required validation with ErrorManager integration
 	if t.required && strings.TrimSpace(value) == "" {
 		t.errorMsg = "Este campo é obrigatório"
+
+		if t.errorManager != nil {
+			log.Printf("TextArea validation error in %s: campo obrigatório não preenchido", t.name)
+		}
 		return false
 	}
 
@@ -180,18 +195,27 @@ func (t *TextArea) IsValid() bool {
 		return true
 	}
 
-	// Min length validation
+	// Min length validation with ErrorManager integration
 	if t.minLength > 0 && len(value) < t.minLength {
 		t.errorMsg = fmt.Sprintf("Mínimo de %d caracteres", t.minLength)
+
+		if t.errorManager != nil {
+			log.Printf("TextArea min length validation error in %s: valor abaixo do mínimo", t.name)
+		}
 		return false
 	}
 
-	// Max length validation
+	// Max length validation with ErrorManager integration
 	if t.maxLength > 0 && len(value) > t.maxLength {
 		t.errorMsg = fmt.Sprintf("Máximo de %d caracteres", t.maxLength)
+
+		if t.errorManager != nil {
+			log.Printf("TextArea max length validation error in %s: valor excede o máximo", t.name)
+		}
 		return false
 	}
 
+	// Clear error if validation passes
 	t.errorMsg = ""
 	return true
 }
@@ -215,10 +239,20 @@ func (t *TextArea) Value() interface{} {
 func (t *TextArea) SetValue(value interface{}) error {
 	strValue, ok := value.(string)
 	if !ok {
-		return fmt.Errorf("valor inválido: esperado string, recebido %T", value)
+		err := fmt.Errorf("valor inválido: esperado string, recebido %T", value)
+
+		if t.errorManager != nil {
+			log.Printf("TextArea type validation error in %s: tipo inválido", t.name)
+		}
+
+		return err
 	}
 
 	t.model.SetValue(strValue)
+
+	// Clear any previous error when setting a valid value
+	t.errorMsg = ""
+
 	return nil
 }
 
@@ -228,4 +262,112 @@ func (t *TextArea) Reset() {
 	t.errorMsg = ""
 	t.model.Blur()
 	t.focused = false
+}
+
+// GetMetadata implements Component.
+func (t *TextArea) GetMetadata() ComponentMetadata {
+	return ComponentMetadata{
+		Version:      "1.0.0",
+		Author:       "Shantilly Team",
+		Description:  "Multi-line text area component with validation support",
+		Dependencies: []string{},
+		Examples: []ComponentExample{
+			{
+				Name:        "Comment Field",
+				Description: "Multi-line text area for user comments",
+				Config: map[string]interface{}{
+					"type":        "textarea",
+					"name":        "comments",
+					"label":       "Comments",
+					"placeholder": "Enter your comments here...",
+				},
+			},
+		},
+		Schema: map[string]interface{}{
+			"type": "object",
+			"properties": map[string]interface{}{
+				"value": map[string]interface{}{
+					"type":        "string",
+					"description": "The text value",
+				},
+			},
+		},
+	}
+}
+
+// ValidateWithContext implements Component.
+func (t *TextArea) ValidateWithContext(context ValidationContext) []ValidationError {
+	var errors []ValidationError
+
+	// Basic validation with ErrorManager integration
+	if !t.IsValid() {
+		validationErr := ValidationError{
+			Code:     "VALIDATION_FAILED",
+			Message:  t.GetError(),
+			Field:    t.name,
+			Severity: "error",
+			Context: map[string]interface{}{
+				"component":          "TextArea",
+				"value":              t.Value(),
+				"validation_context": context,
+				"required":           t.required,
+				"min_length":         t.minLength,
+				"max_length":         t.maxLength,
+			},
+		}
+		errors = append(errors, validationErr)
+
+		// Log to ErrorManager if available
+		if t.errorManager != nil {
+			log.Printf("TextArea validation failed in %s: %s", t.name, t.GetError())
+		}
+	}
+
+	return errors
+}
+
+// ExportToFormat implements Component.
+func (t *TextArea) ExportToFormat(format ExportFormat) ([]byte, error) {
+	data := map[string]interface{}{
+		"name":     t.Name(),
+		"value":    t.Value(),
+		"metadata": t.GetMetadata(),
+	}
+
+	switch format {
+	case FormatJSON:
+		return json.MarshalIndent(data, "", "  ")
+	default:
+		return nil, fmt.Errorf("formato não suportado: %s", format)
+	}
+}
+
+// ImportFromFormat implements Component.
+func (t *TextArea) ImportFromFormat(format ExportFormat, data []byte) error {
+	var imported map[string]interface{}
+
+	switch format {
+	case FormatJSON:
+		if err := json.Unmarshal(data, &imported); err != nil {
+			return fmt.Errorf("erro ao fazer parse do JSON: %w", err)
+		}
+	default:
+		return fmt.Errorf("formato não suportado: %s", format)
+	}
+
+	if value, ok := imported["value"].(string); ok {
+		return t.SetValue(value)
+	}
+
+	return nil
+}
+
+// GetDependencies implements Component.
+func (t *TextArea) GetDependencies() []string {
+	return []string{}
+}
+
+// SetTheme implements Component.
+func (t *TextArea) SetTheme(theme *styles.Theme) {
+	t.theme = theme
 }

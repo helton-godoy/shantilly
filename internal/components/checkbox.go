@@ -1,11 +1,14 @@
 package components
 
 import (
+	"encoding/json"
 	"fmt"
+	"log"
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea/v2"
 	"github.com/helton/shantilly/internal/config"
+	"github.com/helton/shantilly/internal/errors"
 	"github.com/helton/shantilly/internal/styles"
 )
 
@@ -21,6 +24,9 @@ type Checkbox struct {
 	errorMsg     string
 	focused      bool
 	initialValue bool
+
+	// Error management integration
+	errorManager *errors.ErrorManager
 }
 
 // NewCheckbox creates a new Checkbox component from configuration.
@@ -46,6 +52,11 @@ func NewCheckbox(cfg config.ComponentConfig, theme *styles.Theme) (*Checkbox, er
 	}
 
 	return c, nil
+}
+
+// SetErrorManager configura o ErrorManager para o componente
+func (c *Checkbox) SetErrorManager(em *errors.ErrorManager) {
+	c.errorManager = em
 }
 
 // Init implements tea.Model.
@@ -123,6 +134,10 @@ func (c *Checkbox) IsValid() bool {
 	// For checkboxes, required means it must be checked
 	if c.required && !c.checked {
 		c.errorMsg = "Esta opção deve ser marcada"
+
+		if c.errorManager != nil {
+			log.Printf("Checkbox validation error in %s: opção obrigatória não marcada", c.name)
+		}
 		return false
 	}
 
@@ -149,10 +164,20 @@ func (c *Checkbox) Value() interface{} {
 func (c *Checkbox) SetValue(value interface{}) error {
 	boolValue, ok := value.(bool)
 	if !ok {
-		return fmt.Errorf("valor inválido: esperado bool, recebido %T", value)
+		err := fmt.Errorf("valor inválido: esperado bool, recebido %T", value)
+
+		if c.errorManager != nil {
+			log.Printf("Checkbox type validation error in %s: tipo inválido", c.name)
+		}
+
+		return err
 	}
 
 	c.checked = boolValue
+
+	// Clear any previous error when setting a valid value
+	c.errorMsg = ""
+
 	return nil
 }
 
@@ -161,4 +186,110 @@ func (c *Checkbox) Reset() {
 	c.checked = c.initialValue
 	c.errorMsg = ""
 	c.focused = false
+}
+
+// GetMetadata implements Component.
+func (c *Checkbox) GetMetadata() ComponentMetadata {
+	return ComponentMetadata{
+		Version:      "1.0.0",
+		Author:       "Shantilly Team",
+		Description:  "Checkbox component for boolean selections",
+		Dependencies: []string{},
+		Examples: []ComponentExample{
+			{
+				Name:        "Simple Checkbox",
+				Description: "Basic checkbox for accepting terms",
+				Config: map[string]interface{}{
+					"type":     "checkbox",
+					"name":     "accept_terms",
+					"label":    "I accept the terms and conditions",
+					"required": true,
+				},
+			},
+		},
+		Schema: map[string]interface{}{
+			"type": "object",
+			"properties": map[string]interface{}{
+				"value": map[string]interface{}{
+					"type":        "boolean",
+					"description": "The checkbox state",
+				},
+			},
+		},
+	}
+}
+
+// ValidateWithContext implements Component.
+func (c *Checkbox) ValidateWithContext(context ValidationContext) []ValidationError {
+	var errors []ValidationError
+
+	if !c.IsValid() {
+		validationErr := ValidationError{
+			Code:     "VALIDATION_FAILED",
+			Message:  c.GetError(),
+			Field:    c.name,
+			Severity: "error",
+			Context: map[string]interface{}{
+				"component":          "Checkbox",
+				"value":              c.Value(),
+				"validation_context": context,
+				"required":           c.required,
+				"checked":            c.checked,
+			},
+		}
+		errors = append(errors, validationErr)
+
+		// Log to ErrorManager if available
+		if c.errorManager != nil {
+			log.Printf("Checkbox validation failed in %s: %s", c.name, c.GetError())
+		}
+	}
+
+	return errors
+}
+
+// ExportToFormat implements Component.
+func (c *Checkbox) ExportToFormat(format ExportFormat) ([]byte, error) {
+	data := map[string]interface{}{
+		"name":     c.Name(),
+		"value":    c.Value(),
+		"metadata": c.GetMetadata(),
+	}
+
+	switch format {
+	case FormatJSON:
+		return json.MarshalIndent(data, "", "  ")
+	default:
+		return nil, fmt.Errorf("formato não suportado: %s", format)
+	}
+}
+
+// ImportFromFormat implements Component.
+func (c *Checkbox) ImportFromFormat(format ExportFormat, data []byte) error {
+	var imported map[string]interface{}
+
+	switch format {
+	case FormatJSON:
+		if err := json.Unmarshal(data, &imported); err != nil {
+			return fmt.Errorf("erro ao fazer parse do JSON: %w", err)
+		}
+	default:
+		return fmt.Errorf("formato não suportado: %s", format)
+	}
+
+	if value, ok := imported["value"].(bool); ok {
+		return c.SetValue(value)
+	}
+
+	return nil
+}
+
+// GetDependencies implements Component.
+func (c *Checkbox) GetDependencies() []string {
+	return []string{}
+}
+
+// SetTheme implements Component.
+func (c *Checkbox) SetTheme(theme *styles.Theme) {
+	c.theme = theme
 }

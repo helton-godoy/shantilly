@@ -29,6 +29,20 @@ func (m *mockUnmarshallableComponent) GetError() string                        {
 func (m *mockUnmarshallableComponent) SetError(string)                         {}
 func (m *mockUnmarshallableComponent) SetValue(interface{}) error              { return nil }
 func (m *mockUnmarshallableComponent) Reset()                                  {}
+func (m *mockUnmarshallableComponent) ExportToFormat(format components.ExportFormat) ([]byte, error) {
+	return nil, nil
+}
+func (m *mockUnmarshallableComponent) ImportFromFormat(format components.ExportFormat, data []byte) error {
+	return nil
+}
+func (m *mockUnmarshallableComponent) GetDependencies() []string    { return []string{} }
+func (m *mockUnmarshallableComponent) SetTheme(theme *styles.Theme) {}
+func (m *mockUnmarshallableComponent) GetMetadata() components.ComponentMetadata {
+	return components.ComponentMetadata{}
+}
+func (m *mockUnmarshallableComponent) ValidateWithContext(context components.ValidationContext) []components.ValidationError {
+	return []components.ValidationError{}
+}
 
 func TestNewFormModel(t *testing.T) {
 	theme := styles.DefaultTheme()
@@ -347,15 +361,18 @@ func TestFormModel_CanSubmit(t *testing.T) {
 	assert.False(t, fm.CanSubmit())
 
 	// Fill one required field
-	fm.components[0].SetValue("john")
+	err = fm.components[0].SetValue("john")
+	require.NoError(t, err)
 	assert.False(t, fm.CanSubmit()) // Still missing email
 
 	// Fill second required field
-	fm.components[1].SetValue("john@example.com")
+	err = fm.components[1].SetValue("john@example.com")
+	require.NoError(t, err)
 	assert.True(t, fm.CanSubmit()) // Now should be valid
 
 	// Optional field doesn't affect validity
-	fm.components[2].SetValue(true)
+	err = fm.components[2].SetValue(true)
+	require.NoError(t, err)
 	assert.True(t, fm.CanSubmit())
 }
 
@@ -436,9 +453,12 @@ func TestFormModel_ToJSON(t *testing.T) {
 	require.NoError(t, err)
 
 	// Set some values
-	fm.components[0].SetValue("john_doe")
-	fm.components[1].SetValue(25.0)
-	fm.components[2].SetValue(true)
+	err = fm.components[0].SetValue("john_doe")
+	require.NoError(t, err)
+	err = fm.components[1].SetValue(25.0)
+	require.NoError(t, err)
+	err = fm.components[2].SetValue(true)
+	require.NoError(t, err)
 
 	// Test JSON conversion
 	jsonStr, err := fm.ToJSON()
@@ -487,8 +507,10 @@ func TestFormModel_ToMap(t *testing.T) {
 	require.NoError(t, err)
 
 	// Set values
-	fm.components[0].SetValue("Alice")
-	fm.components[1].SetValue(false)
+	err = fm.components[0].SetValue("Alice")
+	require.NoError(t, err)
+	err = fm.components[1].SetValue(false)
+	require.NoError(t, err)
 
 	// Test map conversion
 	result := fm.ToMap()

@@ -1,4 +1,4 @@
-# Shantilly
+# SHantilly
 
 **Construtor de TUI Declarativo via YAML**
 

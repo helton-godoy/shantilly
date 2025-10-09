@@ -124,7 +124,8 @@ func TestCheckbox_Update(t *testing.T) {
 	otherKeyMsg := tea.KeyPressMsg{Code: 'a'}
 
 	t.Run("should not update when not focused", func(t *testing.T) {
-		c.SetValue(false)
+		err := c.SetValue(false)
+		require.NoError(t, err)
 		model, cmd := c.Update(spaceMsg)
 		assert.Equal(t, c, model)
 		assert.Nil(t, cmd)
@@ -133,7 +134,8 @@ func TestCheckbox_Update(t *testing.T) {
 
 	t.Run("should toggle on space key when focused and clear error", func(t *testing.T) {
 		c.SetFocus(true)
-		c.SetValue(false)
+		err := c.SetValue(false)
+		require.NoError(t, err)
 		c.SetError("an error")
 
 		c.Update(spaceMsg)
@@ -146,21 +148,24 @@ func TestCheckbox_Update(t *testing.T) {
 
 	t.Run("should toggle on enter key when focused", func(t *testing.T) {
 		c.SetFocus(true)
-		c.SetValue(false)
+		err := c.SetValue(false)
+		require.NoError(t, err)
 		c.Update(enterMsg)
 		assert.True(t, c.checked, "Should be checked after enter")
 	})
 
 	t.Run("should not toggle on other keys when focused", func(t *testing.T) {
 		c.SetFocus(true)
-		c.SetValue(true) // Start with a known state
+		err := c.SetValue(true) // Start with a known state
+		require.NoError(t, err)
 		c.Update(otherKeyMsg)
 		assert.True(t, c.checked, "State should not change for other keys")
 	})
 
 	t.Run("should not toggle on non-key messages", func(t *testing.T) {
 		c.SetFocus(true)
-		c.SetValue(false)
+		err := c.SetValue(false)
+		require.NoError(t, err)
 		msg := struct{}{} // Not a key message
 		model, cmd := c.Update(msg)
 		assert.False(t, c.checked, "Should not toggle on non-key messages")
@@ -180,13 +185,13 @@ func TestCheckbox_View(t *testing.T) {
 	}{
 		{
 			name:        "unchecked",
-			setup:       func(c *Checkbox) { c.SetValue(false) },
+			setup:       func(c *Checkbox) { _ = c.SetValue(false) }, // Error ignored for brevity in tests
 			contains:    []string{"[ ] Test Label"},
 			notContains: []string{"[✓]"},
 		},
 		{
 			name:        "checked",
-			setup:       func(c *Checkbox) { c.SetValue(true) },
+			setup:       func(c *Checkbox) { _ = c.SetValue(true) }, // Error ignored for brevity in tests
 			contains:    []string{"[✓] Test Label"},
 			notContains: []string{"[ ]"},
 		},
@@ -311,7 +316,8 @@ func TestCheckbox_Validation(t *testing.T) {
 			c, err := NewCheckbox(tt.cfg, theme)
 			require.NoError(t, err)
 
-			c.SetValue(tt.checked)
+			err = c.SetValue(tt.checked)
+			require.NoError(t, err)
 			isValid := c.IsValid()
 			assert.Equal(t, tt.isValid, isValid)
 
@@ -333,7 +339,8 @@ func TestCheckbox_Reset(t *testing.T) {
 		require.NoError(t, err)
 
 		c.SetFocus(true)
-		c.SetValue(false)
+		err = c.SetValue(false)
+		require.NoError(t, err)
 		c.SetError("Test error")
 
 		c.Reset()
@@ -349,7 +356,8 @@ func TestCheckbox_Reset(t *testing.T) {
 		require.NoError(t, err)
 
 		c.SetFocus(true)
-		c.SetValue(true)
+		err = c.SetValue(true)
+		require.NoError(t, err)
 		c.SetError("Test error")
 
 		c.Reset()

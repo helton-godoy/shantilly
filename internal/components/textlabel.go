@@ -1,6 +1,7 @@
 package components
 
 import (
+	"encoding/json"
 	"fmt"
 
 	tea "github.com/charmbracelet/bubbletea/v2"
@@ -101,4 +102,86 @@ func (t *TextLabel) SetValue(value interface{}) error {
 // Reset implements Component.
 func (t *TextLabel) Reset() {
 	// No-op for static component
+}
+
+// GetMetadata implements Component.
+func (t *TextLabel) GetMetadata() ComponentMetadata {
+	return ComponentMetadata{
+		Version:      "1.0.0",
+		Author:       "Shantilly Team",
+		Description:  "Static text label component for display-only text",
+		Dependencies: []string{},
+		Examples: []ComponentExample{
+			{
+				Name:        "Simple Label",
+				Description: "Basic static text label",
+				Config: map[string]interface{}{
+					"type":  "text",
+					"name":  "title",
+					"label": "Welcome to Shantilly",
+				},
+			},
+		},
+		Schema: map[string]interface{}{
+			"type": "object",
+			"properties": map[string]interface{}{
+				"value": map[string]interface{}{
+					"type":        "string",
+					"description": "The label text",
+				},
+			},
+		},
+	}
+}
+
+// ValidateWithContext implements Component.
+func (t *TextLabel) ValidateWithContext(context ValidationContext) []ValidationError {
+	// Static component always passes validation
+	return []ValidationError{}
+}
+
+// ExportToFormat implements Component.
+func (t *TextLabel) ExportToFormat(format ExportFormat) ([]byte, error) {
+	data := map[string]interface{}{
+		"name":     t.Name(),
+		"value":    t.Value(),
+		"metadata": t.GetMetadata(),
+	}
+
+	switch format {
+	case FormatJSON:
+		return json.MarshalIndent(data, "", "  ")
+	default:
+		return nil, fmt.Errorf("formato não suportado: %s", format)
+	}
+}
+
+// ImportFromFormat implements Component.
+func (t *TextLabel) ImportFromFormat(format ExportFormat, data []byte) error {
+	var imported map[string]interface{}
+
+	switch format {
+	case FormatJSON:
+		if err := json.Unmarshal(data, &imported); err != nil {
+			return fmt.Errorf("erro ao fazer parse do JSON: %w", err)
+		}
+	default:
+		return fmt.Errorf("formato não suportado: %s", format)
+	}
+
+	if value, ok := imported["value"].(string); ok {
+		return t.SetValue(value)
+	}
+
+	return nil
+}
+
+// GetDependencies implements Component.
+func (t *TextLabel) GetDependencies() []string {
+	return []string{}
+}
+
+// SetTheme implements Component.
+func (t *TextLabel) SetTheme(theme *styles.Theme) {
+	t.theme = theme
 }

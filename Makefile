@@ -64,6 +64,37 @@ dev: ## Run in development mode (build and run)
 	@make build
 	@./$(BUILD_DIR)/$(BINARY_NAME)
 
+report: ## Generate automated status report with coverage, metrics, and code analysis
+	@echo "Generating automated status report..."
+	@./scripts/generate-status-report.sh
+	@echo "✓ Status report generated: docs/reports/status/current-status.md"
+
+# Dynamic Reports System Targets
+capture-reports: ## Capture dynamic reports interactively
+	@echo "Starting dynamic report capture..."
+	@./scripts/capture-dynamic-reports.sh capture
+
+list-dynamic-reports: ## List all captured dynamic reports
+	@echo "Listing dynamic reports..."
+	@./scripts/capture-dynamic-reports.sh list
+
+backup-reports: ## Create backup of all dynamic reports
+	@echo "Creating backup of dynamic reports..."
+	@./scripts/backup-dynamic-reports.sh create
+
+restore-reports: ## Restore reports from latest backup
+	@echo "Restoring reports from latest backup..."
+	@./scripts/backup-dynamic-reports.sh restore-latest
+
+reports-stats: ## Show statistics of reports system
+	@echo "Reports system statistics..."
+	@echo ""
+	@echo "Automated Reports:"
+	@./scripts/backup-dynamic-reports.sh stats
+	@echo ""
+	@echo "Dynamic Reports:"
+	@./scripts/capture-dynamic-reports.sh index
+
 # CI Pipeline Target
 ci: fmt lint coverage build ## Run full CI pipeline (format, lint, coverage, build)
 	@echo "✓ CI Pipeline completed successfully"

@@ -54,7 +54,9 @@ run_test() {
     echo
 
     cd "$PROJECT_DIR"
-    timeout 3s env -i $env_vars ./bin/shantilly form "$TEST_FILE" || true
+    echo "🔧 Executando com variáveis de ambiente: $env_vars"
+    echo "📊 Definindo SHANTILLY_TEST=1 para ativar modo de teste"
+    timeout 3s env -i $env_vars SHANTILLY_TEST=1 ./bin/shantilly form "$TEST_FILE" || true
 
     echo
     echo "✅ Test '$env_name' completed."

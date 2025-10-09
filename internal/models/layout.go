@@ -79,7 +79,7 @@ func (m *LayoutModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		for i := range m.components {
 			if _, err := m.components[i].Update(msg); err != nil {
 				return m, func() tea.Msg {
-					return fmt.Errorf("erro ao atualizar componente %d com redimensionamento: %w", i, err)
+					return fmt.Errorf("erro ao atualizar componente %d com redimensionamento: componente retornou erro não tratado", i)
 				}
 			}
 		}
