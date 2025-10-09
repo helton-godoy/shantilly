@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"strings"
 
 	tea "github.com/charmbracelet/bubbletea/v2"
+	"github.com/charmbracelet/lipgloss/v2"
 	"github.com/helton/shantilly/internal/config"
 	"github.com/helton/shantilly/internal/errors"
 	"github.com/helton/shantilly/internal/styles"
@@ -134,7 +134,7 @@ func (rg *RadioGroup) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 // View implements tea.Model.
 func (rg *RadioGroup) View() string {
-	var b strings.Builder
+	var parts []string
 
 	// Render label
 	if rg.label != "" {
@@ -142,11 +142,11 @@ func (rg *RadioGroup) View() string {
 		if rg.errorMsg != "" {
 			labelStyle = rg.theme.LabelError
 		}
-		b.WriteString(labelStyle.Render(rg.label))
-		b.WriteString("\n")
+		parts = append(parts, labelStyle.Render(rg.label))
 	}
 
 	// Render radio items
+	var itemParts []string
 	for i, item := range rg.items {
 		var symbol string
 		var line string
@@ -168,26 +168,18 @@ func (rg *RadioGroup) View() string {
 		} else {
 			line = rg.theme.RadioUnselected.Render(line)
 		}
-
-		b.WriteString(line)
-		if i < len(rg.items)-1 {
-			b.WriteString("\n")
-		}
+		itemParts = append(itemParts, line)
 	}
+	parts = append(parts, itemParts...)
 
-	// Render error message if present
+	// Render error or help text
 	if rg.errorMsg != "" {
-		b.WriteString("\n")
-		b.WriteString(rg.theme.Error.Render("✗ " + rg.errorMsg))
+		parts = append(parts, rg.theme.Error.Render("✗ "+rg.errorMsg))
+	} else if rg.help != "" {
+		parts = append(parts, rg.theme.Help.Render(rg.help))
 	}
 
-	// Render help text if present and no error
-	if rg.help != "" && rg.errorMsg == "" {
-		b.WriteString("\n")
-		b.WriteString(rg.theme.Help.Render(rg.help))
-	}
-
-	return b.String()
+	return lipgloss.JoinVertical(lipgloss.Left, parts...)
 }
 
 // Name implements Component.

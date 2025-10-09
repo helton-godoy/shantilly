@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea/v2"
+	"github.com/charmbracelet/lipgloss/v2"
 	"github.com/helton/shantilly/internal/config"
 	"github.com/helton/shantilly/internal/styles"
 )
@@ -167,7 +168,7 @@ func (fp *FilePicker) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 // View implements tea.Model.
 func (fp *FilePicker) View() string {
-	var b strings.Builder
+	var parts []string
 
 	// Header com informações básicas
 	var header string
@@ -180,40 +181,33 @@ func (fp *FilePicker) View() string {
 	if fp.label != "" {
 		header += fmt.Sprintf(" (%s)", fp.label)
 	}
-	b.WriteString(fp.theme.Border.Render(header))
-	b.WriteString("\n")
+	parts = append(parts, fp.theme.Border.Render(header))
 
 	// Renderizar lista de arquivos se estiver focado
 	if fp.focused {
-		fileList := fp.renderFileList()
-		b.WriteString(fileList)
+		fileListParts := fp.renderFileList()
+		parts = append(parts, fileListParts...)
 	} else {
 		// Quando não focado, mostrar apenas informações básicas
-		b.WriteString("Pressione Enter para navegar")
+		parts = append(parts, "Pressione Enter para navegar")
 	}
 
-	// Render error message if present
+	// Render error or help text
 	if fp.errorMsg != "" {
-		b.WriteString("\n")
-		b.WriteString(fp.theme.Error.Render("✗ " + fp.errorMsg))
-	}
-
-	// Render help text if present and no error
-	if fp.help != "" && fp.errorMsg == "" {
-		b.WriteString("\n")
-		b.WriteString(fp.theme.Help.Render(fp.help))
+		parts = append(parts, fp.theme.Error.Render("✗ "+fp.errorMsg))
+	} else if fp.help != "" {
+		parts = append(parts, fp.theme.Help.Render(fp.help))
 	}
 
 	// Render contextual help quando focado
 	if fp.focused && fp.errorMsg == "" {
 		contextualHelp := fp.getContextualHelp()
 		if contextualHelp != "" {
-			b.WriteString("\n")
-			b.WriteString(fp.theme.Help.Render(contextualHelp))
+			parts = append(parts, fp.theme.Help.Render(contextualHelp))
 		}
 	}
 
-	return b.String()
+	return lipgloss.JoinVertical(lipgloss.Left, parts...)
 }
 
 // Name implements Component.
@@ -679,7 +673,7 @@ func (fp *FilePicker) loadPreview() {
 }
 
 // renderFileList renderiza a lista de arquivos
-func (fp *FilePicker) renderFileList() string {
+func (fp *FilePicker) renderFileList() []string {
 	var lines []string
 
 	// Header com informações do diretório atual
@@ -724,7 +718,7 @@ func (fp *FilePicker) renderFileList() string {
 		}
 	}
 
-	return strings.Join(lines, "\n")
+	return lines
 }
 
 // Funções auxiliares

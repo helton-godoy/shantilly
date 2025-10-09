@@ -148,7 +148,7 @@ func (s *Slider) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 // View implements tea.Model.
 func (s *Slider) View() string {
-	var b strings.Builder
+	var parts []string
 
 	// Render label
 	if s.label != "" {
@@ -156,8 +156,7 @@ func (s *Slider) View() string {
 		if s.errorMsg != "" {
 			labelStyle = s.theme.LabelError
 		}
-		b.WriteString(labelStyle.Render(s.label))
-		b.WriteString("\n")
+		parts = append(parts, labelStyle.Render(s.label))
 	}
 
 	// Calculate position
@@ -178,28 +177,22 @@ func (s *Slider) View() string {
 	filledBar := s.theme.SliderFilled.Render(filled)
 	emptyBar := s.theme.SliderBar.Render(empty)
 
-	// Build slider line (without container border - border is applied by layout)
+	// Build slider line
 	sliderLine := filledBar + emptyBar + fmt.Sprintf(" %.1f", s.value)
-	b.WriteString(sliderLine)
-	b.WriteString("\n")
+	parts = append(parts, sliderLine)
 
 	// Render min/max labels
 	rangeLabel := s.theme.Help.Render(fmt.Sprintf("Min: %.1f | Max: %.1f", s.min, s.max))
-	b.WriteString(rangeLabel)
+	parts = append(parts, rangeLabel)
 
-	// Render error message if present
+	// Render error or help text
 	if s.errorMsg != "" {
-		b.WriteString("\n")
-		b.WriteString(s.theme.Error.Render("✗ " + s.errorMsg))
+		parts = append(parts, s.theme.Error.Render("✗ "+s.errorMsg))
+	} else if s.help != "" {
+		parts = append(parts, s.theme.Help.Render(s.help))
 	}
 
-	// Render help text if present and no error
-	if s.help != "" && s.errorMsg == "" {
-		b.WriteString("\n")
-		b.WriteString(s.theme.Help.Render(s.help))
-	}
-
-	return b.String()
+	return lipgloss.JoinVertical(lipgloss.Left, parts...)
 }
 
 // Name implements Component.

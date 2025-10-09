@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"strings"
 
 	tea "github.com/charmbracelet/bubbletea/v2"
+	"github.com/charmbracelet/lipgloss/v2"
 	"github.com/helton/shantilly/internal/config"
 	"github.com/helton/shantilly/internal/errors"
 	"github.com/helton/shantilly/internal/styles"
@@ -85,7 +85,7 @@ func (c *Checkbox) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 // View implements tea.Model.
 func (c *Checkbox) View() string {
-	var b strings.Builder
+	var parts []string
 
 	// Determine checkbox symbol
 	var symbol string
@@ -95,23 +95,18 @@ func (c *Checkbox) View() string {
 		symbol = "[ ]"
 	}
 
-	// Build the checkbox line (without border - border is applied by layout)
+	// Build the checkbox line
 	checkboxLine := symbol + " " + c.label
-	b.WriteString(checkboxLine)
+	parts = append(parts, checkboxLine)
 
-	// Render error message if present
+	// Render error or help text
 	if c.errorMsg != "" {
-		b.WriteString("\n")
-		b.WriteString(c.theme.Error.Render("✗ " + c.errorMsg))
+		parts = append(parts, c.theme.Error.Render("✗ "+c.errorMsg))
+	} else if c.help != "" {
+		parts = append(parts, c.theme.Help.Render(c.help))
 	}
 
-	// Render help text if present and no error
-	if c.help != "" && c.errorMsg == "" {
-		b.WriteString("\n")
-		b.WriteString(c.theme.Help.Render(c.help))
-	}
-
-	return b.String()
+	return lipgloss.JoinVertical(lipgloss.Left, parts...)
 }
 
 // Name implements Component.

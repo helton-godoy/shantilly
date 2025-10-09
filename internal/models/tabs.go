@@ -2,7 +2,6 @@ package models
 
 import (
 	"fmt"
-	"strings"
 
 	tea "github.com/charmbracelet/bubbletea/v2"
 	"github.com/charmbracelet/lipgloss/v2"
@@ -134,26 +133,24 @@ func (t *TabsModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 // View implements tea.Model.
 func (t *TabsModel) View() string {
-	var b strings.Builder
+	var parts []string
 
 	// Render tab headers
 	tabHeaders := t.renderTabHeaders()
-	b.WriteString(tabHeaders)
-	b.WriteString("\n")
+	parts = append(parts, tabHeaders)
 
 	// Render active tab content
 	if t.activeTab >= 0 && t.activeTab < len(t.tabs) {
 		activeTabContent := t.renderActiveTab()
-		b.WriteString(activeTabContent)
+		parts = append(parts, activeTabContent)
 	}
 
 	// Render error message if present
 	if t.errorMsg != "" {
-		b.WriteString("\n")
-		b.WriteString(t.theme.Error.Render("✗ " + t.errorMsg))
+		parts = append(parts, t.theme.Error.Render("✗ "+t.errorMsg))
 	}
 
-	return b.String()
+	return lipgloss.JoinVertical(lipgloss.Left, parts...)
 }
 
 // renderTabHeaders renders the tab navigation header.
