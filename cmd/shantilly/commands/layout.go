@@ -72,7 +72,7 @@ func runLayout(cmd *cobra.Command, args []string) error {
 	if isCI || isTestEnv {
 		log.Printf("[DEBUG] Ambiente CI/teste detectado, configurando window size padrão")
 		opts = append(opts, tea.WithWindowSize(80, 24))
-		log.Printf("[DEBUG] Window size definido para 80x24 para ambiente: CI=%s, Test=%s", isCI, isTestEnv)
+		log.Printf("[DEBUG] Window size definido para 80x24 para ambiente: CI=%t, Test=%t", isCI, isTestEnv)
 	}
 
 	p := tea.NewProgram(model, opts...)
