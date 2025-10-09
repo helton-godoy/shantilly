@@ -114,7 +114,7 @@ func (t *TextInput) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 // View implements tea.Model.
 func (t *TextInput) View() string {
-	var b strings.Builder
+	var parts []string
 
 	// Render label
 	if t.label != "" {
@@ -122,26 +122,20 @@ func (t *TextInput) View() string {
 		if t.errorMsg != "" {
 			labelStyle = t.theme.LabelError
 		}
-		b.WriteString(labelStyle.Render(t.label))
-		b.WriteString("\n")
+		parts = append(parts, labelStyle.Render(t.label))
 	}
 
-	// Render input (without border - border is applied by layout)
-	b.WriteString(t.model.View())
+	// Render input
+	parts = append(parts, t.model.View())
 
-	// Render error message if present
+	// Render error or help text
 	if t.errorMsg != "" {
-		b.WriteString("\n")
-		b.WriteString(t.theme.Error.Render("✗ " + t.errorMsg))
+		parts = append(parts, t.theme.Error.Render("✗ "+t.errorMsg))
+	} else if t.help != "" {
+		parts = append(parts, t.theme.Help.Render(t.help))
 	}
 
-	// Render help text if present and no error
-	if t.help != "" && t.errorMsg == "" {
-		b.WriteString("\n")
-		b.WriteString(t.theme.Help.Render(t.help))
-	}
-
-	return b.String()
+	return lipgloss.JoinVertical(lipgloss.Left, parts...)
 }
 
 // Name implements Component.
