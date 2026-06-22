@@ -12,7 +12,7 @@ jobs:
     env:
       VCPKG_BINARY_SOURCES: "clear;nuget,GitHub,readwrite"
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
