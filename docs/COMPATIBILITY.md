@@ -11,8 +11,9 @@ Status values: **pass**, **partial**, **missing**, or **unverified**.
 | Commands read from `stdin` | Yes | Preserved CLI entry point selected for production | `compatibility_stdin_query` | Pass |
 | Events and values on `stdout` | Yes | Query output verified; interactive events remain unverified | `compatibility_stdin_query` | Partial |
 | `--help` and `--version` | Yes | Preserved CLI entry point selected for production | `compatibility_cli_help`, `compatibility_cli_version` | Pass |
-| `--resizable` | Yes | Preserved CLI and constructor support it | None | Unverified |
+| `--resizable` | Yes | Long and short options are accepted | `compatibility_cli_resizable`, `compatibility_cli_short_r` | Pass |
 | `--hidden` and explicit `show` | Yes | `--hidden` verified; explicit `show` remains unverified | `compatibility_stdin_query` | Partial |
+| Invalid option handling | Exit 1 and diagnostic on `stderr` | Exact behavior preserved | `compatibility_cli_invalid_option` | Pass |
 | Accept/reject exit semantics | Yes | Legacy implementation retained | None | Unverified |
 | Pipes/FIFOs and background input | Yes | Parser code is transitional | None | Unverified |
 

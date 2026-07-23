@@ -5,20 +5,20 @@ Update this file at the end of every development session. Keep it factual and co
 ## Current State
 
 - Active phase: **Phase 0 — Baseline**.
-- Last completed task: project naming was standardized under ADR 0004 and validated in the Qt6 container.
-- Working tree expectation: naming, packaging, obsolete qmake cleanup, and documentation changes pending review.
+- Last completed task: CLI option aliases, resizable mode, and invalid-option semantics were characterized.
+- Working tree expectation: clean after the CLI option characterization commit.
 - Reference repository: `helton-godoy/dialogbox`, commit `6989740`; local audit clone was placed at `/tmp/dialogbox-reference` and must not be treated as persistent.
 
 ## Verified Findings
 
-- The current executable opens a static demonstration and does not connect the original `stdin/stdout` protocol.
-- CMake registers only `tests/example_test.cpp`, a trivial GoogleTest.
-- Qt Test sources under `tests/auto` are not part of the active CMake test target and reference parts of an obsolete layout.
-- Local CMake configuration could not complete because Qt6 development files were unavailable in the host environment.
+- The production target uses the preserved V1 CLI entry point and reads the original protocol from `stdin`.
+- CMake links unit tests to production library code and registers compatibility and quality checks in CTest.
+- Historical Qt Test sources under `tests/auto` are not active and require evaluation before reuse or removal.
+- Host CMake configuration remains unavailable because Qt6 development files are not installed; Docker is the verified environment.
 
 ## Next Exact Step
 
-Characterize the remaining CLI options and invalid-option exit behavior, then expand command coverage beyond the minimal `query` scenario.
+Characterize explicit `show` behavior and expand protocol coverage beyond the minimal `query` scenario.
 
 ## Completion Checklist
 
@@ -40,3 +40,5 @@ Characterize the remaining CLI options and invalid-option exit behavior, then ex
 - Updated README, installation, architecture, and implementation-status documents to match the verified CMake layout and current runtime state.
 - Standardized the brand as `SHantilly` and technical Unix identifiers as `shantilly` under ADR 0004; removed obsolete generated/qmake test files.
 - Containerized build and CTest after naming changes: passed, 5/5 tests, including the naming-convention quality gate.
+- Characterized `-h`, `-v`, `--resizable`, `-r`, and invalid-option exit/stderr behavior in CTest.
+- Clean container build in `/tmp/shantilly-build` and full CTest suite: passed, 10/10 tests.

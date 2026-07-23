@@ -29,6 +29,43 @@ add_test(
     -DEXPECTED_FILE=${COMPATIBILITY_DIR}/fixtures/version.txt -P
     ${COMPATIBILITY_DIR}/assert_cli_output.cmake)
 
+foreach(alias IN ITEMS -h -v)
+  if(alias STREQUAL "-h")
+    set(fixture help.txt)
+    set(test_name compatibility_cli_help_short)
+  else()
+    set(fixture version.txt)
+    set(test_name compatibility_cli_version_short)
+  endif()
+  add_test(
+    NAME ${test_name}
+    COMMAND
+      ${CMAKE_COMMAND} -DEXECUTABLE=$<TARGET_FILE:shantilly>
+      -DARGUMENT=${alias}
+      -DEXPECTED_FILE=${COMPATIBILITY_DIR}/fixtures/${fixture} -P
+      ${COMPATIBILITY_DIR}/assert_cli_output.cmake)
+endforeach()
+
+add_test(
+  NAME compatibility_cli_invalid_option
+  COMMAND
+    ${CMAKE_COMMAND} -DEXECUTABLE=$<TARGET_FILE:shantilly>
+    -DARGUMENT=--invalid-option -DEXPECTED_RESULT=1
+    "-DEXPECTED_stderr=Error: Unrecognized option --invalid-option" -P
+    ${COMPATIBILITY_DIR}/assert_cli_result.cmake)
+
+foreach(option IN ITEMS --resizable -r)
+  string(REPLACE "--" "" suffix ${option})
+  string(REPLACE "-" "short_" suffix ${suffix})
+  add_test(
+    NAME compatibility_cli_${suffix}
+    COMMAND
+      ${CMAKE_COMMAND} -DEXECUTABLE=$<TARGET_FILE:shantilly>
+      -DARGUMENT=${option} -DTERMINATING_ARGUMENT=--version
+      -DEXPECTED_RESULT=0 -P
+      ${COMPATIBILITY_DIR}/assert_cli_result.cmake)
+endforeach()
+
 add_test(
   NAME compatibility_stdin_query
   COMMAND
@@ -38,7 +75,9 @@ add_test(
     ${COMPATIBILITY_DIR}/assert_stdin_query.cmake)
 
 set_tests_properties(
-  compatibility_cli_help compatibility_cli_version compatibility_stdin_query
+  compatibility_cli_help compatibility_cli_help_short compatibility_cli_version
+  compatibility_cli_version_short compatibility_cli_invalid_option
+  compatibility_cli_resizable compatibility_cli_short_r compatibility_stdin_query
   PROPERTIES LABELS "compatibility" TIMEOUT 10)
 
 add_test(
