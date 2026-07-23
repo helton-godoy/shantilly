@@ -4,6 +4,8 @@ Obrigado pelo interesse em contribuir com o SHantilly! Este documento define as 
 
 ## 🚀 Como Começar
 
+Antes de criar uma alteração, consulte o [roadmap](docs/ROADMAP.md), a [matriz de compatibilidade](docs/COMPATIBILITY.md), os [ADRs](docs/adr/) e o [handoff atual](docs/SESSION_HANDOFF.md). Contribuições devem pertencer à fase ativa ou justificar uma mudança de prioridade.
+
 1. **Fork** o repositório no GitHub.
 2. **Clone** seu fork localmente:
 
@@ -70,6 +72,8 @@ Seguimos a convenção [Conventional Commits](https://www.conventionalcommits.or
 ## 🧪 Testes
 
 Contribuições sem testes podem ser rejeitadas. Se você adicionar uma nova funcionalidade, adicione um teste correspondente em `tests/`.
+
+Mudanças herdadas do `dialogbox` exigem primeiro um teste de caracterização. Preserve sintaxe de comandos, protocolo `stdin/stdout`, opções CLI e códigos de saída. Atualize a matriz de compatibilidade na mesma contribuição.
 
 ## 📄 Licença
 
