@@ -1,0 +1,13 @@
+add tabs primary_tabs top
+add page "First" first_page current
+add checkbox "First choice" first_choice checked
+add tabs nested_tabs left
+add page "Nested one" nested_one current
+add textbox "Nested text" nested_text "hello"
+add page "Nested two" nested_two
+add radiobutton "Nested choice" nested_choice checked
+end tabs
+add page "Second" second_page
+add checkbox "Second choice" second_choice
+end tabs
+query

@@ -82,7 +82,12 @@ add_test(
     -DEXPECTED_FILE=${COMPATIBILITY_DIR}/fixtures/protocol_mutations.txt -P
     ${COMPATIBILITY_DIR}/assert_stdin_output.cmake)
 
-foreach(scenario IN ITEMS clear_semantics layout_widgets)
+foreach(scenario
+        IN ITEMS
+           clear_semantics
+           layout_widgets
+           listbox_progressbar
+           nested_tabs)
   add_test(
     NAME compatibility_${scenario}
     COMMAND
@@ -97,7 +102,8 @@ set_tests_properties(
   compatibility_cli_version_short compatibility_cli_invalid_option
   compatibility_cli_resizable compatibility_cli_short_r compatibility_stdin_query
   compatibility_protocol_mutations compatibility_clear_semantics
-  compatibility_layout_widgets
+  compatibility_layout_widgets compatibility_listbox_progressbar
+  compatibility_nested_tabs
   PROPERTIES LABELS "compatibility" TIMEOUT 10)
 
 add_test(

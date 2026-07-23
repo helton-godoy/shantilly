@@ -1,0 +1,13 @@
+add listbox "Options" choices
+add item "First"
+add item "Second" current
+end listbox
+add progressbar progress
+set progress minimum 10
+set progress maximum 90
+set progress value 40
+query
+set choices#0 current
+query
+remove choices:First
+query

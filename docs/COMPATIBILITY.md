@@ -29,8 +29,8 @@ Status values: **pass**, **partial**, **missing**, or **unverified**.
 
 | Widgets | Status | Notes |
 | --- | --- | --- |
-| Checkbox, combobox, groupbox, radiobutton, slider, textbox | Partial | Representative values and nesting covered by `compatibility_layout_widgets` |
-| Frame, label, listbox, page, progressbar, pushbutton, separator, tabs, textview | Unverified | Implementations exist, but active CTest does not exercise them |
+| Checkbox, combobox, groupbox, listbox, page, progressbar, radiobutton, slider, tabs, textbox | Partial | Values, item addressing, non-reportable progress, and legacy empty tab markers covered by compatibility fixtures |
+| Frame, label, pushbutton, separator, textview | Unverified | Implementations exist, but active CTest does not exercise them |
 | Calendar | Extension, unverified | Not part of original compatibility contract |
 | Table | Extension, unverified | Not part of original compatibility contract |
 | Chart | Extension, unverified | Not part of original compatibility contract |
