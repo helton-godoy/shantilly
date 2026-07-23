@@ -7,7 +7,7 @@ SHantilly modernizes `helton-godoy/dialogbox` while preserving its shell-facing 
 ## Project Structure
 
 - `src/code/shantilly/`: executable and transitional legacy code.
-- `libs/SHantilly-ui/`: reusable Qt6 widgets and builders.
+- `libs/shantilly-ui/`: reusable Qt6 widgets and builders.
 - `tests/`: CTest, Qt Test, integration, and compatibility tests.
 - `examples/`: shell examples and behavioral demonstrations.
 - `docs/`: user documentation, architecture, roadmap, and decisions.

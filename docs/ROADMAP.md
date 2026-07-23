@@ -9,7 +9,7 @@ This roadmap controls the evolution from `dialogbox` to SHantilly. Only one phas
 | 0 | Establish governance and behavioral baseline | In progress |
 | 1 | Restore the scriptable CLI contract | Pending |
 | 2 | Separate protocol, parser, execution, and UI | Pending |
-| 3 | Migrate widgets into `SHantilly-ui` | Pending |
+| 3 | Migrate widgets into `shantilly-ui` | Pending |
 | 4 | Add SHantilly extensions safely | Pending |
 | 5 | Harden releases, packaging, and documentation | Pending |
 
@@ -20,7 +20,7 @@ Scope: document the original contract, make the build deterministic, and run mea
 - [x] Record mission, roadmap, compatibility matrix, ADRs, and handoff process.
 - [x] Import representative `dialogbox` behavior as characterization fixtures.
 - [x] Replace the trivial CTest target with production-linked tests.
-- [ ] Remove stale build and test instructions.
+- [x] Remove stale build and test instructions.
 - [ ] Establish a known-good baseline for supported platforms.
 
 Exit criteria: CI builds production code and tests the CLI protocol, options, exit status, and representative widgets.
@@ -39,7 +39,7 @@ Exit criteria: components have isolated tests and compatibility tests remain gre
 
 ## Phase 3 — Widget Migration
 
-Move one widget at a time to `SHantilly-ui`, preserving ownership, focus, layout, reporting, and mutation semantics.
+Move one widget at a time to `shantilly-ui`, preserving ownership, focus, layout, reporting, and mutation semantics.
 
 Exit criteria: every original widget is marked compatible and covered by tests.
 

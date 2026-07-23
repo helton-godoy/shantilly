@@ -1,8 +1,8 @@
 [Desktop Entry]
 Name=SHantilly
 Comment=GUI widgets for shell scripts
-Exec=SHantilly
-Icon=SHantilly
+Exec=shantilly
+Icon=shantilly
 Terminal=false
 Type=Application
 Categories=Development;Utility;

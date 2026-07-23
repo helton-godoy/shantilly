@@ -35,7 +35,7 @@ if(ENABLE_COVERAGE)
 endif()
 
 # Subprojetos
-add_subdirectory(libs/SHantilly-ui)
+add_subdirectory(libs/shantilly-ui)
 add_subdirectory(src/code/shantilly)
 # add_subdirectory(apps/studio) # Habilitaremos quando iniciarmos o Studio
 
@@ -52,7 +52,7 @@ add_subdirectory(tests)
 #   src/code/shantilly/core/parser/Tokenizer.cpp
 #   src/code/shantilly/core/parser/WidgetParserUtils.cpp)
 
-# target_link_libraries(poc_modern_cli PRIVATE Qt6::Widgets SHantilly-ui)
+# target_link_libraries(poc_modern_cli PRIVATE Qt6::Widgets shantilly-ui)
 
 # target_include_directories(
 #   poc_modern_cli PRIVATE src/code/shantilly/core/parser
@@ -62,7 +62,7 @@ add_subdirectory(tests)
 
 add_executable(visual_verifier src/visual_verifier.cpp)
 
-target_link_libraries(visual_verifier PRIVATE Qt6::Widgets SHantilly-ui)
+target_link_libraries(visual_verifier PRIVATE Qt6::Widgets shantilly-ui)
 
 # ============================================================================
 # Instalação
@@ -72,11 +72,11 @@ include(GNUInstallDirs)
 install(TARGETS shantilly visual_verifier
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
-install(DIRECTORY libs/SHantilly-ui/include/
+install(DIRECTORY libs/shantilly-ui/include/
         DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/SHantilly)
 
 install(
-  TARGETS SHantilly-ui
+  TARGETS shantilly-ui
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
 

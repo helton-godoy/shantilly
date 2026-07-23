@@ -1,4 +1,4 @@
-Usage: SHantilly [options]
+Usage: shantilly [options]
 Translate commands on stdin into widgets of GUI SHantilly and output user
 actions to stdout.
 

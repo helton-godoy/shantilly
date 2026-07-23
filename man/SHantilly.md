@@ -108,9 +108,9 @@ Este script cria uma janela com um rótulo e um botão de "Sair".
 ```bash
 #!/bin/bash
 
-SHantilly << EOF
+shantilly << EOF
 set title "Exemplo Simples"
-add label "Olá, Mundo! Bem-vindo ao diSHantilly
+add label "Olá, Mundo! Bem-vindo ao SHantilly."
 add pushbutton "Sair" btn_sair exit
 EOF
 ```
@@ -148,8 +148,10 @@ add frame "" btn_frame horizontal
 end
 EOM
 
-# Executa o diSHantilly captura a saída
-OUTPUT=$(echo "$UI_SCRIPT" | dialSHantilly Verifica se o usuário pressionou "Login"
+# Executa o SHantilly e captura a saída
+OUTPUT=$(echo "$UI_SCRIPT" | shantilly)
+
+# Verifica se o usuário pressionou "Login"
 if [ $? -eq 0 ]; then
   # Extrai os valores usando o comando 'query'
   eval "$OUTPUT"

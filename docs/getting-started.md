@@ -24,7 +24,7 @@ Script ──stdin──▶ SHantilly ──GUI──▶ Usuário
 ```bash
 #!/bin/bash
 
-SHantilly << 'EOF'
+shantilly << 'EOF'
 # Configurar a janela
 set title "Meu Programa"
 
@@ -49,7 +49,7 @@ O diálogo mais simples possível.
 ```bash
 #!/bin/bash
 
-SHantilly << 'EOF'
+shantilly << 'EOF'
 set title "Olá Mundo"
 add label "Bem-vindo ao SHantilly!"
 add pushbutton "OK" btn_ok exit default
@@ -75,7 +75,7 @@ Coletando informações do usuário.
 ```bash
 #!/bin/bash
 
-OUTPUT=$(SHantilly << 'EOF'
+OUTPUT=$(shantilly << 'EOF'
 set title "Cadastro"
 
 add textbox "Nome:" txt_nome
@@ -118,7 +118,7 @@ Permitindo múltiplas seleções.
 ```bash
 #!/bin/bash
 
-OUTPUT=$(SHantilly << 'EOF'
+OUTPUT=$(shantilly << 'EOF'
 set title "Configurações"
 
 add groupbox "Opções" grp_opcoes vertical
@@ -158,7 +158,7 @@ Quando apenas uma opção é válida.
 ```bash
 #!/bin/bash
 
-OUTPUT=$(SHantilly << 'EOF'
+OUTPUT=$(shantilly << 'EOF'
 set title "Escolha o Tema"
 
 add groupbox "Tema da Interface" grp_tema vertical
@@ -200,7 +200,7 @@ Escolhendo de uma lista predefinida.
 ```bash
 #!/bin/bash
 
-OUTPUT=$(SHantilly << 'EOF'
+OUTPUT=$(shantilly << 'EOF'
 set title "Selecione o Sistema"
 
 add listbox "Sistemas Disponíveis:" lst_sistemas selection
@@ -238,7 +238,7 @@ fi
 Use `<< 'EOF'` (com aspas) para texto literal:
 
 ```bash
-SHantilly << 'EOF'
+shantilly << 'EOF'
 add label "Texto literal $variavel não expande"
 EOF
 ```
@@ -247,7 +247,7 @@ Use `<< EOF` (sem aspas) para expandir variáveis:
 
 ```bash
 NOME="João"
-SHantilly << EOF
+shantilly << EOF
 add label "Olá, $NOME!"
 EOF
 ```
@@ -264,7 +264,7 @@ set btn_style stylesheet "background-color: #2196F3; color: white; padding: 10px
 Para evitar "piscadas" ao construir interfaces complexas:
 
 ```bash
-SHantilly --hidden << 'EOF'
+shantilly --hidden << 'EOF'
 # ... muitos widgets ...
 show  # Mostra só quando tudo estiver pronto
 EOF

@@ -27,7 +27,7 @@ Criar um formulário de login com:
 # Demonstra campos de entrada e processamento de dados
 
 # Capturar a saída do SHantilly
-OUTPUT=$(SHantilly << 'EOF'
+OUTPUT=$(shantilly << 'EOF'
 set title "Login"
 
 # Ícone do sistema (opcional)
@@ -118,7 +118,7 @@ Agrupa widgets visualmente com uma borda e título.
 ### Captura de Dados
 
 ```bash
-OUTPUT=$(SHantilly << 'EOF' ... EOF)
+OUTPUT=$(shantilly << 'EOF' ... EOF)
 eval "$OUTPUT"
 ```
 

@@ -21,7 +21,7 @@ Criar um diálogo simples com uma mensagem e um botão para fechar.
 # Tutorial 01: Hello World
 # O exemplo mais simples de SHantilly
 
-SHantilly << 'EOF'
+shantilly << 'EOF'
 # Configurar título da janela
 set title "Meu Primeiro Diálogo"
 
@@ -45,7 +45,7 @@ echo "Diálogo fechado!"
 ### 1. O Heredoc
 
 ```bash
-SHantilly << 'EOF'
+shantilly << 'EOF'
 ...
 EOF
 ```

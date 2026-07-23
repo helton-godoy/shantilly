@@ -1,13 +1,13 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(libSHantilly-ui)
+project(shantilly_ui)
 
 # Habilitar MOC para processar Q_OBJECT nos widgets da lib
 set(CMAKE_AUTOMOC ON)
 
 # Incluir Headers explicitamente para que o AUTOMOC os encontre
 add_library(
-  SHantilly-ui STATIC
+  shantilly-ui STATIC
   src/icon_helper.cpp
   include/icon_helper.h
   src/logger.cpp
@@ -25,7 +25,7 @@ add_library(
   include/SHantillyBuilder.h
   include/WidgetConfigs.h)
 
-target_include_directories(SHantilly-ui
+target_include_directories(shantilly-ui
                            PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-target_link_libraries(SHantilly-ui PUBLIC Qt6::Widgets Qt6::Charts Qt6::Svg)
+target_link_libraries(shantilly-ui PUBLIC Qt6::Widgets Qt6::Charts Qt6::Svg)

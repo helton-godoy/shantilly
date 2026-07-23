@@ -14,7 +14,7 @@ O SHantilly suporta modificação dinâmica da interface em resposta a eventos d
 #!/bin/bash
 
 # Iniciar SHantilly como co-processo
-coproc SHantilly --hidden
+coproc shantilly --hidden
 INPUTFD=${COPROC[0]}    # Leitura (saída do SHantilly)
 OUTPUTFD=${COPROC[1]}   # Escrita (entrada do SHantilly)
 
@@ -65,7 +65,7 @@ rm -f "$FIFO_IN" "$FIFO_OUT"
 mkfifo "$FIFO_IN" "$FIFO_OUT"
 
 # Iniciar SHantilly em background
-SHantilly < "$FIFO_OUT" > "$FIFO_IN" &
+shantilly < "$FIFO_OUT" > "$FIFO_IN" &
 SHANTILLY_PID=$!
 
 # Cleanup ao sair
@@ -206,10 +206,10 @@ O SHantilly respeita o tema Qt do sistema. Para forçar:
 ```bash
 # Via variável de ambiente
 export QT_STYLE_OVERRIDE=Fusion
-SHantilly < comandos.txt
+shantilly < comandos.txt
 
 # Via linha de comando
-SHantilly --style fusion < comandos.txt
+shantilly --style fusion < comandos.txt
 ```
 
 ### Tema Escuro via Stylesheet
@@ -262,7 +262,7 @@ set stylesheet "
 ```bash
 #!/bin/bash
 
-SHantilly << 'EOF'
+shantilly << 'EOF'
 set title "Vendas por Região"
 
 add chart "Distribuição Regional" chart_vendas
@@ -343,7 +343,7 @@ cal_entrega=2026-01-20
 ```bash
 #!/bin/bash
 
-coproc SHantilly --hidden
+coproc shantilly --hidden
 INPUTFD=${COPROC[0]}
 OUTPUTFD=${COPROC[1]}
 

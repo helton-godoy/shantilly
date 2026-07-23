@@ -36,11 +36,12 @@
 #define E_SUCCESS 0
 #define E_ARG 1
 
-#define PROGRAM_NAME "SHantilly"
+#define PRODUCT_NAME "SHantilly"
+#define PROGRAM_NAME "shantilly"
 #define VERSION "1.0"
 
 static const char* about_message =
-    PROGRAM_NAME " v" VERSION "\n"
+    PRODUCT_NAME " v" VERSION "\n"
                  "Copyright (C) 2015-2016, 2020 Andriy Martynets "
                  "<andy.martynets@gmail.com>\n"
                  "License GPLv3+: GNU GPL version 3 or later "
@@ -51,7 +52,7 @@ static const char* about_message =
                  "More information on <https://github.com/martynets/SHantilly/>.\n";
 
 static const char* about_html_message =
-    "<h3>" PROGRAM_NAME " version " VERSION "</h3>"
+    "<h3>" PRODUCT_NAME " version " VERSION "</h3>"
     "<p><b>Copyright (C) 2015-2016, 2020 Andriy Martynets </b><a href=\""
     "mailto:andy.martynets@gmail.com\">andy.martynets@gmail.com</a></p>"
     "<p><b>License GPLv3+:</b> GNU GPL version 3 or later <a href="
@@ -64,7 +65,7 @@ static const char* about_html_message =
     "\"https://github.com/martynets/SHantilly/\">"
     "https://github.com/martynets/SHantilly/</a>.</p>";
 
-static const char* default_title = PROGRAM_NAME " v" VERSION;
+static const char* default_title = PRODUCT_NAME " v" VERSION;
 
 static void help();
 static void version();

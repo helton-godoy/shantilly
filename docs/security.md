@@ -12,7 +12,7 @@ Todo dado vindo do usuário deve ser validado antes de usar.
 
 ```bash
 # ❌ PERIGOSO - Executa entrada diretamente
-OUTPUT=$(SHantilly << 'EOF'
+OUTPUT=$(shantilly << 'EOF'
 add textbox "Comando:" txt_cmd
 add pushbutton "Executar" btn_run apply exit
 EOF
@@ -40,7 +40,7 @@ sanitize_input() {
     echo "$input" | tr -d '`$(){}[]|;&<>\\' | head -c 100
 }
 
-OUTPUT=$(SHantilly << 'EOF'
+OUTPUT=$(shantilly << 'EOF'
 add textbox "Nome do arquivo:" txt_filename
 add pushbutton "Criar" btn_create apply exit
 EOF
@@ -296,7 +296,7 @@ wget https://example.com/installer.sh
 
 ```bash
 # Antes de operações destrutivas
-SHantilly << 'EOF'
+shantilly << 'EOF'
 set title "⚠️ ATENÇÃO"
 add label "<b>Esta ação irá formatar o disco!</b>"
 add label "Todos os dados serão perdidos."

@@ -10,7 +10,7 @@ RCC_DIR = obj
 UI_DIR = obj
 
 # Input
-INCLUDEPATH += $$PWD/../../../libs/SHantilly-ui/include
+INCLUDEPATH += $$PWD/../../../libs/shantilly-ui/include
 INCLUDEPATH += $$PWD/legacy/v2_incomplete
 INCLUDEPATH += $$PWD/legacy/v1_monolith
 
@@ -21,11 +21,11 @@ HEADERS += SHantilly.h \
            legacy/v2_incomplete/parser.h \
            legacy/v2_incomplete/parser_driver.h \
            legacy/v2_incomplete/execution_context.h \
-           ../../../libs/SHantilly-ui/include/icon_helper.h \
-           ../../../libs/SHantilly-ui/include/theme_manager.h \
-           ../../../libs/SHantilly-ui/include/logger.h \
-           ../../../libs/SHantilly-ui/include/custom_table_widget.h \
-           ../../../libs/SHantilly-ui/include/custom_chart_widget.h \
+           ../../../libs/shantilly-ui/include/icon_helper.h \
+           ../../../libs/shantilly-ui/include/theme_manager.h \
+           ../../../libs/shantilly-ui/include/logger.h \
+           ../../../libs/shantilly-ui/include/custom_table_widget.h \
+           ../../../libs/shantilly-ui/include/custom_chart_widget.h \
            legacy/v2_incomplete/commands/add_command.h \
            legacy/v2_incomplete/commands/set_command.h \
            legacy/v2_incomplete/commands/query_command.h \
@@ -45,10 +45,10 @@ SOURCES += SHantilly.cc \
            legacy/v2_incomplete/parser.cpp \
            legacy/v2_incomplete/parser_driver.cpp \
            legacy/v2_incomplete/execution_context.cpp \
-           ../../../libs/SHantilly-ui/src/icon_helper.cpp \
-           ../../../libs/SHantilly-ui/src/theme_manager.cpp \
-           ../../../libs/SHantilly-ui/src/logger.cpp \
-           ../../../libs/SHantilly-ui/src/custom_chart_widget.cpp \
+           ../../../libs/shantilly-ui/src/icon_helper.cpp \
+           ../../../libs/shantilly-ui/src/theme_manager.cpp \
+           ../../../libs/shantilly-ui/src/logger.cpp \
+           ../../../libs/shantilly-ui/src/custom_chart_widget.cpp \
            legacy/v2_incomplete/commands/add_command.cpp \
            legacy/v2_incomplete/commands/set_command.cpp \
            legacy/v2_incomplete/commands/query_command.cpp \

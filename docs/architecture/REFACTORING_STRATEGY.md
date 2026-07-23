@@ -22,7 +22,7 @@ graph TD
     end
 
     subgraph "SHantilly Shared Ecosystem"
-        Lib[libs/SHantilly-ui]
+        Lib[libs/shantilly-ui]
     end
 
     CLI --> Lib
@@ -36,7 +36,7 @@ graph TD
 Conforme o [ADR 0002](../adr/0002-cmake-primary-build.md), CMake é o sistema oficial de build, testes, cobertura e empacotamento.
 
 1. **Build oficial (CMake):**
-    - Configurado na raiz e nos subdiretórios `src/code/shantilly`, `libs/SHantilly-ui` e `tests`.
+    - Configurado na raiz e nos subdiretórios `src/code/shantilly`, `libs/shantilly-ui` e `tests`.
     - Produz o executável `build/bin/shantilly` e registra a suíte no CTest.
     - É o único build que pode fornecer evidência para o roadmap e a matriz de compatibilidade.
 
@@ -48,7 +48,7 @@ Conforme o [ADR 0002](../adr/0002-cmake-primary-build.md), CMake é o sistema of
 
 ## 3. Log de Migração de Componentes
 
-Este registro rastreia quais componentes foram movidos do monólito (`src/code/shantilly`) para a biblioteca (`libs/SHantilly-ui`).
+Este registro rastreia quais componentes foram movidos do monólito (`src/code/shantilly`) para a biblioteca (`libs/shantilly-ui`).
 
 | Componente     | Data       | Motivo da Migração                                      | Dependências           |
 | :------------- | :--------- | :------------------------------------------------------ | :--------------------- |
@@ -90,7 +90,7 @@ Os Widgets Qt atuais contêm lógica de execução de shell script (ex: `system(
 /
 ├── CMakeLists.txt          # Build system mestre (Novo)
 ├── libs/
-│   └── SHantilly-ui/         # A Biblioteca (Static/Shared Lib)
+│   └── shantilly-ui/         # A Biblioteca (Static/Shared Lib)
 │       ├── include/        # Headers públicos (icon_helper.h, logger.h)
 │       └── src/            # Implementação (icon_helper.cpp, logger.cpp)
 ├── src/

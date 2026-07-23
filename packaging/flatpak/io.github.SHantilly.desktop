@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=SHantilly
 Comment=GUI widgets for shell scripts
-Exec=SHantilly
+Exec=shantilly
 Icon=io.github.SHantilly
 Terminal=false
 Type=Application

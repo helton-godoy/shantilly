@@ -8,7 +8,7 @@
 
 ```bash
 # Seu primeiro diálogo em uma linha!
-echo 'add label "Olá, SHantilly!" | add pushbutton "Fechar" exit' | SHantilly
+echo 'add label "Olá, SHantilly!" | add pushbutton "Fechar" exit' | shantilly
 ```
 
 ---

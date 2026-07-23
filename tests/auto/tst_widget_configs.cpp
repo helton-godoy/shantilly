@@ -1,5 +1,5 @@
 #include <QtTest>
-// We expect this header to exist in libs/SHantilly-ui/include
+// We expect this header to exist in libs/shantilly-ui/include
 #include <WidgetConfigs.h>
 
 class TestWidgetConfigs : public QObject {

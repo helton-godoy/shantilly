@@ -2,7 +2,7 @@ app-id: io.github.SHantilly
 runtime: org.kde.Platform
 runtime-version: "6.6"
 sdk: org.kde.Sdk
-command: SHantilly
+command: shantilly
 
 finish-args:
   - --share=ipc
@@ -12,15 +12,11 @@ finish-args:
   - --filesystem=home
 
 modules:
-  - name: SHantilly
-    buildsystem: qmake
+  - name: shantilly
+    buildsystem: cmake-ninja
     sources:
       - type: dir
         path: ../..
-    build-commands:
-      - cd src/code/SHantilly && qmake6 SHantilly.pro
-      - make -C src/code/SHantilly
     post-install:
-      - install -D -m 755 src/code/SHantilly/bin/SHantilly /app/bin/SHantilly
       - install -D -m 644 packaging/flatpak/io.github.SHantilly.desktop /app/share/applications/io.github.SHantilly.desktop
       - install -D -m 644 packaging/flatpak/io.github.SHantilly.metainfo.xml /app/share/metainfo/io.github.SHantilly.metainfo.xml

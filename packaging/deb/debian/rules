@@ -4,24 +4,14 @@ export DH_VERBOSE = 1
 export QT_SELECT = qt6
 
 %:
-	dh $@
-
-override_dh_auto_configure:
-	cd src/code/SHantilly && rm -rf obj bin Makefile && qmake6 SHantilly.pro
-
-override_dh_auto_build:
-	$(MAKE) -C src/code/SHantilly
+	dh $@ --buildsystem=cmake
 
 override_dh_auto_test:
 	@echo "Skipping tests during packaging"
 
 override_dh_auto_install:
-	install -D -m 755 src/code/SHantilly/bin/shantilly debian/shantilly/usr/bin/shantilly
+	dh_auto_install
 	install -D -m 644 packaging/deb/debian/shantilly.desktop debian/shantilly/usr/share/applications/shantilly.desktop
-
-override_dh_auto_clean:
-	$(MAKE) -C src/code/SHantilly clean || true
-	rm -f src/code/SHantilly/bin/shantilly
 
 override_dh_shlibdeps:
 	dh_shlibdeps --dpkg-shlibdeps-params=--ignore-missing-info

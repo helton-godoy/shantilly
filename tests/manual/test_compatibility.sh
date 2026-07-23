@@ -5,7 +5,7 @@
 # idênticos ao dialogbox original.
 #
 
-SHANTILLY_BIN="${SHANTILLY_BIN:-./src/code/SHantilly/bin/SHantilly}"
+SHANTILLY_BIN="${SHANTILLY_BIN:-./build/bin/shantilly}"
 DIALOGBOX_BIN="${DIALOGBOX_BIN:-dialogbox}"
 
 echo "=== SHantilly Compatibility Test ==="

@@ -1,4 +1,4 @@
-Name:           SHantilly
+Name:           shantilly
 Version:        1.0.0
 Release:        1%{?dist}
 Summary:        GUI widgets for shell scripts
@@ -9,6 +9,7 @@ Source0:        %{name}-%{version}.tar.gz
 
 # Build dependencies
 BuildRequires:  gcc-c++
+BuildRequires:  cmake
 BuildRequires:  make
 BuildRequires:  qt6-qtbase-devel
 BuildRequires:  qt6-qtcharts-devel
@@ -38,18 +39,17 @@ Features:
 %autosetup
 
 %build
-cd src/code/SHantilly
-qmake6 SHantilly.pro
-%make_build
+%cmake
+%cmake_build
 
 %install
-install -D -m 755 src/code/SHantilly/bin/SHantilly %{buildroot}%{_bindir}/SHantilly
+%cmake_install
 install -D -m 644 packaging/rpm/SHantilly.desktop %{buildroot}%{_datadir}/applications/SHantilly.desktop
 
 %files
 %license LICENSE
 %doc README.md
-%{_bindir}/SHantilly
+%{_bindir}/shantilly
 %{_datadir}/applications/SHantilly.desktop
 
 %changelog

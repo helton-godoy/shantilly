@@ -202,7 +202,7 @@ Este script cria uma janela com um rótulo e um botão de \[lq]Sair\[rq].
 .EX
 #!/bin/bash
 
-SHantilly << EOF
+shantilly << EOF
 set title \[dq]Exemplo Simples\[dq]
 add label \[dq]Olá, Mundo! Bem\-vindo ao SHantilly.\[dq]
 add pushbutton \[dq]Sair\[dq] btn_sair exit
@@ -242,7 +242,7 @@ end
 EOM
 
 # Executa o SHantilly e captura a saída
-OUTPUT=$(echo \[dq]$UI_SCRIPT\[dq] | SHantilly)
+OUTPUT=$(echo \[dq]$UI_SCRIPT\[dq] | shantilly)
 
 # Verifica se o usuário pressionou \[dq]Login\[dq]
 if [ $? \-eq 0 ]; then

@@ -26,7 +26,7 @@ Criar uma interface de gerenciamento de dados com:
 # Tutorial 04: Tabela de Dados
 # Demonstra table widget com busca e edição
 
-coproc SHantilly --resizable --hidden
+coproc shantilly --resizable --hidden
 INPUTFD=${COPROC[0]}
 OUTPUTFD=${COPROC[1]}
 

@@ -22,7 +22,7 @@ Este documento resume apenas fatos verificados. O detalhamento funcional e as ev
 - O ponto de entrada CLI preservado em `legacy/v1_monolith` está ativo temporariamente para manter o contrato do `dialogbox`.
 - `SHantilly.cc` ainda concentra criação, mutação e relatório de widgets.
 - `legacy/v2_incomplete` é compilado por compatibilidade transitória, mas não representa a arquitetura alvo.
-- `libs/SHantilly-ui` contém widgets, configurações, temas, ícones e o builder em evolução.
+- `libs/shantilly-ui` contém widgets, configurações, temas, ícones e o builder em evolução.
 - CMake é o sistema oficial; arquivos qmake permanecem somente como material transitório.
 
 ## Próximos critérios

@@ -33,12 +33,10 @@ if [[ ! -f "${TOOLS_DIR}/linuxdeploy-plugin-qt-x86_64.AppImage" ]]; then
 fi
 
 # Build SHantilly if not already built
-if [[ ! -f "${PROJECT_ROOT}/src/code/SHantilly/bin/SHantilly" ]]; then
+if [[ ! -f "${PROJECT_ROOT}/build/bin/shantilly" ]]; then
 	echo "Building SHantilly..."
-	cd "${PROJECT_ROOT}/src/code/SHantilly"
-	rm -rf obj bin Makefile  # Clean old build artifacts
-	qmake6 SHantilly.pro
-	make -j$(nproc)
+	cmake -S "${PROJECT_ROOT}" -B "${PROJECT_ROOT}/build"
+	cmake --build "${PROJECT_ROOT}/build" -j"$(nproc)"
 fi
 
 # Create AppDir structure
@@ -48,7 +46,7 @@ mkdir -p "${APPDIR}/usr/share/applications"
 mkdir -p "${APPDIR}/usr/share/icons/hicolor/256x256/apps"
 
 # Copy files
-cp "${PROJECT_ROOT}/src/code/SHantilly/bin/shantilly" "${APPDIR}/usr/bin/"
+cp "${PROJECT_ROOT}/build/bin/shantilly" "${APPDIR}/usr/bin/"
 cp "${SCRIPT_DIR}/shantilly.desktop" "${APPDIR}/usr/share/applications/"
 
 # Create a simple icon (placeholder - replace with actual icon)

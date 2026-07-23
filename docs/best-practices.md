@@ -30,7 +30,7 @@ process_output() {
 }
 
 # === EXECUÇÃO ===
-OUTPUT=$(echo "$UI" | SHantilly)
+OUTPUT=$(echo "$UI" | shantilly)
 [ $? -eq 1 ] && process_output "$OUTPUT"
 ```
 
@@ -54,7 +54,7 @@ EOF
 }
 
 # Uso
-SHantilly << EOF
+shantilly << EOF
 $(add_styled_button "Salvar" btn_save "#4CAF50")
 $(add_styled_button "Cancelar" btn_cancel "#f44336")
 show
@@ -107,7 +107,7 @@ add textbox "Email:" txt_user_email
 
 ```bash
 # Evita "piscadas" enquanto constrói a interface
-SHantilly --hidden << 'EOF'
+shantilly --hidden << 'EOF'
 # ... muitos widgets ...
 show  # Mostra tudo de uma vez
 EOF
@@ -152,7 +152,7 @@ EOF
 ### Verificar Código de Saída
 
 ```bash
-OUTPUT=$(SHantilly << 'EOF'
+OUTPUT=$(shantilly << 'EOF'
 add pushbutton "OK" btn_ok apply exit default
 add pushbutton "Cancelar" btn_cancel exit
 EOF
@@ -177,7 +177,7 @@ esac
 ### Validar Entrada
 
 ```bash
-OUTPUT=$(SHantilly << 'EOF'
+OUTPUT=$(shantilly << 'EOF'
 add textbox "Email:" txt_email
 add pushbutton "Enviar" btn_send apply exit default
 EOF
@@ -188,7 +188,7 @@ if [ $? -eq 1 ]; then
 
     # Validar email
     if [[ ! "$txt_email" =~ ^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}$ ]]; then
-        SHantilly << 'EOF'
+        shantilly << 'EOF'
 add label "Email inválido!"
 add pushbutton "OK" btn_ok exit default
 show
@@ -209,7 +209,7 @@ confirm_dialog() {
     local message="$1"
     local title="${2:-Confirmação}"
 
-    SHantilly << EOF
+    shantilly << EOF
 set title "$title"
 add label "$message"
 add frame frm horizontal
@@ -234,7 +234,7 @@ fi
 error_dialog() {
     local message="$1"
 
-    SHantilly << EOF
+    shantilly << EOF
 set title "Erro"
 set icon "dialog-error"
 add label "<span style='color:red'>⚠️ $message</span>"
@@ -255,7 +255,7 @@ input_dialog() {
     local default_value="${2:-}"
     local result
 
-    result=$(SHantilly << EOF
+    result=$(shantilly << EOF
 set title "Entrada"
 add textbox "$prompt" txt_input text "$default_value"
 add frame frm horizontal
@@ -287,7 +287,7 @@ echo "Nome digitado: $nome"
 ### Comentários
 
 ```bash
-SHantilly << 'EOF'
+shantilly << 'EOF'
 # === CABEÇALHO ===
 set title "Minha App"
 

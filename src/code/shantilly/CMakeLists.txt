@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(SHantilly-cli)
+project(shantilly_cli)
 
 # Configuração Automática do Qt (MOC, UIC, RCC)
 set(CMAKE_AUTOMOC ON)
@@ -19,7 +19,7 @@ add_executable(shantilly ${SRCS})
 # Dependências
 target_link_libraries(
   shantilly PRIVATE Qt6::Widgets Qt6::Charts Qt6::PrintSupport Qt6::Network
-                    SHantilly-ui)
+                    shantilly-ui)
 
 # Includes
 target_include_directories(

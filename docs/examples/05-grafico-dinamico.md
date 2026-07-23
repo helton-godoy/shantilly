@@ -40,7 +40,7 @@ trap cleanup EXIT
 mkfifo "$FIFO_IN" "$FIFO_OUT"
 
 # Iniciar SHantilly
-SHantilly --resizable < "$FIFO_OUT" > "$FIFO_IN" &
+shantilly --resizable < "$FIFO_OUT" > "$FIFO_IN" &
 SHANTILLY_PID=$!
 
 # Construir interface

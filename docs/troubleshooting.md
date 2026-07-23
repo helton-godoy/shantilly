@@ -6,7 +6,7 @@ Soluções para problemas comuns ao usar o SHantilly.
 
 ## Problemas de Instalação
 
-### Erro: "SHantilly: command not found"
+### Erro: "shantilly: command not found"
 
 **Causa:** Binário não está no PATH.
 
@@ -14,7 +14,7 @@ Soluções para problemas comuns ao usar o SHantilly.
 
 ```bash
 # Verificar onde está instalado
-which SHantilly || find /usr -name "SHantilly" 2>/dev/null
+which shantilly || find /usr -name "SHantilly" 2>/dev/null
 
 # Adicionar ao PATH temporariamente
 export PATH="$PATH:/caminho/para/SHantilly"
@@ -141,7 +141,7 @@ add label 'Texto com "aspas" internas'
 **Solução:** Use heredoc com aspas:
 
 ```bash
-SHantilly << 'EOF'   # Note as ASPAS em EOF
+shantilly << 'EOF'   # Note as ASPAS em EOF
 add label "Preço: $100 & mais!"
 EOF
 ```
@@ -191,7 +191,7 @@ end listbox
 ```bash
 while IFS='=' read -r widget valor; do
     # processar
-done < <(SHantilly << 'EOF'
+done < <(shantilly << 'EOF'
 ...
 EOF
 )
@@ -248,7 +248,7 @@ set stylesheet "* { font-size: 14px; }"
 
 ```bash
 export QT_SCALE_FACTOR=1.5
-SHantilly < comandos.txt
+shantilly < comandos.txt
 ```
 
 ---
@@ -261,7 +261,7 @@ SHantilly < comandos.txt
 
 ```bash
 export QT_STYLE_OVERRIDE=Fusion
-SHantilly < comandos.txt
+shantilly < comandos.txt
 ```
 
 ---
@@ -280,7 +280,7 @@ Não há comando direto. Alternativas:
 ### Como verificar qual botão foi clicado?
 
 ```bash
-OUTPUT=$(SHantilly << 'EOF'
+OUTPUT=$(shantilly << 'EOF'
 add pushbutton "OK" btn_ok apply exit
 add pushbutton "Cancelar" btn_cancel exit
 EOF
@@ -351,13 +351,13 @@ Não há modo verbose nativo. Para debug:
 2. **Log de comandos:**
 
    ```bash
-   tee /tmp/SHantilly_debug.log | SHantilly
+   tee /tmp/SHantilly_debug.log | shantilly
    ```
 
 3. **Verifique saída:**
 
    ```bash
-   SHantilly < comandos.txt 2>&1 | tee /tmp/output.log
+   shantilly < comandos.txt 2>&1 | tee /tmp/output.log
    ```
 
 ---

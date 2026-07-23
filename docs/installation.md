@@ -59,7 +59,7 @@ chmod +x SHantilly-1.0-x86_64.AppImage
 ./SHantilly-1.0-x86_64.AppImage
 
 # Ou mover para o PATH
-sudo mv SHantilly-1.0-x86_64.AppImage /usr/local/bin/SHantilly
+sudo mv SHantilly-1.0-x86_64.AppImage /usr/local/bin/shantilly
 ```
 
 > **Nota**: AppImage inclui todas as dependências Qt6 embutidas.
@@ -147,7 +147,7 @@ O SHantilly detecta automaticamente o tema Qt do sistema. Para forçar um tema e
 export QT_STYLE_OVERRIDE=Fusion
 
 # Ou via argumento
-SHantilly --style fusion < comandos.txt
+shantilly --style fusion < comandos.txt
 ```
 
 ### Variáveis de Ambiente
@@ -165,13 +165,13 @@ SHantilly --style fusion < comandos.txt
 ### Pacote DEB
 
 ```bash
-sudo apt-get remove SHantilly
+sudo apt-get remove shantilly
 ```
 
 ### AppImage
 
 ```bash
-rm /usr/local/bin/SHantilly
+rm /usr/local/bin/shantilly
 ```
 
 ### Compilação Manual

@@ -124,7 +124,7 @@ Labels à esquerda, campos à direita.
 
 ```bash
 #!/bin/bash
-SHantilly << 'EOF'
+shantilly << 'EOF'
 set title "Formulário"
 
 add textbox "Nome:" txt_nome
@@ -151,7 +151,7 @@ Menu à esquerda, conteúdo à direita.
 
 ```bash
 #!/bin/bash
-SHantilly --resizable << 'EOF'
+shantilly --resizable << 'EOF'
 set title "Painel de Controle"
 
 # === SIDEBAR (coluna 1) ===
@@ -214,7 +214,7 @@ Múltiplas linhas e colunas.
 
 ```bash
 #!/bin/bash
-SHantilly << 'EOF'
+shantilly << 'EOF'
 set title "Seletor de Ícones"
 
 # Linha 1
@@ -257,7 +257,7 @@ Cada aba com seu próprio layout.
 
 ```bash
 #!/bin/bash
-SHantilly --resizable << 'EOF'
+shantilly --resizable << 'EOF'
 set title "Configurações do Sistema"
 
 add tabs tabs_main
@@ -343,7 +343,7 @@ end frame
 ### 3. Use --hidden para Interfaces Complexas
 
 ```bash
-SHantilly --hidden << 'EOF'
+shantilly --hidden << 'EOF'
 # Construir toda a interface aqui
 # ...
 # Só mostrar quando pronto

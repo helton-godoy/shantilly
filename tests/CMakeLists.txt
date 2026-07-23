@@ -7,7 +7,7 @@ find_package(GTest CONFIG REQUIRED)
 add_executable(unit_tests test_widget_configs.cpp)
 
 target_link_libraries(unit_tests PRIVATE GTest::gtest GTest::gtest_main
-                                         Qt6::Widgets SHantilly-ui)
+                                         Qt6::Widgets shantilly-ui)
 
 enable_testing()
 add_test(NAME unit_tests COMMAND unit_tests)
@@ -40,3 +40,10 @@ add_test(
 set_tests_properties(
   compatibility_cli_help compatibility_cli_version compatibility_stdin_query
   PROPERTIES LABELS "compatibility" TIMEOUT 10)
+
+add_test(
+  NAME naming_convention
+  COMMAND
+    ${CMAKE_COMMAND} -DSOURCE_DIR=${CMAKE_SOURCE_DIR} -P
+    ${CMAKE_CURRENT_SOURCE_DIR}/quality/check_naming.cmake)
+set_tests_properties(naming_convention PROPERTIES LABELS "quality")

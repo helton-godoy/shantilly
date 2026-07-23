@@ -5,8 +5,8 @@ Update this file at the end of every development session. Keep it factual and co
 ## Current State
 
 - Active phase: **Phase 0 — Baseline**.
-- Last completed task: production-linked unit and CLI compatibility tests passed in the Qt6 container.
-- Working tree expectation: compatibility, test, CMake entry-point, and progress-document changes pending review.
+- Last completed task: project naming was standardized under ADR 0004 and validated in the Qt6 container.
+- Working tree expectation: naming, packaging, obsolete qmake cleanup, and documentation changes pending review.
 - Reference repository: `helton-godoy/dialogbox`, commit `6989740`; local audit clone was placed at `/tmp/dialogbox-reference` and must not be treated as persistent.
 
 ## Verified Findings
@@ -18,7 +18,7 @@ Update this file at the end of every development session. Keep it factual and co
 
 ## Next Exact Step
 
-Modernize or retire the obsolete manual/qmake tests that still reference `src/code/SHantilly`, then characterize the remaining CLI options and invalid-option exit behavior.
+Characterize the remaining CLI options and invalid-option exit behavior, then expand command coverage beyond the minimal `query` scenario.
 
 ## Completion Checklist
 
@@ -38,3 +38,5 @@ Modernize or retire the obsolete manual/qmake tests that still reference `src/co
 - Containerized `make build_internal`: passed with Qt 6.8.2; optional XKB and CUPS discovery emitted warnings.
 - Containerized `ctest --output-on-failure`: 4/4 passed, including three compatibility tests and the production-linked `WidgetConfigsTest` cases.
 - Updated README, installation, architecture, and implementation-status documents to match the verified CMake layout and current runtime state.
+- Standardized the brand as `SHantilly` and technical Unix identifiers as `shantilly` under ADR 0004; removed obsolete generated/qmake test files.
+- Containerized build and CTest after naming changes: passed, 5/5 tests, including the naming-convention quality gate.
