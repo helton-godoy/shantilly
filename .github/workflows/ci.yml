@@ -6,68 +6,59 @@ on:
   pull_request:
     branches: [main, develop]
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  build-and-test:
+  baseline:
+    name: Debian Trixie / Qt6
     runs-on: ubuntu-latest
-    env:
-      VCPKG_BINARY_SOURCES: "clear;nuget,GitHub,readwrite"
+    timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v6
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Build development image
+        run: docker build --pull --tag shantilly-ci --file src/dev.Dockerfile .
+
+      - name: Build and test
+        run: |
+          docker run --rm +            --volume "$GITHUB_WORKSPACE:/workspace" +            --workdir /workspace +            shantilly-ci +            bash -lc '
+              cmake -S /workspace -B /tmp/shantilly-build -DCMAKE_BUILD_TYPE=Debug &&
+              cmake --build /tmp/shantilly-build --parallel 2 &&
+              ctest --test-dir /tmp/shantilly-build --parallel 2 --output-on-failure
+            '
+
+  lint:
+    name: Repository lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
-
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libgl1-mesa-dev libx11-dev libxkbcommon-dev libfontconfig1-dev libdbus-1-dev libicu-dev xvfb clang-format clang-tidy cppcheck lcov
-
-      - name: Cache vcpkg
-        uses: actions/cache@v5
-        with:
-          path: |
-            ${{ github.workspace }}/vcpkg
-            ${{ github.workspace }}/vcpkg_installed
-          key: ${{ runner.os }}-vcpkg-${{ hashFiles('vcpkg.json') }}
-          restore-keys: |
-            ${{ runner.os }}-vcpkg-
-
-      - name: Setup vcpkg
-        uses: lukka/run-vcpkg@v11
-        with:
-          vcpkgJsonGlob: "vcpkg.json"
 
       - name: Run Trunk Check
         uses: trunk-io/trunk-action@v1
 
-      - name: Build, Test and Generate Coverage
-        run: |
-          xvfb-run make coverage_internal
+  security:
+    name: Filesystem security scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
 
-      - name: Upload Coverage Report
-        uses: actions/upload-artifact@v7
-        with:
-          name: coverage-report
-          path: coverage_report/
-
-      - name: Run Clang-Tidy
-        run: make tidy_internal
-
-      - name: Run Cppcheck
-        run: make cppcheck_internal
-
-      - name: Run Trivy Vulnerability Scanner
+      - name: Run Trivy
         uses: aquasecurity/trivy-action@master
         with:
-          scan-type: "fs"
-          scan-ref: "."
+          scan-type: fs
+          scan-ref: .
           hide-progress: false
-          format: "table"
-          exit-code: "0"
+          format: table
+          exit-code: 0
           ignore-unfixed: true
-          severity: "CRITICAL,HIGH"
-
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          severity: CRITICAL,HIGH

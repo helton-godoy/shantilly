@@ -15,7 +15,7 @@ Status values: **pass**, **partial**, **missing**, or **unverified**.
 | `--hidden` and explicit `show` | Yes | Hidden startup and ordered `show` commands are accepted; visual state remains unverified | `compatibility_stdin_query`, `compatibility_protocol_mutations` | Partial |
 | Invalid option handling | Exit 1 and diagnostic on `stderr` | Exact behavior preserved | `compatibility_cli_invalid_option` | Pass |
 | Accept/reject exit semantics | Yes | Apply stays open; acceptance returns 1 and rejection returns 0 | `dialog_interaction_tests` | Pass |
-| Pipes/FIFOs and background input | Yes | Parser code is transitional | None | Unverified |
+| Pipes/FIFOs and background input | Yes | Commands remain writable while the background process is alive | `compatibility_fifo_background` | Pass |
 
 ## Commands and Layout
 

@@ -40,6 +40,17 @@ set_tests_properties(
              ENVIRONMENT "QT_QPA_PLATFORM=offscreen"
              TIMEOUT 10)
 
+add_test(
+  NAME compatibility_fifo_background
+  COMMAND
+    ${CMAKE_CURRENT_SOURCE_DIR}/compatibility/assert_fifo_input.sh
+    $<TARGET_FILE:shantilly>
+    ${CMAKE_CURRENT_SOURCE_DIR}/compatibility/fixtures/fifo_background.txt)
+set_tests_properties(
+  compatibility_fifo_background
+  PROPERTIES LABELS "compatibility;fifo"
+             TIMEOUT 10)
+
 set(COMPATIBILITY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/compatibility)
 
 add_test(
@@ -133,6 +144,7 @@ set_tests_properties(
   compatibility_protocol_mutations compatibility_clear_semantics
   compatibility_layout_widgets compatibility_listbox_progressbar
   compatibility_nested_tabs compatibility_passive_widgets
+  compatibility_fifo_background
   PROPERTIES LABELS "compatibility" TIMEOUT 10)
 
 add_test(

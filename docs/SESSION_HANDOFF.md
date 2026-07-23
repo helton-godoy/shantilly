@@ -5,8 +5,8 @@ Update this file at the end of every development session. Keep it factual and co
 ## Current State
 
 - Active phase: **Phase 0 — Baseline**.
-- Last completed task: real pushbutton clicks and accept/reject exit semantics were characterized.
-- Working tree expectation: clean after the dialog-interaction characterization commit.
+- Last completed task: FIFO/background input was characterized and the Debian Trixie CI baseline was configured.
+- Working tree expectation: clean after the FIFO and CI baseline commit.
 - Reference repository: `helton-godoy/dialogbox`, commit `6989740`; local audit clone was placed at `/tmp/dialogbox-reference` and must not be treated as persistent.
 
 ## Verified Findings
@@ -18,7 +18,7 @@ Update this file at the end of every development session. Keep it factual and co
 
 ## Next Exact Step
 
-Characterize FIFO/background input behavior and establish the supported-platform CI baseline.
+Validate the Debian Trixie CI workflow remotely, then close Phase 0 and begin Phase 1.
 
 ## Completion Checklist
 
@@ -52,3 +52,7 @@ Characterize FIFO/background input behavior and establish the supported-platform
 - Containerized build and parallel CTest suite passed, 16/16 tests.
 - Added a Qt interaction harness for apply, accept, reject, click output, and exit codes.
 - Temporary container build and parallel CTest suite passed, 17/17 tests.
+- Added deterministic FIFO/background input coverage with two writes while the process remains alive.
+- Split CI into deterministic Debian Trixie build/test, repository lint, and filesystem security jobs.
+- Bash syntax, workflow YAML parsing, container build, and parallel CTest passed, 18/18 tests.
+- Local `trunk check` was unavailable because the Trunk CLI is not installed on the host; the CI lint job remains the required evidence.

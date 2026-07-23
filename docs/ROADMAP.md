@@ -21,9 +21,13 @@ Scope: document the original contract, make the build deterministic, and run mea
 - [x] Import representative `dialogbox` behavior as characterization fixtures.
 - [x] Replace the trivial CTest target with production-linked tests.
 - [x] Remove stale build and test instructions.
-- [ ] Establish a known-good baseline for supported platforms.
+- [ ] Establish a known-good baseline for supported platforms (Debian Trixie
+      workflow configured; remote run pending).
 
 Exit criteria: CI builds production code and tests the CLI protocol, options, exit status, and representative widgets.
+
+The supported-platform policy is recorded in
+[SUPPORTED_PLATFORMS.md](SUPPORTED_PLATFORMS.md).
 
 ## Phase 1 — Functional Compatibility
 
