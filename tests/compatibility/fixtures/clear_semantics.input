@@ -1,0 +1,12 @@
+add checkbox "Obsolete" obsolete checked
+clear
+add combobox "Choice" choices
+add item "First"
+add item "Second" current
+end combobox
+query
+clear choices
+query
+clear
+add checkbox "Fresh" fresh checked
+query

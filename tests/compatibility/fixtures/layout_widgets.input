@@ -1,0 +1,14 @@
+add groupbox "Group" group vertical checkable checked
+add checkbox "Nested" nested checked
+end groupbox
+position onto group
+add textbox "Text" text_field "hello"
+end groupbox
+position behind group
+add checkbox "After group" after_group
+step horizontal
+add slider volume 0 10
+set volume value 7
+step vertical
+add radiobutton "Choice" choice checked
+query

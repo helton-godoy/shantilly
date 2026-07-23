@@ -9,7 +9,7 @@ Status values: **pass**, **partial**, **missing**, or **unverified**.
 | Capability | Dialogbox | SHantilly | Evidence | Status |
 | --- | --- | --- | --- | --- |
 | Commands read from `stdin` | Yes | Preserved CLI entry point selected for production | `compatibility_stdin_query` | Pass |
-| Events and values on `stdout` | Yes | Query output verified; interactive events remain unverified | `compatibility_stdin_query` | Partial |
+| Events and values on `stdout` | Yes | Query values and slider change events verified; user-driven events remain partial | `compatibility_stdin_query`, `compatibility_layout_widgets` | Partial |
 | `--help` and `--version` | Yes | Preserved CLI entry point selected for production | `compatibility_cli_help`, `compatibility_cli_version` | Pass |
 | `--resizable` | Yes | Long and short options are accepted | `compatibility_cli_resizable`, `compatibility_cli_short_r` | Pass |
 | `--hidden` and explicit `show` | Yes | Hidden startup and ordered `show` commands are accepted; visual state remains unverified | `compatibility_stdin_query`, `compatibility_protocol_mutations` | Partial |
@@ -21,15 +21,16 @@ Status values: **pass**, **partial**, **missing**, or **unverified**.
 
 | Area | Expected baseline | Status | Required evidence |
 | --- | --- | --- | --- |
-| `add`, `set`, `unset`, `remove`, `clear` | `add`, `set`, `unset`, and `remove` mutations verified; `clear` pending | Partial | `compatibility_protocol_mutations` |
-| `step`, `position`, `end` | Original nesting behavior | Unverified | Layout characterization tests |
+| `add`, `set`, `unset`, `remove`, `clear` | Core mutations and dialog/list clearing verified | Pass | `compatibility_protocol_mutations`, `compatibility_clear_semantics` |
+| `step`, `position`, `end` | Horizontal/vertical steps and container positioning preserve report order | Pass | `compatibility_layout_widgets` |
 | `query`, `print`, `show` | `query` output and ordered `show` accepted; visibility and `print` pending | Partial | `compatibility_stdin_query`, `compatibility_protocol_mutations` |
 
 ## Widgets
 
 | Widgets | Status | Notes |
 | --- | --- | --- |
-| Original set: checkbox, combobox, frame, groupbox, label, listbox, page, progressbar, pushbutton, radiobutton, separator, slider, tabs, textbox, textview | Unverified | Implementations exist, but active CTest does not exercise them |
+| Checkbox, combobox, groupbox, radiobutton, slider, textbox | Partial | Representative values and nesting covered by `compatibility_layout_widgets` |
+| Frame, label, listbox, page, progressbar, pushbutton, separator, tabs, textview | Unverified | Implementations exist, but active CTest does not exercise them |
 | Calendar | Extension, unverified | Not part of original compatibility contract |
 | Table | Extension, unverified | Not part of original compatibility contract |
 | Chart | Extension, unverified | Not part of original compatibility contract |

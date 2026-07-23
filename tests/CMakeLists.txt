@@ -82,11 +82,22 @@ add_test(
     -DEXPECTED_FILE=${COMPATIBILITY_DIR}/fixtures/protocol_mutations.txt -P
     ${COMPATIBILITY_DIR}/assert_stdin_output.cmake)
 
+foreach(scenario IN ITEMS clear_semantics layout_widgets)
+  add_test(
+    NAME compatibility_${scenario}
+    COMMAND
+      ${CMAKE_COMMAND} -DEXECUTABLE=$<TARGET_FILE:shantilly>
+      -DINPUT_FILE=${COMPATIBILITY_DIR}/fixtures/${scenario}.input
+      -DEXPECTED_FILE=${COMPATIBILITY_DIR}/fixtures/${scenario}.txt -P
+      ${COMPATIBILITY_DIR}/assert_stdin_output.cmake)
+endforeach()
+
 set_tests_properties(
   compatibility_cli_help compatibility_cli_help_short compatibility_cli_version
   compatibility_cli_version_short compatibility_cli_invalid_option
   compatibility_cli_resizable compatibility_cli_short_r compatibility_stdin_query
-  compatibility_protocol_mutations
+  compatibility_protocol_mutations compatibility_clear_semantics
+  compatibility_layout_widgets
   PROPERTIES LABELS "compatibility" TIMEOUT 10)
 
 add_test(
