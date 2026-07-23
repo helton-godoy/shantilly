@@ -26,7 +26,7 @@ A forma mais fácil para sistemas baseados em Debian.
 
 ```bash
 # Baixar o pacote mais recente
-wget https://github.com/seu-usuario/SHantilly/releases/latest/download/SHantilly_1.0_amd64.deb
+wget https://github.com/helton-godoy/SHantilly/releases/latest/download/SHantilly_1.0_amd64.deb
 
 # Instalar
 sudo dpkg -i SHantilly_1.0_amd64.deb
@@ -50,7 +50,7 @@ Executável portátil que funciona em qualquer distribuição Linux moderna.
 
 ```bash
 # Baixar
-wget https://github.com/seu-usuario/SHantilly/releases/latest/download/SHantilly-1.0-x86_64.AppImage
+wget https://github.com/helton-godoy/SHantilly/releases/latest/download/SHantilly-1.0-x86_64.AppImage
 
 # Tornar executável
 chmod +x SHantilly-1.0-x86_64.AppImage
@@ -95,26 +95,25 @@ sudo pacman -S qt6-base qt6-charts base-devel cmake
 
 ```bash
 # Clonar repositório
-git clone https://github.com/seu-usuario/SHantilly.git
+git clone https://github.com/helton-godoy/SHantilly.git
 cd SHantilly
 
-# Compilar
-cd src/code/SHantilly
-qmake6 SHantilly.pro
-make -j$(nproc)
+# Configurar e compilar com o sistema oficial CMake
+cmake -S . -B build
+cmake --build build -j$(nproc)
 
 # O binário estará em:
-# ./bin/SHantilly
+# ./build/bin/shantilly
 ```
 
 #### 3.3 Instalar (opcional)
 
 ```bash
-# Instalar no sistema
-sudo make install
+# Instalar no sistema a partir do diretório de build
+sudo cmake --install build
 
 # Ou adicionar ao PATH manualmente
-echo 'export PATH="$PATH:/caminho/para/SHantilly/src/code/SHantilly/bin"' >> ~/.bashrc
+echo 'export PATH="$PATH:/caminho/para/SHantilly/build/bin"' >> ~/.bashrc
 source ~/.bashrc
 ```
 
@@ -126,10 +125,11 @@ Após instalar, verifique se está funcionando:
 
 ```bash
 # Verificar versão
-SHantilly --version
+shantilly --version
 
 # Teste rápido
-echo 'add label "Instalação bem sucedida!" | add pushbutton "OK" exit default' | SHantilly
+printf '%s\n' 'add label "Instalação bem sucedida!" success' \
+    'add pushbutton "OK" ok exit default' | shantilly
 ```
 
 Se uma janela aparecer com a mensagem, a instalação foi bem sucedida! 🎉
@@ -177,8 +177,8 @@ rm /usr/local/bin/SHantilly
 ### Compilação Manual
 
 ```bash
-cd SHantilly/src/code/SHantilly
-sudo make uninstall
+cd SHantilly/build
+sudo xargs rm -v < install_manifest.txt
 ```
 
 ---

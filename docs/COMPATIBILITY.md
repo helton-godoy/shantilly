@@ -8,11 +8,11 @@ Status values: **pass**, **partial**, **missing**, or **unverified**.
 
 | Capability | Dialogbox | SHantilly | Evidence | Status |
 | --- | --- | --- | --- | --- |
-| Commands read from `stdin` | Yes | Not connected by current `main()` | None | Missing |
-| Events and values on `stdout` | Yes | Implementation retained, runtime unverified | None | Unverified |
-| `--help` and `--version` | Yes | Not handled by current `main()` | None | Missing |
-| `--resizable` | Yes | Constructor supports it; CLI does not | None | Partial |
-| `--hidden` and explicit `show` | Yes | Not handled by current `main()` | None | Missing |
+| Commands read from `stdin` | Yes | Preserved CLI entry point selected for production | `compatibility_stdin_query` | Pass |
+| Events and values on `stdout` | Yes | Query output verified; interactive events remain unverified | `compatibility_stdin_query` | Partial |
+| `--help` and `--version` | Yes | Preserved CLI entry point selected for production | `compatibility_cli_help`, `compatibility_cli_version` | Pass |
+| `--resizable` | Yes | Preserved CLI and constructor support it | None | Unverified |
+| `--hidden` and explicit `show` | Yes | `--hidden` verified; explicit `show` remains unverified | `compatibility_stdin_query` | Partial |
 | Accept/reject exit semantics | Yes | Legacy implementation retained | None | Unverified |
 | Pipes/FIFOs and background input | Yes | Parser code is transitional | None | Unverified |
 

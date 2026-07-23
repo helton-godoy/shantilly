@@ -1,0 +1,8 @@
+SHantilly v1.0
+Copyright (C) 2015-2016, 2020 Andriy Martynets <andy.martynets@gmail.com>
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.
+This program comes with ABSOLUTELY NO WARRANTY.
+This is free software, and you are welcome to redistribute it
+under certain conditions. See the GNU GPL for details.
+
+More information on <https://github.com/martynets/SHantilly/>.

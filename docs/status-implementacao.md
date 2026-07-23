@@ -1,54 +1,33 @@
-# Status da Implementação - SHantilly
+# Status da Implementação
 
-> Relatório detalhado do status de implementação do SHantilly comparado com a referência do Dialogbox.
+**Atualizado em:** 22/07/2026
 
-**Data:** 15/01/2026  
-**Versão:** 1.1 (em refatoração)
+**Fase ativa:** [Fase 0 — Baseline](ROADMAP.md)
 
----
+Este documento resume apenas fatos verificados. O detalhamento funcional e as evidências ficam na [matriz de compatibilidade](COMPATIBILITY.md).
 
-## Resumo Executivo
+## Estado atual
 
-| Categoria          | Status        | Progresso       |
-| ------------------ | ------------- | --------------- |
-| **Parser V1**      | 🟡 Quarentena | 100% (Legado)   |
-| **Parser V2**      | 🔴 Deprecado  | Incompleto      |
-| **Target Arch**    | 🟢 Iniciado   | 10%             |
-| **Widgets Padrão** | 🟡 Migração   | 5% (PushButton) |
-| **Testes**         | 🟢 Iniciado   | 10%             |
+| Área | Estado | Evidência |
+| --- | --- | --- |
+| Build CMake/Qt6 | Passa no contêiner Debian 13 | `make build_internal` |
+| Testes unitários | 3 casos de modelos de produção | `unit_tests` |
+| CLI `--help` e `--version` | Compatível | Testes CTest dedicados |
+| Entrada `stdin` e saída de `query` | Compatível no cenário mínimo | `compatibility_stdin_query` |
+| Eventos interativos e widgets originais | Ainda não caracterizados | Matriz de compatibilidade |
+| Extensões calendar, table e chart | Implementadas, ainda não verificadas | Sem evidência automatizada |
 
-**Legenda:** 🟢 Completo/Ativo | 🟡 Parcial/Legado | 🔴 Deprecado/Ausente
+## Arquitetura em transição
 
----
+- O ponto de entrada CLI preservado em `legacy/v1_monolith` está ativo temporariamente para manter o contrato do `dialogbox`.
+- `SHantilly.cc` ainda concentra criação, mutação e relatório de widgets.
+- `legacy/v2_incomplete` é compilado por compatibilidade transitória, mas não representa a arquitetura alvo.
+- `libs/SHantilly-ui` contém widgets, configurações, temas, ícones e o builder em evolução.
+- CMake é o sistema oficial; arquivos qmake permanecem somente como material transitório.
 
-## 1. Arquitetura
+## Próximos critérios
 
-### Legacy V1 (Dialogbox Monolith)
-
-- **Status:** 🟡 Mantido para referência em `src/code/SHantilly/legacy/v1_monolith`
-- **Build:** Target `SHantilly-legacy` (QMake)
-
-### Legacy V2 (Tentativa anterior)
-
-- **Status:** 🔴 Deprecado em `src/code/SHantilly/legacy/v2_incomplete`
-- **Nota:** Código incompleto, não deve ser usado como referência.
-
-### Target Architecture (Golden Sample)
-
-- **Status:** 🟢 Ativo em `src/code/SHantilly/core` e `libs/SHantilly-ui`
-- **Padrões:**
-  - **Builder Pattern:** `CLIBuilder` (implementado)
-  - **Passive View:** `PushButtonWidget` (implementado)
-  - **Modular Parser:** `ParserMain` (implementado)
-
----
-
-## 2. Widgets (Migração para Lib)
-
-| Widget       | Passive View | Builder | Testes | Status   |
-| ------------ | ------------ | ------- | ------ | -------- |
-| `pushbutton` | ✓            | ✓       | ✓      | 🟢       |
-| `label`      | 🔴           | 🔴      | 🔴     | Pendente |
-| ...          | ...          | ...     | ...    | Pendente |
-
----
+1. Corrigir todas as instruções e testes que ainda apontam para caminhos antigos.
+2. Adicionar caracterização para opções CLI, comandos, layouts e widgets originais.
+3. Remover o V2 incompleto dos alvos ativos após cobrir o comportamento necessário.
+4. Extrair protocolo, parser, execução e UI conforme os ADRs, mantendo os testes verdes.

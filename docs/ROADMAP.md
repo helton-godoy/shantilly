@@ -18,8 +18,8 @@ This roadmap controls the evolution from `dialogbox` to SHantilly. Only one phas
 Scope: document the original contract, make the build deterministic, and run meaningful tests in CI.
 
 - [x] Record mission, roadmap, compatibility matrix, ADRs, and handoff process.
-- [ ] Import representative `dialogbox` demos as characterization fixtures.
-- [ ] Replace the trivial CTest target with production-linked tests.
+- [x] Import representative `dialogbox` behavior as characterization fixtures.
+- [x] Replace the trivial CTest target with production-linked tests.
 - [ ] Remove stale build and test instructions.
 - [ ] Establish a known-good baseline for supported platforms.
 

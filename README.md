@@ -17,8 +17,8 @@ cd SHantilly
 # Build via Docker (recomendado)
 make build
 
-# Testar com exemplo
-./examples/SHantilly_demo.sh
+# Testar com um exemplo existente
+SHANTILLY_BIN=./build/bin/shantilly ./examples/shantilly_pushbutton.sh
 ```
 
 ## 📋 Pré-requisitos
@@ -47,7 +47,7 @@ make build
 ```
 SHantilly/
 ├── src/                    # Código-fonte principal
-│   └── code/SHantilly/     # Implementação C++/Qt6
+│   └── code/shantilly/     # Executável C++/Qt6 e código transitório
 ├── tests/                  # Testes unitários e integração
 ├── examples/               # Scripts de exemplo
 ├── docs/                   # Documentação

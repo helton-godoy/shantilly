@@ -31,25 +31,24 @@ graph TD
 
 ---
 
-## 2. Estratégia de Build Híbrida (Legado + Moderno)
+## 2. Estratégia de Build
 
-Para manter a compatibilidade com o sistema de empacotamento existente (`packaging/deb`, `packaging/rpm`, etc.), adotamos uma abordagem de build duplo durante a transição:
+Conforme o [ADR 0002](../adr/0002-cmake-primary-build.md), CMake é o sistema oficial de build, testes, cobertura e empacotamento.
 
-1. **Build Legado (QMake):**
-    - Mantido em `src/code/SHantilly/SHantilly.pro`.
-    - Configurado para incluir arquivos fonte (`SOURCES`) e cabeçalhos (`HEADERS`) diretamente da pasta `libs/SHantilly-ui` usando caminhos relativos (`../../../libs/...`).
-    - **Garante:** Que os pacotes `.deb`, `.rpm`, `.AppImage` continuem sendo gerados sem alteração nos scripts de CI/CD.
+1. **Build oficial (CMake):**
+    - Configurado na raiz e nos subdiretórios `src/code/shantilly`, `libs/SHantilly-ui` e `tests`.
+    - Produz o executável `build/bin/shantilly` e registra a suíte no CTest.
+    - É o único build que pode fornecer evidência para o roadmap e a matriz de compatibilidade.
 
-2. **Build Moderno (CMake):**
-    - Configurado na raiz (`CMakeLists.txt`) e em `libs/SHantilly-ui`.
-    - Trata `SHantilly-ui` como uma biblioteca estática real.
-    - Usado para o desenvolvimento do **SHantilly Studio** e testes unitários.
+2. **QMake transitório:**
+    - O arquivo `src/code/shantilly/SHantilly.pro` permanece apenas para comparação histórica.
+    - Não define o comportamento esperado da CI e será removido após a migração da cobertura necessária.
 
 ---
 
 ## 3. Log de Migração de Componentes
 
-Este registro rastreia quais componentes foram movidos do monólito (`src/code/SHantilly`) para a biblioteca (`libs/SHantilly-ui`).
+Este registro rastreia quais componentes foram movidos do monólito (`src/code/shantilly`) para a biblioteca (`libs/SHantilly-ui`).
 
 | Componente     | Data       | Motivo da Migração                                      | Dependências           |
 | :------------- | :--------- | :------------------------------------------------------ | :--------------------- |

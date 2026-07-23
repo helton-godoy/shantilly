@@ -10,7 +10,9 @@ set(CMAKE_AUTORCC ON)
 # Encontrar fontes
 file(GLOB_RECURSE SRCS "*.cpp" "*.cc" "*.h")
 list(FILTER SRCS EXCLUDE REGEX ".*/obj/.*")
-list(FILTER SRCS EXCLUDE REGEX ".*/legacy/v1_monolith/dialog_main.cc")
+# Keep the characterized CLI entry point active until Phase 2 extracts it from
+# the legacy directory. The static demonstration is not the production CLI.
+list(FILTER SRCS EXCLUDE REGEX ".*/main.cpp")
 
 add_executable(shantilly ${SRCS})
 

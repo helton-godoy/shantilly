@@ -1,0 +1,55 @@
+Usage: SHantilly [options]
+Translate commands on stdin into widgets of GUI SHantilly and output user
+actions to stdout.
+
+In addition to standard Qt options the following ones are supported:
+  -h, --help  display this help and exit
+  -v, --version output version information and exit
+  -r, --resizable make the dialog resizable
+  -d, --hidden  don't show the dialog until explicit 'show' command
+  --new-parser use the new V2 parser engine (recommended)
+
+Supported commands:
+  - add type [title] [name] [options] [text] [auxtext]
+  - clear [name]
+  - disable [name]
+  - enable [name]
+  - end [type]
+  - hide [name]
+  - position [options] name
+  - query
+  - remove name
+  - set [name] options [text]
+  - show [name]
+  - step [direction]
+  - unset [name] options
+
+Supported widgets (types):
+  Standard: checkbox, combobox, frame, groupbox, label, listbox, page,
+            progressbar, pushbutton, radiobutton, separator, slider,
+            space, stretch, tabs, textbox, textview
+  Extended: calendar, chart, table
+
+Output format:
+  - on a pushbutton click:
+    <pushbutton name>=clicked
+  - on a toggle pushbutton click:
+    <pushbutton name>=pressed | released
+  - on a slider move:
+    <slider name>=<value>
+  - on item selection in a list box, drop-down list or combobox with
+    'selection' option set:
+    <list widget name>=<value>
+  - on item activation in a list box with 'activation' option set:
+    <list widget name>=<value>
+  - on table cell edit (if enabled):
+    <table name>[<row>][<col>]=<value>
+  - on chart slice click:
+    <chart name>.slice["<label>"]=<value>
+  - on calendar selection:
+    <calendar name>=<date>
+  - on the dialog acceptance or 'query' command list all reportable
+    enabled named widgets in format:
+    <name>=<value>
+
+Full documentation at: <https://github.com/martynets/SHantilly/>

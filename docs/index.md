@@ -78,7 +78,7 @@ echo 'add label "Olá, SHantilly!" | add pushbutton "Fechar" exit' | SHantilly
 
 ## 🔗 Links Úteis
 
-- **Código-fonte**: [GitHub](https://github.com/seu-usuario/SHantilly)
+- **Código-fonte**: [GitHub](https://github.com/helton-godoy/SHantilly)
 - **Exemplos**: [examples/](../examples/)
 - **Man page**: `man SHantilly`
 
