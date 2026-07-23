@@ -5,8 +5,8 @@ Update this file at the end of every development session. Keep it factual and co
 ## Current State
 
 - Active phase: **Phase 0 — Baseline**.
-- Last completed task: CLI option aliases, resizable mode, and invalid-option semantics were characterized.
-- Working tree expectation: clean after the CLI option characterization commit.
+- Last completed task: ordered protocol mutations and explicit `show` commands were characterized.
+- Working tree expectation: clean after the protocol mutation characterization commit.
 - Reference repository: `helton-godoy/dialogbox`, commit `6989740`; local audit clone was placed at `/tmp/dialogbox-reference` and must not be treated as persistent.
 
 ## Verified Findings
@@ -18,7 +18,7 @@ Update this file at the end of every development session. Keep it factual and co
 
 ## Next Exact Step
 
-Characterize explicit `show` behavior and expand protocol coverage beyond the minimal `query` scenario.
+Characterize `clear`, layout commands, and representative widget values.
 
 ## Completion Checklist
 
@@ -42,3 +42,5 @@ Characterize explicit `show` behavior and expand protocol coverage beyond the mi
 - Containerized build and CTest after naming changes: passed, 5/5 tests, including the naming-convention quality gate.
 - Characterized `-h`, `-v`, `--resizable`, `-r`, and invalid-option exit/stderr behavior in CTest.
 - Clean container build in `/tmp/shantilly-build` and full CTest suite: passed, 10/10 tests.
+- Characterized ordered `add`, `set`, `unset`, `enable`, `disable`, `show`, `hide`, `query`, and `remove` commands.
+- Clean container build and full CTest suite after protocol expansion: passed, 11/11 tests.

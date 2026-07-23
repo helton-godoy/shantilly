@@ -74,10 +74,19 @@ add_test(
     -DEXPECTED_OUTPUT=compat_checked=1 -P
     ${COMPATIBILITY_DIR}/assert_stdin_query.cmake)
 
+add_test(
+  NAME compatibility_protocol_mutations
+  COMMAND
+    ${CMAKE_COMMAND} -DEXECUTABLE=$<TARGET_FILE:shantilly>
+    -DINPUT_FILE=${COMPATIBILITY_DIR}/fixtures/protocol_mutations.input
+    -DEXPECTED_FILE=${COMPATIBILITY_DIR}/fixtures/protocol_mutations.txt -P
+    ${COMPATIBILITY_DIR}/assert_stdin_output.cmake)
+
 set_tests_properties(
   compatibility_cli_help compatibility_cli_help_short compatibility_cli_version
   compatibility_cli_version_short compatibility_cli_invalid_option
   compatibility_cli_resizable compatibility_cli_short_r compatibility_stdin_query
+  compatibility_protocol_mutations
   PROPERTIES LABELS "compatibility" TIMEOUT 10)
 
 add_test(

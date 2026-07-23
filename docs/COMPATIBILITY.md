@@ -12,7 +12,7 @@ Status values: **pass**, **partial**, **missing**, or **unverified**.
 | Events and values on `stdout` | Yes | Query output verified; interactive events remain unverified | `compatibility_stdin_query` | Partial |
 | `--help` and `--version` | Yes | Preserved CLI entry point selected for production | `compatibility_cli_help`, `compatibility_cli_version` | Pass |
 | `--resizable` | Yes | Long and short options are accepted | `compatibility_cli_resizable`, `compatibility_cli_short_r` | Pass |
-| `--hidden` and explicit `show` | Yes | `--hidden` verified; explicit `show` remains unverified | `compatibility_stdin_query` | Partial |
+| `--hidden` and explicit `show` | Yes | Hidden startup and ordered `show` commands are accepted; visual state remains unverified | `compatibility_stdin_query`, `compatibility_protocol_mutations` | Partial |
 | Invalid option handling | Exit 1 and diagnostic on `stderr` | Exact behavior preserved | `compatibility_cli_invalid_option` | Pass |
 | Accept/reject exit semantics | Yes | Legacy implementation retained | None | Unverified |
 | Pipes/FIFOs and background input | Yes | Parser code is transitional | None | Unverified |
@@ -21,9 +21,9 @@ Status values: **pass**, **partial**, **missing**, or **unverified**.
 
 | Area | Expected baseline | Status | Required evidence |
 | --- | --- | --- | --- |
-| `add`, `set`, `unset`, `remove`, `clear` | Original syntax and effects | Unverified | Protocol integration tests |
+| `add`, `set`, `unset`, `remove`, `clear` | `add`, `set`, `unset`, and `remove` mutations verified; `clear` pending | Partial | `compatibility_protocol_mutations` |
 | `step`, `position`, `end` | Original nesting behavior | Unverified | Layout characterization tests |
-| `query`, `print`, `show` | Original output and visibility | Unverified | Stdout/visibility tests |
+| `query`, `print`, `show` | `query` output and ordered `show` accepted; visibility and `print` pending | Partial | `compatibility_stdin_query`, `compatibility_protocol_mutations` |
 
 ## Widgets
 

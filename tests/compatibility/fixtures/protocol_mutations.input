@@ -1,0 +1,15 @@
+add checkbox "Mutable" mutable checked
+query
+unset mutable checked
+query
+set mutable checked
+query
+disable mutable
+query
+enable mutable
+show
+hide mutable
+show mutable
+query
+remove mutable
+query
