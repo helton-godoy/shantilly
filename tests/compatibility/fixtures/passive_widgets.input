@@ -1,0 +1,16 @@
+add frame container vertical box raised
+add label "Status" status
+set status text "Updated status"
+add separator divider horizontal sunken
+add textview viewer
+add pushbutton "Action" action apply
+add pushbutton "Toggle" toggle
+set toggle checkable
+set toggle checked
+add checkbox "Nested" nested checked
+end frame
+query
+unset toggle checked
+query
+remove container
+query

@@ -87,7 +87,8 @@ foreach(scenario
            clear_semantics
            layout_widgets
            listbox_progressbar
-           nested_tabs)
+           nested_tabs
+           passive_widgets)
   add_test(
     NAME compatibility_${scenario}
     COMMAND
@@ -103,7 +104,7 @@ set_tests_properties(
   compatibility_cli_resizable compatibility_cli_short_r compatibility_stdin_query
   compatibility_protocol_mutations compatibility_clear_semantics
   compatibility_layout_widgets compatibility_listbox_progressbar
-  compatibility_nested_tabs
+  compatibility_nested_tabs compatibility_passive_widgets
   PROPERTIES LABELS "compatibility" TIMEOUT 10)
 
 add_test(

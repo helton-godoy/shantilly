@@ -5,8 +5,8 @@ Update this file at the end of every development session. Keep it factual and co
 ## Current State
 
 - Active phase: **Phase 0 — Baseline**.
-- Last completed task: listbox item addressing, progressbar behavior, and nested tabs/pages were characterized.
-- Working tree expectation: clean after the listbox/progressbar/tabs characterization commit.
+- Last completed task: frame, label, pushbutton, separator, and textview protocol behavior was characterized.
+- Working tree expectation: clean after the passive-widget characterization commit.
 - Reference repository: `helton-godoy/dialogbox`, commit `6989740`; local audit clone was placed at `/tmp/dialogbox-reference` and must not be treated as persistent.
 
 ## Verified Findings
@@ -18,7 +18,7 @@ Update this file at the end of every development session. Keep it factual and co
 
 ## Next Exact Step
 
-Characterize frame, label, pushbutton, separator, and textview behavior.
+Characterize accept/reject exit semantics and user-driven pushbutton output with a Qt interaction harness.
 
 ## Completion Checklist
 
@@ -48,3 +48,5 @@ Characterize frame, label, pushbutton, separator, and textview behavior.
 - Containerized build passed; all 13 CTest cases passed, with the final layout and naming checks also confirmed separately.
 - Characterized listbox item references, non-reportable progressbar state, and values/legacy empty tab markers across nested tabs/pages.
 - Containerized build passed; all 15 CTest cases passed, with the final four checks confirmed separately.
+- Characterized passive widgets, pushbutton toggle transitions, and recursive frame removal.
+- Containerized build and parallel CTest suite passed, 16/16 tests.

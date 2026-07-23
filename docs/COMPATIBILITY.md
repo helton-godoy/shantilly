@@ -9,7 +9,7 @@ Status values: **pass**, **partial**, **missing**, or **unverified**.
 | Capability | Dialogbox | SHantilly | Evidence | Status |
 | --- | --- | --- | --- | --- |
 | Commands read from `stdin` | Yes | Preserved CLI entry point selected for production | `compatibility_stdin_query` | Pass |
-| Events and values on `stdout` | Yes | Query values and slider change events verified; user-driven events remain partial | `compatibility_stdin_query`, `compatibility_layout_widgets` | Partial |
+| Events and values on `stdout` | Yes | Query values, slider changes, and toggle transitions verified; user-driven events remain partial | Compatibility protocol fixtures | Partial |
 | `--help` and `--version` | Yes | Preserved CLI entry point selected for production | `compatibility_cli_help`, `compatibility_cli_version` | Pass |
 | `--resizable` | Yes | Long and short options are accepted | `compatibility_cli_resizable`, `compatibility_cli_short_r` | Pass |
 | `--hidden` and explicit `show` | Yes | Hidden startup and ordered `show` commands are accepted; visual state remains unverified | `compatibility_stdin_query`, `compatibility_protocol_mutations` | Partial |
@@ -30,7 +30,7 @@ Status values: **pass**, **partial**, **missing**, or **unverified**.
 | Widgets | Status | Notes |
 | --- | --- | --- |
 | Checkbox, combobox, groupbox, listbox, page, progressbar, radiobutton, slider, tabs, textbox | Partial | Values, item addressing, non-reportable progress, and legacy empty tab markers covered by compatibility fixtures |
-| Frame, label, pushbutton, separator, textview | Unverified | Implementations exist, but active CTest does not exercise them |
+| Frame, label, pushbutton, separator, textview | Partial | Non-reporting behavior, toggle transitions, nesting, and recursive frame removal covered by `compatibility_passive_widgets` |
 | Calendar | Extension, unverified | Not part of original compatibility contract |
 | Table | Extension, unverified | Not part of original compatibility contract |
 | Chart | Extension, unverified | Not part of original compatibility contract |
