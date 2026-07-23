@@ -15,7 +15,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Configuração Global do Qt (via vcpkg)
-find_package(Qt6 REQUIRED COMPONENTS Widgets Charts PrintSupport Network Svg)
+find_package(Qt6 REQUIRED COMPONENTS Widgets Charts PrintSupport Network Svg Test)
 
 # Diretórios de Saída
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)

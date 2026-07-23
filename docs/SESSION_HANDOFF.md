@@ -5,8 +5,8 @@ Update this file at the end of every development session. Keep it factual and co
 ## Current State
 
 - Active phase: **Phase 0 — Baseline**.
-- Last completed task: frame, label, pushbutton, separator, and textview protocol behavior was characterized.
-- Working tree expectation: clean after the passive-widget characterization commit.
+- Last completed task: real pushbutton clicks and accept/reject exit semantics were characterized.
+- Working tree expectation: clean after the dialog-interaction characterization commit.
 - Reference repository: `helton-godoy/dialogbox`, commit `6989740`; local audit clone was placed at `/tmp/dialogbox-reference` and must not be treated as persistent.
 
 ## Verified Findings
@@ -18,7 +18,7 @@ Update this file at the end of every development session. Keep it factual and co
 
 ## Next Exact Step
 
-Characterize accept/reject exit semantics and user-driven pushbutton output with a Qt interaction harness.
+Characterize FIFO/background input behavior and establish the supported-platform CI baseline.
 
 ## Completion Checklist
 
@@ -50,3 +50,5 @@ Characterize accept/reject exit semantics and user-driven pushbutton output with
 - Containerized build passed; all 15 CTest cases passed, with the final four checks confirmed separately.
 - Characterized passive widgets, pushbutton toggle transitions, and recursive frame removal.
 - Containerized build and parallel CTest suite passed, 16/16 tests.
+- Added a Qt interaction harness for apply, accept, reject, click output, and exit codes.
+- Temporary container build and parallel CTest suite passed, 17/17 tests.

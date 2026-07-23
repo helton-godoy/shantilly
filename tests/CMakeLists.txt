@@ -12,6 +12,34 @@ target_link_libraries(unit_tests PRIVATE GTest::gtest GTest::gtest_main
 enable_testing()
 add_test(NAME unit_tests COMMAND unit_tests)
 
+set(LEGACY_RUNTIME_DIR ${PROJECT_SOURCE_DIR}/src/code/shantilly)
+add_executable(
+  dialog_interaction_tests
+  qt_test_main.cpp
+  test_dialog_interactions.cpp
+  ${LEGACY_RUNTIME_DIR}/SHantilly.cc
+  ${LEGACY_RUNTIME_DIR}/SHantilly.h
+  ${LEGACY_RUNTIME_DIR}/legacy/v1_monolith/dialog_parser.cc
+  ${LEGACY_RUNTIME_DIR}/legacy/v1_monolith/dialog_private.cc
+  ${LEGACY_RUNTIME_DIR}/legacy/v1_monolith/dialog_set_options.cc
+  ${LEGACY_RUNTIME_DIR}/legacy/v1_monolith/dialog_slots.cc)
+set_target_properties(dialog_interaction_tests PROPERTIES AUTOMOC ON)
+target_include_directories(
+  dialog_interaction_tests
+  PRIVATE ${LEGACY_RUNTIME_DIR}
+          ${LEGACY_RUNTIME_DIR}/legacy/v1_monolith
+          ${PROJECT_SOURCE_DIR}/libs/shantilly-ui/include)
+target_link_libraries(
+  dialog_interaction_tests
+  PRIVATE GTest::gtest Qt6::Test Qt6::Widgets Qt6::Charts shantilly-ui)
+
+add_test(NAME dialog_interaction_tests COMMAND dialog_interaction_tests)
+set_tests_properties(
+  dialog_interaction_tests
+  PROPERTIES LABELS "compatibility;interaction"
+             ENVIRONMENT "QT_QPA_PLATFORM=offscreen"
+             TIMEOUT 10)
+
 set(COMPATIBILITY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/compatibility)
 
 add_test(

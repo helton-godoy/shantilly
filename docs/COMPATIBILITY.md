@@ -9,12 +9,12 @@ Status values: **pass**, **partial**, **missing**, or **unverified**.
 | Capability | Dialogbox | SHantilly | Evidence | Status |
 | --- | --- | --- | --- | --- |
 | Commands read from `stdin` | Yes | Preserved CLI entry point selected for production | `compatibility_stdin_query` | Pass |
-| Events and values on `stdout` | Yes | Query values, slider changes, and toggle transitions verified; user-driven events remain partial | Compatibility protocol fixtures | Partial |
+| Events and values on `stdout` | Yes | Query values, state transitions, and real pushbutton clicks verified | Protocol and interaction tests | Pass |
 | `--help` and `--version` | Yes | Preserved CLI entry point selected for production | `compatibility_cli_help`, `compatibility_cli_version` | Pass |
 | `--resizable` | Yes | Long and short options are accepted | `compatibility_cli_resizable`, `compatibility_cli_short_r` | Pass |
 | `--hidden` and explicit `show` | Yes | Hidden startup and ordered `show` commands are accepted; visual state remains unverified | `compatibility_stdin_query`, `compatibility_protocol_mutations` | Partial |
 | Invalid option handling | Exit 1 and diagnostic on `stderr` | Exact behavior preserved | `compatibility_cli_invalid_option` | Pass |
-| Accept/reject exit semantics | Yes | Legacy implementation retained | None | Unverified |
+| Accept/reject exit semantics | Yes | Apply stays open; acceptance returns 1 and rejection returns 0 | `dialog_interaction_tests` | Pass |
 | Pipes/FIFOs and background input | Yes | Parser code is transitional | None | Unverified |
 
 ## Commands and Layout
