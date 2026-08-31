@@ -8,7 +8,7 @@ jobs:
   package:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Install packaging dependencies
         run: |
@@ -16,7 +16,7 @@ jobs:
           sudo apt-get install -y libgl1-mesa-dev libx11-dev libxkbcommon-dev libfontconfig1-dev libdbus-1-dev libicu-dev build-essential
 
       - name: Cache vcpkg
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: |
             ${{ github.workspace }}/vcpkg
